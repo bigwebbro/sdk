@@ -23,9 +23,6 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate
 
-    - name: Composer audit
-      run: make audit
-
     - name: Set up PHP ${{ matrix.php-versions }}
       uses: shivammathur/setup-php@v2
       with:
@@ -42,6 +39,9 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
+
+    - name: Composer audit
+      run: make audit
 
     - name: Run linting with PHP ${{ matrix.php-versions }}
       run: make csfix-dry
