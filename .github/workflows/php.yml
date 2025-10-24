@@ -36,6 +36,9 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Test with PHP ${{ matrix.php-versions }}
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
       run: make phpunit
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
