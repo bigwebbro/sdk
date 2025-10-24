@@ -7,5 +7,4 @@ namespace Bigwebbro\Sdk;
  */
 class Placeholder
 {
-
 }
