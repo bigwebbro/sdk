@@ -23,6 +23,9 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate
 
+    - name: Composer audit
+      run: make audit
+
     - name: Set up PHP ${{ matrix.php-versions }}
       uses: shivammathur/setup-php@v2
       with:
@@ -51,4 +54,3 @@ jobs:
 
     - name: Run tests with PHP ${{ matrix.php-versions }}
       run: make phpunit
-

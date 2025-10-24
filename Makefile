@@ -24,8 +24,8 @@ phpunit-docker:
 
 
 ############## Github Actions Targets ##############
-phpunit:
-	vendor/bin/phpunit
+audit:
+	composer audit
 
 csfix-dry:
 	vendor/bin/php-cs-fixer fix --dry-run
@@ -35,3 +35,6 @@ rector-dry:
 
 phpstan:
 	vendor/bin/phpstan analyse -c phpstan.neon
+
+phpunit:
+	vendor/bin/phpunit
