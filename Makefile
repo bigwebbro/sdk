@@ -13,5 +13,8 @@ rector:
 csfix:
 	docker run --rm -w "/sdk" -v "./:/sdk" php:8.1.33-cli vendor/bin/php-cs-fixer fix --dry-run
 
-phpunit:
+docker-phpunit:
 	docker run --rm -w "/sdk" -v "./:/sdk" php:8.1.33-cli vendor/bin/phpunit
+
+phpunit:
+	vendor/bin/phpunit
