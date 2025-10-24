@@ -23,6 +23,11 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate
 
+    - name: Set up PHP ${{ matrix.php-versions }}
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
@@ -35,12 +40,8 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-    - name: Test with PHP ${{ matrix.php-versions }}
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php-versions }}
+    - name: Run tests with PHP ${{ matrix.php-versions }}
       run: make phpunit
-
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
