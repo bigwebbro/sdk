@@ -10,13 +10,13 @@ permissions:
   contents: read
 
 jobs:
-  quality_check:
+  quality_checks:
 
     runs-on: ubuntu-latest
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ['8.1', '8.2']
+        php-versions: ['8.1', '8.2', '8.3', '8.4']
     steps:
     - uses: actions/checkout@v4
 
@@ -40,10 +40,15 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
+    - name: Run linting with PHP ${{ matrix.php-versions }}
+      run: make csfixer-dry
+
+    - name: Run rector with PHP ${{ matrix.php-versions }}
+      run: make rector-dry
+
+    - name: Run phpstan with PHP ${{ matrix.php-versions }}
+      run: make phpstan
+
     - name: Run tests with PHP ${{ matrix.php-versions }}
       run: make phpunit
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
 
-    # - name: Run test suite
-    #   run: composer run-script test
