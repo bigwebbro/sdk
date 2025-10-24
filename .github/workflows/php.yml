@@ -41,7 +41,7 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Run linting with PHP ${{ matrix.php-versions }}
-      run: make csfixer-dry
+      run: make csfix-dry
 
     - name: Run rector with PHP ${{ matrix.php-versions }}
       run: make rector-dry
