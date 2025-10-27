@@ -14,14 +14,17 @@ audit-docker:
 phpstan-docker:
 	docker run --rm -w "/php-library" -v "./:/php-library" ${PHP_IMAGE} vendor/bin/phpstan analyse -c phpstan.neon
 
+rector-docker:
+	docker run --rm -w "/php-library" -v "./:/php-library" ${PHP_IMAGE} vendor/bin/rector process
+
 rector-dry-docker:
 	docker run --rm -w "/php-library" -v "./:/php-library" ${PHP_IMAGE} vendor/bin/rector process --dry-run
 
-csfix-dry-docker:
-	docker run --rm -w "/php-library" -v "./:/php-library" ${PHP_IMAGE} vendor/bin/php-cs-fixer fix --dry-run
-
 csfix-docker:
 	docker run --rm -w "/php-library" -v "./:/php-library" -u ${USER_ID}:${GROUP_ID} ${PHP_IMAGE} vendor/bin/php-cs-fixer fix
+
+csfix-dry-docker:
+	docker run --rm -w "/php-library" -v "./:/php-library" ${PHP_IMAGE} vendor/bin/php-cs-fixer fix --dry-run
 
 phpunit-docker:
 	docker run --rm -w "/php-library" -v "./:/php-library" ${PHP_IMAGE} vendor/bin/phpunit
