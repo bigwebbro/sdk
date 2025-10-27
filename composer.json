@@ -16,7 +16,6 @@
     "require": {
         "php": ">=8.1"
     },
-
     "require-dev": {
         "phpstan/phpstan": "^2.1",
         "rector/rector": "^2.2",
