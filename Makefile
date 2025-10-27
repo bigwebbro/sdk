@@ -26,13 +26,19 @@ csfix-docker:
 phpunit-docker:
 	docker run --rm -w "/php-library" -v "./:/php-library" ${PHP_IMAGE} vendor/bin/phpunit
 
-############## Github Actions Targets (for bare-metal php usage) ##############
+############## Github Actions Targets (also for bare-metal php usage) ##############
 
 audit:
 	composer audit
 
+csfix:
+	vendor/bin/php-cs-fixer fix
+
 csfix-dry:
 	vendor/bin/php-cs-fixer fix --dry-run
+
+rector:
+	vendor/bin/rector process
 
 rector-dry:
 	vendor/bin/rector process --dry-run
