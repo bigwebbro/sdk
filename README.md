@@ -1,1 +1,1 @@
-# php-library-boilerplate
+# Tyin Merchant API SDK
