@@ -29,7 +29,7 @@ final class HttpClientLoggingDecorator implements ClientInterface, LoggerAwareIn
     {
         $this->logger->info('Request to Merchant API', [
             'method' => $request->getMethod(),
-            'endpoint' => $request->getUri()->__toString()
+            'endpoint' => $request->getUri()
         ]);
 
         try {

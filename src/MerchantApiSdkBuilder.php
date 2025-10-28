@@ -6,48 +6,37 @@ namespace Tiyn\MerchantApiSdk;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Validator\Validation;
-use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientExceptionDecorator;
 use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientLoggingDecorator;
 use Tiyn\MerchantApiSdk\Client\Guzzle\GuzzleHttpClientBuilder;
 use Tiyn\MerchantApiSdk\Client\HttpClientBuilderInterface;
-use Tiyn\MerchantApiSdk\Configuration\ValidatorAwareInterface;
-use Tiyn\MerchantApiSdk\Configuration\ValidatorAwareTrait;
-use Tiyn\MerchantApiSdk\Service\Handler\RequestHandler;
-use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandler;
-use Tiyn\MerchantApiSdk\Service\InvoicesService;
+use Tiyn\MerchantApiSdk\Handler\InvoicesHandler;
+use Tiyn\MerchantApiSdk\Validator\ValidatorAwareInterface;
+use Tiyn\MerchantApiSdk\Validator\ValidatorAwareTrait;
 
-final class MerchantApiSdkBuilder implements
-    LoggerAwareInterface,
-    ValidatorAwareInterface
+final class MerchantApiSdkBuilder implements SerializerAwareInterface, LoggerAwareInterface, ValidatorAwareInterface
 {
-    use LoggerAwareTrait;
     use ValidatorAwareTrait;
+    use LoggerAwareTrait;
+    use SerializerAwareTrait;
 
-    /**
-     * @var class-string[]
-     */
     private array $decorators = [];
 
     private ?HttpClientBuilderInterface $builder = null;
 
-    private int $timeout = 5;
+    private int $timeout;
 
     private string $baseUri;
 
     private string $apiKey;
 
-    /**
-     * @var array<string, mixed>
-     */
-    private array $options;
-
     private string $secretPhrase;
 
-    /**
-     * @param class-string $fqcn
-     * @return $this
-     */
     public function addHttpApiClientDecorator(string $fqcn): self
     {
         $this->decorators[] = $fqcn;
@@ -76,17 +65,6 @@ final class MerchantApiSdkBuilder implements
         return $this;
     }
 
-    /**
-     * @param array<string, mixed> $options
-     * @return $this
-     */
-    public function setClientOptions(array $options): self
-    {
-        $this->options = $options;
-
-        return $this;
-    }
-
     public function setApiKey(string $apiKey): self
     {
         $this->apiKey = $apiKey;
@@ -111,34 +89,29 @@ final class MerchantApiSdkBuilder implements
             ->setBaseUri($this->baseUri)
             ->setApiKey($this->apiKey)
             ->setTimeout($this->timeout)
-            ->setOptions($this->options)
-            ->build();
-
-        $client = new HttpClientExceptionDecorator($client);
+        ;
 
         if (!empty($this->decorators)) {
             foreach ($this->decorators as $decorator) {
                 $client = new $decorator($client);
 
                 if (HttpClientLoggingDecorator::class === $decorator) {
-                    $client->setLogger($this->logger);
+                    $decorator->setLogger($this->logger);
                 }
             }
         }
 
-        if (!isset($this->validator)) {
-            $this->validator = Validation::createValidatorBuilder()
-                ->enableAttributeMapping()
-                ->getValidator();
+        if (null === $this->validator) {
+            $this->validator = Validation::createValidator();
         }
 
-        $invoiceService = new InvoicesService(
-            $client,
-            new RequestHandler($this->validator),
-            new ResponseHandler(),
-            $this->secretPhrase,
-        );
+        if (!isset($this->serializer)) {
+            $this->serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
+        }
 
-        return new MerchantApiSdk($invoiceService);
+
+        $invoicesHandler = new InvoicesHandler($client, $this->validator, $this->serializer, $this->secretPhrase);
+
+        return new MerchantApiSdk($invoicesHandler);
     }
 }
