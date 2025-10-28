@@ -21,10 +21,10 @@ rector-dry-docker:
 	docker run --rm -w "/php-library" -v "./:/php-library" ${PHP_IMAGE} vendor/bin/rector process --dry-run
 
 csfix-docker:
-	docker run --rm -w "/php-library" -v "./:/php-library" -u ${USER_ID}:${GROUP_ID} ${PHP_IMAGE} vendor/bin/php-cs-fixer fix
+	docker run --rm -w "/php-library" -v "./:/php-library" -u ${USER_ID}:${GROUP_ID} ${PHP_IMAGE} vendor/bin/php-cs-fixer fix --allow-risky=yes
 
 csfix-dry-docker:
-	docker run --rm -w "/php-library" -v "./:/php-library" ${PHP_IMAGE} vendor/bin/php-cs-fixer fix --dry-run
+	docker run --rm -w "/php-library" -v "./:/php-library" ${PHP_IMAGE} vendor/bin/php-cs-fixer fix --dry-run --allow-risky=yes
 
 phpunit-docker:
 	docker run --rm -w "/php-library" -v "./:/php-library" ${PHP_IMAGE} vendor/bin/phpunit
@@ -38,7 +38,7 @@ csfix:
 	vendor/bin/php-cs-fixer fix
 
 csfix-dry:
-	vendor/bin/php-cs-fixer fix --dry-run
+	vendor/bin/php-cs-fixer fix --dry-run --allow-risky=yes
 
 rector:
 	vendor/bin/rector process
