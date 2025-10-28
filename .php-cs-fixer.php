@@ -11,6 +11,8 @@ return (new PhpCsFixer\Config())
         '@PSR12' => true,
         'array_syntax' => ['syntax' => 'short'],
         'yoda_style' => true,
+        'native_function_invocation' => true,
+        'declare_strict_types' => true,
     ])
     ->setFinder($finder)
     ;
