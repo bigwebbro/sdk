@@ -21,8 +21,8 @@ use Tiyn\MerchantApiSdk\Exception\Validation\EmptyDataException;
 class ResponseHandler implements ResponseHandlerInterface
 {
     public function __construct(
-        private DecoderInterface      $decoder,
-        private DenormalizerInterface $denormalizer,
+        private readonly DecoderInterface      $decoder,
+        private readonly DenormalizerInterface $denormalizer,
     ) {
     }
 

@@ -7,9 +7,9 @@ namespace Tiyn\MerchantApiSdk\Model\Invoices;
 final class InvoicesData
 {
     public function __construct(
-        private string $uuid,
-        private string $externalId,
-        private string $paymentLink
+        private readonly string $uuid,
+        private readonly string $externalId,
+        private readonly string $paymentLink
     ) {
     }
 

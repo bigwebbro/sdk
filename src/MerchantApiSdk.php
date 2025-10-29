@@ -10,7 +10,7 @@ use Tiyn\MerchantApiSdk\Handler\InvoicesHandler;
 final class MerchantApiSdk
 {
     public function __construct(
-        private InvoicesHandler $invoicesHandler,
+        private readonly InvoicesHandler $invoicesHandler,
     ) {
     }
 

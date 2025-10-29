@@ -13,7 +13,7 @@ use Tiyn\MerchantApiSdk\Exception\Transport\ConnectionException;
 final class HttpClientExceptionDecorator implements ClientInterface
 {
     public function __construct(
-        private ClientInterface $inner,
+        private readonly ClientInterface $inner,
     ) {
     }
 
