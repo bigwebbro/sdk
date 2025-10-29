@@ -19,12 +19,13 @@ use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientExceptionDecorator;
 use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientLoggingDecorator;
 use Tiyn\MerchantApiSdk\Client\Guzzle\GuzzleHttpClientBuilder;
 use Tiyn\MerchantApiSdk\Exception\Api\ApiKeyException;
+use Tiyn\MerchantApiSdk\Exception\Api\EntityErrorException;
 use Tiyn\MerchantApiSdk\Exception\Api\SignException;
 use Tiyn\MerchantApiSdk\Handler\InvoicesHandler;
 use Tiyn\MerchantApiSdk\Handler\ResponseHandler;
 use Tiyn\MerchantApiSdk\Exception\Validation\JsonProcessingException;
 use Tiyn\MerchantApiSdk\Model\Error;
-use Tiyn\MerchantApiSdk\Model\Invoices\CreateInvoices;
+use Tiyn\MerchantApiSdk\Model\Invoices\CreateInvoicesRequest;
 
 class InvoicesHandlerTest extends TestCase
 {
@@ -32,8 +33,10 @@ class InvoicesHandlerTest extends TestCase
     public const INVOICE_EXTERNAL_ID = "3c5301df-d806-4fb0-9f96-f44d5d2d3827";
     public const INVOICE_PAYMENT_LINK = "https://payment";
     public const ERROR_CODE = "-1";
+    public const ERROR_ENTITY_CODE = "1";
     public const ERROR_UNAUTHORIZED_MESSAGE = "Unauthorized";
     public const ERROR_FORBIDDEN_MESSAGE = "Forbidden";
+    public const ERROR_ENTITY_MESSAGE = "Invalid expiration date";
     public const ERROR_CORRELATION_ID = "9f63d8d9-4260-432f-a47d-3eead8a3c6e7";
 
     private LoggerInterface $logger;
@@ -78,6 +81,17 @@ class InvoicesHandlerTest extends TestCase
         }
 
         switch ($exception) {
+            case EntityErrorException::class:
+                $e = new EntityErrorException(
+                    new Error(
+                        self::ERROR_ENTITY_CODE,
+                        self::ERROR_ENTITY_MESSAGE,
+                        self::ERROR_CORRELATION_ID
+                    ),
+                    400
+                );
+                $this->expectExceptionObject($e);
+                break;
             case ApiKeyException::class:
                 $e = new ApiKeyException(
                     new Error(
@@ -102,7 +116,7 @@ class InvoicesHandlerTest extends TestCase
                 break;
         }
 
-        $invoicesData = $handler->createInvoices(new CreateInvoices());
+        $invoicesData = $handler->createInvoices(new CreateInvoicesRequest());
 
         self::assertEquals($invoicesData->getUuid(), self::INVOICE_UUID);
         self::assertEquals($invoicesData->getExternalId(), self::INVOICE_EXTERNAL_ID);
@@ -137,6 +151,17 @@ class InvoicesHandlerTest extends TestCase
             [
                 JsonProcessingException::class,
                 new MockHandler([new Response(200, [], '')])
+            ],
+            [
+                EntityErrorException::class,
+                new MockHandler([new Response(400, [], \sprintf('{
+                    "success": false,
+                    "error": {
+                        "code": "%s",
+                        "message": "%s",
+                        "correlationId": "%s"
+                    }
+                }', self::ERROR_ENTITY_CODE, self::ERROR_ENTITY_MESSAGE, self::ERROR_CORRELATION_ID))])
             ],
             [
                 ApiKeyException::class,
