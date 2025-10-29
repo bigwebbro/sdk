@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Validator;
+namespace Tiyn\MerchantApiSdk\Configuration;
 
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 trait ValidatorAwareTrait
 {
-    protected ?ValidatorInterface $validator = null;
+    protected ValidatorInterface $validator;
 
     public function setValidator(ValidatorInterface $validator): void
     {

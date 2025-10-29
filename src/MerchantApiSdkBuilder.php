@@ -6,7 +6,10 @@ namespace Tiyn\MerchantApiSdk;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Symfony\Component\Serializer\Encoder\JsonDecode;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerAwareInterface;
@@ -15,16 +18,29 @@ use Symfony\Component\Validator\Validation;
 use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientLoggingDecorator;
 use Tiyn\MerchantApiSdk\Client\Guzzle\GuzzleHttpClientBuilder;
 use Tiyn\MerchantApiSdk\Client\HttpClientBuilderInterface;
+use Tiyn\MerchantApiSdk\Configuration\DecoderAwareInterface;
+use Tiyn\MerchantApiSdk\Configuration\DecoderAwareTrait;
 use Tiyn\MerchantApiSdk\Handler\InvoicesHandler;
-use Tiyn\MerchantApiSdk\Validator\ValidatorAwareInterface;
-use Tiyn\MerchantApiSdk\Validator\ValidatorAwareTrait;
+use Tiyn\MerchantApiSdk\Handler\ResponseHandler;
+use Tiyn\MerchantApiSdk\Configuration\ValidatorAwareInterface;
+use Tiyn\MerchantApiSdk\Configuration\ValidatorAwareTrait;
 
-final class MerchantApiSdkBuilder implements SerializerAwareInterface, LoggerAwareInterface, ValidatorAwareInterface
+final class MerchantApiSdkBuilder implements
+    SerializerAwareInterface,
+    DenormalizerAwareInterface,
+    DecoderAwareInterface,
+    LoggerAwareInterface,
+    ValidatorAwareInterface
 {
-    use ValidatorAwareTrait;
-    use LoggerAwareTrait;
     use SerializerAwareTrait;
+    use DenormalizerAwareTrait;
+    use DecoderAwareTrait;
+    use LoggerAwareTrait;
+    use ValidatorAwareTrait;
 
+    /**
+     * @var string[]
+     */
     private array $decorators = [];
 
     private ?HttpClientBuilderInterface $builder = null;
@@ -96,21 +112,37 @@ final class MerchantApiSdkBuilder implements SerializerAwareInterface, LoggerAwa
                 $client = new $decorator($client);
 
                 if (HttpClientLoggingDecorator::class === $decorator) {
-                    $decorator->setLogger($this->logger);
+                    $client->setLogger($this->logger);
                 }
             }
         }
 
-        if (null === $this->validator) {
-            $this->validator = Validation::createValidator();
-        }
-
+        /** @phpstan-ignore isset.property */
         if (!isset($this->serializer)) {
             $this->serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
         }
 
+        /** @phpstan-ignore isset.property */
+        if (!isset($this->denormalizer)) {
+            $this->denormalizer = new ObjectNormalizer();
+        }
 
-        $invoicesHandler = new InvoicesHandler($client, $this->validator, $this->serializer, $this->secretPhrase);
+        if (!isset($this->decoder)) {
+            $this->decoder = new JsonDecode();
+        }
+
+        if (!isset($this->validator)) {
+            $this->validator = Validation::createValidator();
+        }
+
+        $invoicesHandler = new InvoicesHandler(
+            $client,
+            $this->validator,
+            $this->serializer,
+            $this->denormalizer,
+            new ResponseHandler($this->decoder, $this->denormalizer),
+            $this->secretPhrase,
+        );
 
         return new MerchantApiSdk($invoicesHandler);
     }

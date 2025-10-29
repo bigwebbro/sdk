@@ -16,6 +16,9 @@ final class GuzzleHttpClientBuilder implements HttpClientBuilderInterface
 
     private string $apiKey;
 
+    /**
+     * @var array<string,mixed>
+     */
     private array $options;
 
     public function setBaseUri(string $baseUri): HttpClientBuilderInterface
@@ -40,6 +43,9 @@ final class GuzzleHttpClientBuilder implements HttpClientBuilderInterface
     }
 
 
+    /**
+     * @inheritDoc
+     */
     public function setOptions(array $options): HttpClientBuilderInterface
     {
         $this->options = $options;
