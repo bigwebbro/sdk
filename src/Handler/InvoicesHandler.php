@@ -6,15 +6,16 @@ namespace Tiyn\MerchantApiSdk\Handler;
 
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Client\NetworkExceptionInterface;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Tiyn\MerchantApiSdk\Client\Guzzle\Request\RequestBuilder;
-use Tiyn\MerchantApiSdk\Exception\HttpConnectionException;
-use Tiyn\MerchantApiSdk\Exception\HttpException;
-use Tiyn\MerchantApiSdk\Exception\JsonProcessingException;
-use Tiyn\MerchantApiSdk\Exception\ValidationException;
-use Tiyn\MerchantApiSdk\Model\CreateInvoices;
-use Tiyn\MerchantApiSdk\Model\SuccessCreateInvoices;
+use Tiyn\MerchantApiSdk\Exception\Transport\ConnectionException;
+use Tiyn\MerchantApiSdk\Exception\Validation\ValidationException;
+use Tiyn\MerchantApiSdk\Model\Invoices\CreateInvoices;
+use Tiyn\MerchantApiSdk\Model\Invoices\InvoicesData;
+use Tiyn\MerchantApiSdk\Exception\Validation\WrongDataException;
 
 class InvoicesHandler
 {
@@ -24,48 +25,41 @@ class InvoicesHandler
         private ClientInterface $client,
         private ValidatorInterface $validator,
         private SerializerInterface $serializer,
+        private DenormalizerInterface $denormalizer,
+        private ResponseHandlerInterface $responseHandler,
         private string $secretPhrase,
     ) {
     }
 
-    public function createInvoices(CreateInvoices $createInvoices): SuccessCreateInvoices
+    public function createInvoices(CreateInvoices $createInvoices): InvoicesData
     {
         $violations = $this->validator->validate($createInvoices);
         if ($violations->count() > 0) {
             throw new ValidationException('Invalid data');
         }
 
+        $json = $this->serializer->serialize($createInvoices, 'json');
+
         $request = (new RequestBuilder())
             ->withMethod('POST')
             ->withHeaders(['Content-Type' => 'application/json'])
-            ->withBody($createInvoices)
+            ->withBody($json)
             ->withEndpoint(self::ENDPOINT)
             ->buildWithSign($this->secretPhrase)
         ;
 
+        $response = $this->client->sendRequest($request);
+        $data = $this->responseHandler->handleResponse($response);
+
         try {
-            $response = $this->client->sendRequest($request);
-        } catch (NetworkExceptionInterface $e) {
-            throw new HttpConnectionException($e->getMessage(), $e->getCode(), $e);
+            /**
+             * @var InvoicesData $invoicesData
+             */
+            $invoicesData = $this->denormalizer->denormalize($data, InvoicesData::class);
+        } catch (ExceptionInterface $e) {
+            throw new WrongDataException($e->getMessage(), $e->getCode(), $e);
         }
 
-        $statusCode = $response->getStatusCode();
-
-        $result = match (true) {
-            $statusCode >= 400 && $statusCode < 500 => new HttpException(),
-            $statusCode >= 500 && $statusCode < 600 => new HttpException(),
-            default => null,
-        };
-
-        if (null !== $result) {
-            throw $result;
-        }
-
-        /**
-         * @var SuccessCreateInvoices $successCreateInvoices
-         */
-        $successCreateInvoices = $this->serializer->deserialize($response->getBody()->getContents(), SuccessCreateInvoices::class, 'json');
-
-        return $successCreateInvoices;
+        return $invoicesData;
     }
 }

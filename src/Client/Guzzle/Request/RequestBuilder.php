@@ -6,18 +6,18 @@ namespace Tiyn\MerchantApiSdk\Client\Guzzle\Request;
 
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface as PsrRequestInterface;
-use Tiyn\MerchantApiSdk\Exception\JsonProcessingException;
-use Tiyn\MerchantApiSdk\Model\ObjectNormalize;
-use Tiyn\MerchantApiSdk\Client\Guzzle\Request\RequestSignable;
 use Tiyn\MerchantApiSdk\Client\Sign\Sign;
 
 class RequestBuilder
 {
     private string $method;
     private string $endpoint;
-    private array $headers;
-    private ObjectNormalize $obj;
 
+    /**
+     * @var string[]|string[][]
+     */
+    private array $headers;
+    private string $body;
 
     public function withMethod(string $method): self
     {
@@ -33,6 +33,10 @@ class RequestBuilder
         return $this;
     }
 
+    /**
+     * @param string[]|string[][] $headers
+     * @return $this
+     */
     public function withHeaders(array $headers): self
     {
         $this->headers = $headers;
@@ -40,24 +44,18 @@ class RequestBuilder
         return $this;
     }
 
-    public function withBody(ObjectNormalize $obj): self
+    public function withBody(string $body): self
     {
-        $this->obj = $obj;
+        $this->body = $body;
 
         return $this;
     }
 
     public function buildWithSign(string $secretPhrase): PsrRequestInterface
     {
-        try {
-            $json = json_encode($this->obj->toArray(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
-        } catch (\JsonException $e) {
-            throw new JsonProcessingException($e->getMessage(), $e->getCode(), $e);
-        }
+        $request = new Request($this->method, $this->endpoint, $this->headers, $this->body);
+        $request->withAddedHeader('X-Sign', Sign::hash($this->body, $secretPhrase));
 
-        $request = new Request($this->method, $this->endpoint, $this->headers, $json);
-        $request->withAddedHeader('X-Sign', Sign::hash($json, $secretPhrase));
-        var_dump(Sign::hash($json, $secretPhrase));
         return $request;
     }
 }
