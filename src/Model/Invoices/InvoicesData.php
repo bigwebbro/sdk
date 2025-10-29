@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Model;
+namespace Tiyn\MerchantApiSdk\Model\Invoices;
 
-final class SuccessInvoiceData
+final class InvoicesData
 {
     public function __construct(
         private string $uuid,
