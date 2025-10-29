@@ -22,12 +22,12 @@ class InvoicesHandler
     public const ENDPOINT = '/invoices';
 
     public function __construct(
-        private ClientInterface $client,
-        private ValidatorInterface $validator,
-        private SerializerInterface $serializer,
-        private DenormalizerInterface $denormalizer,
-        private ResponseHandlerInterface $responseHandler,
-        private string $secretPhrase,
+        private readonly ClientInterface $client,
+        private readonly ValidatorInterface $validator,
+        private readonly SerializerInterface $serializer,
+        private readonly DenormalizerInterface $denormalizer,
+        private readonly ResponseHandlerInterface $responseHandler,
+        private readonly string $secretPhrase,
     ) {
     }
 
