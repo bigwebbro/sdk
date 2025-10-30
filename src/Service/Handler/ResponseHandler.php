@@ -58,6 +58,10 @@ class ResponseHandler implements ResponseHandlerInterface
             return $array['data'];
         }
 
+        if (!empty($array)) {
+            return $array;
+        }
+
         throw new EmptyDataException("Unexpected error", $response->getStatusCode());
     }
 }

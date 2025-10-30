@@ -10,6 +10,10 @@ use GuzzleHttp\Psr7\Response;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientLoggingDecorator;
 use Tiyn\MerchantApiSdk\Exception\Api\ApiKeyException;
 use Tiyn\MerchantApiSdk\Exception\Api\EntityErrorException;
@@ -20,6 +24,8 @@ use Tiyn\MerchantApiSdk\Model\Error;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\CurrencyEnum;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
+use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceRequest;
+use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceResponse;
 
 class InvoicesHandlerTest extends TestCase
 {
@@ -45,8 +51,7 @@ class InvoicesHandlerTest extends TestCase
             ->setTimeout(5)
             ->setApiKey('test-api-key')
             ->addHttpApiClientDecorator(HttpClientLoggingDecorator::class)
-            ->setSecretPhrase('test-secret-phrase')
-        ;
+            ->setSecretPhrase('test-secret-phrase');
         $builder->setLogger($logger);
 
         $this->sdkBuilder = $builder;
@@ -55,15 +60,13 @@ class InvoicesHandlerTest extends TestCase
     /**
      * @test
      * @dataProvider mockHandlerProvider
-     * @covers \Tiyn\MerchantApiSdk\Handler\InvoicesHandler
      */
-    public function createInvoicesSuccessCreatedTest(?string $exception, MockHandler $mock): void
+    public function createInvoiceTest(?string $exception, MockHandler $mock): void
     {
         $sdk = $this
             ->sdkBuilder
             ->setClientOptions(['handler' => HandlerStack::create($mock)])
-            ->build()
-        ;
+            ->build();
 
         if (null !== $exception) {
             $this->expectException($exception);
@@ -75,8 +78,7 @@ class InvoicesHandlerTest extends TestCase
             ->setCurrency(CurrencyEnum::KZT->value)
             ->setDescription('test')
             ->setDeliveryMethod(DeliveryMethodEnum::URL->value)
-            ->setExpirationDate((new \DateTimeImmutable())->add(new \DateInterval('P1D')))
-        ;
+            ->setExpirationDate((new \DateTimeImmutable())->add(new \DateInterval('P1D')));
         $invoicesData = $sdk->invoice()->createInvoice($invoiceRequest);
 
         switch ($exception) {
@@ -115,6 +117,68 @@ class InvoicesHandlerTest extends TestCase
                 break;
         }
 
+        self::assertEquals($invoicesData->getUuid(), self::INVOICE_UUID);
+        self::assertEquals($invoicesData->getExternalId(), self::INVOICE_EXTERNAL_ID);
+        self::assertEquals($invoicesData->getPaymentLink(), self::INVOICE_PAYMENT_LINK);
+    }
+
+    /**
+     * @test
+     */
+    public function getInvoiceTest(): void
+    {
+        $json = <<<JSON
+            {
+              "externalId": "3c5301df-d806-4fb0-9f96-f44d5d2d3827",
+              "uuid": "1fd64b0c-a8e7-4dc1-a799-f0cfa3ebad3a",
+              "amount": "105.05",
+              "finalAmount": "123.12",
+              "currency": "KZT",
+              "description": "Счет на оплату заказа №12080",
+              "customerPhone": "+74994550185",
+              "customerEmail": "support@tiyn.io",
+              "customData": {
+                "key1": "value1",
+                "key2": 5
+              },
+              "successUrl": "http://empty.com/successUrl",
+              "failUrl": "http://empty.com/failUrl",
+              "deliveryMethod": "URL",
+              "expirationDate": "2021-03-14 11:08:24.909150+03:00",
+              "ofdData": null,
+              "status": {
+                "name": "InvoicePaid",
+                "time": "2020-03-14 11:08:24.0909150+03:00",
+                "message": "message"
+              },
+              "payments": [
+                {
+                  "paymentMethod": "BankCard",
+                  "details": {
+                    "account": "411111******1111",
+                    "paymentToken": "837c06b4-b791-4f2c-89b1-a45f78cb1568"
+                  },
+                  "status": {
+                    "name": "PaymentPaid"
+                  }
+                }
+              ]
+            }
+        JSON;
+
+        $mock = new MockHandler(
+            [
+                new Response(200, [], $json)
+            ]
+        );
+        $sdk = $this
+            ->sdkBuilder
+            ->setClientOptions(['handler' => HandlerStack::create($mock)])
+            ->build();
+
+        $invoiceRequest = new GetInvoiceRequest('asdasd');
+        $invoicesData = $sdk->invoice()->getInvoice($invoiceRequest);
+        var_dump($invoicesData);
         self::assertEquals($invoicesData->getUuid(), self::INVOICE_UUID);
         self::assertEquals($invoicesData->getExternalId(), self::INVOICE_EXTERNAL_ID);
         self::assertEquals($invoicesData->getPaymentLink(), self::INVOICE_PAYMENT_LINK);

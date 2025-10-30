@@ -6,8 +6,14 @@ namespace Tiyn\MerchantApiSdk;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
+use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\Serializer\Encoder\JsonDecode;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
@@ -22,7 +28,9 @@ use Tiyn\MerchantApiSdk\Client\Guzzle\GuzzleHttpClientBuilder;
 use Tiyn\MerchantApiSdk\Client\HttpClientBuilderInterface;
 use Tiyn\MerchantApiSdk\Configuration\DecoderAwareInterface;
 use Tiyn\MerchantApiSdk\Configuration\DecoderAwareTrait;
+use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountDenormalizer;
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountNormalizer;
+use Tiyn\MerchantApiSdk\Configuration\Normalizer\DataTimeDenormalizer;
 use Tiyn\MerchantApiSdk\Configuration\ValidatorAwareInterface;
 use Tiyn\MerchantApiSdk\Configuration\ValidatorAwareTrait;
 use Tiyn\MerchantApiSdk\Service\Handler\RequestHandler;
@@ -130,8 +138,7 @@ final class MerchantApiSdkBuilder implements
             ->setApiKey($this->apiKey)
             ->setTimeout($this->timeout)
             ->setOptions($this->options)
-            ->build()
-        ;
+            ->build();
 
         $client = new HttpClientExceptionDecorator($client);
 
@@ -147,19 +154,30 @@ final class MerchantApiSdkBuilder implements
 
         /** @phpstan-ignore isset.property */
         if (!isset($this->serializer)) {
-            $defaultNormalizer = new ObjectNormalizer();
+            $extractor = new PropertyInfoExtractor(typeExtractors: [new PhpDocExtractor(), new ReflectionExtractor()]);
+            $defaultNormalizer = new ObjectNormalizer(
+                propertyTypeExtractor: $extractor
+            );
+            $amountDenormalize = new AmountDenormalizer($defaultNormalizer);
             $this->serializer = new Serializer(
                 [
-                new DateTimeNormalizer([DateTimeNormalizer::FORMAT_KEY => \DateTime::ATOM]),
-                new AmountNormalizer($defaultNormalizer), $defaultNormalizer],
+//                    new DateTimeNormalizer([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s.uP']),
+//                    $amountDenormalize,
+//                    new AmountNormalizer($defaultNormalizer),
+                    new ArrayDenormalizer(),
+                    $defaultNormalizer,
+                ],
                 [new JsonEncoder()]
             );
+//            $amountDenormalize->setDenormalizer($this->serializer);
+//            $defaultNormalizer->setSerializer($this->serializer);
+            $this->denormalizer = $this->serializer;
         }
 
-        /** @phpstan-ignore isset.property */
-        if (!isset($this->denormalizer)) {
-            $this->denormalizer = new ObjectNormalizer();
-        }
+//        if (!isset($this->denormalizer)) {
+//            $denormalizer = new ObjectNormalizer();
+//            $denormalizer->setSerializer($this->serializer);
+//        }
 
         if (!isset($this->decoder)) {
             $this->decoder = new JsonDecode();

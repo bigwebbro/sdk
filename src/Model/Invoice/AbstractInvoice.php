@@ -7,11 +7,12 @@ namespace Tiyn\MerchantApiSdk\Model\Invoice;
 use Symfony\Component\Validator\Constraints as Assert;
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountDenormalizerAwareInterface;
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountNormalizerAwareInterface;
+use Tiyn\MerchantApiSdk\Configuration\Normalizer\DateTimeDenormalizerAwareInterface;
 use Tiyn\MerchantApiSdk\Configuration\Validation\DeliveryMethodConstraint as AssertDeliveryMethod;
 use Tiyn\MerchantApiSdk\Configuration\Validation\CurrencyConstraint as AssertCurrency;
 use Tiyn\MerchantApiSdk\Configuration\Validation\ExpirationDateConstraint as AssertExpirationDate;
 
-abstract class AbstractInvoice implements AmountNormalizerAwareInterface, AmountDenormalizerAwareInterface
+abstract class AbstractInvoice implements AmountNormalizerAwareInterface, AmountDenormalizerAwareInterface, DateTimeDenormalizerAwareInterface
 {
     #[Assert\NotBlank]
     #[Assert\Length(min: 1, max: 100)]
@@ -61,7 +62,7 @@ abstract class AbstractInvoice implements AmountNormalizerAwareInterface, Amount
     protected \DateTimeImmutable $expirationDate;
 
     /**
-     * @var array<string, mixed>
+     * @var null|array<string, mixed>
      */
     protected ?array $ofdData = null;
 
@@ -195,14 +196,14 @@ abstract class AbstractInvoice implements AmountNormalizerAwareInterface, Amount
         return $this;
     }
 
-    public function setExpirationDate(\DateTimeImmutable $expirationDate): self
+    public function setExpirationDate(\DateTimeImmutable|string $expirationDate): self
     {
-        $this->expirationDate = $expirationDate;
+        $this->expirationDate = is_string($expirationDate) ? \DateTimeImmutable::createFromFormat('Y-m-d H:i:s.uP', $expirationDate) : $expirationDate;
         return $this;
     }
 
     /**
-     * @param array<string,mixed> $ofdData
+     * @param null|array<string,mixed> $ofdData
      * @return $this
      */
     public function setOfdData(?array $ofdData): self
