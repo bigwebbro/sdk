@@ -5,78 +5,64 @@ declare(strict_types=1);
 namespace Tiyn\MerchantApiSdk\Service;
 
 use Psr\Http\Client\ClientInterface;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Tiyn\MerchantApiSdk\Client\Guzzle\Request\RequestBuilder;
-use Tiyn\MerchantApiSdk\Model\Invoice\CreatedInvoiceResponse;
-use Tiyn\MerchantApiSdk\Model\Invoice\CreatedRefundResponse;
-use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
-use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundRequest;
-use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceRequest;
-use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceResponse;
-use Tiyn\MerchantApiSdk\Service\Handler\RequestHandlerInterface;
+use Tiyn\MerchantApiSdk\Exception\Validation\ValidationException;
+use Tiyn\MerchantApiSdk\Model\Invoices\CreateInvoicesRequest;
+use Tiyn\MerchantApiSdk\Model\Invoices\InvoicesData;
+use Tiyn\MerchantApiSdk\Exception\Validation\WrongDataException;
 use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandlerInterface;
 
 class InvoicesService
 {
     public const ENDPOINT = '/invoices';
 
-    public const REFUND_SLUG = '/refund';
-
     public function __construct(
         private readonly ClientInterface $client,
-        private readonly RequestHandlerInterface $requestHandler,
+        private readonly ValidatorInterface $validator,
+        private readonly SerializerInterface $serializer,
+        private readonly DenormalizerInterface $denormalizer,
         private readonly ResponseHandlerInterface $responseHandler,
         private readonly string $secretPhrase,
     ) {
     }
 
-    public function createInvoice(CreateInvoiceRequest $command): CreatedInvoiceResponse
+    public function createInvoices(CreateInvoicesRequest $createInvoices): InvoicesData
     {
-        $json = $this->requestHandler->handleRequest($command);
+        $violations = $this->validator->validate($createInvoices);
+        if ($violations->count() > 0) {
+            $messages = [];
+            foreach ($violations as $violation) {
+                $messages[] = $violation->getMessage();
+            }
+            throw new ValidationException(implode(', ', $messages));
+        }
+
+        $json = $this->serializer->serialize($createInvoices, 'json');
 
         $request = (new RequestBuilder())
             ->withMethod('POST')
-            ->withHeaders(['Content-Type' => 'application/json']) // TODO вынести в конфиг клиента
+            ->withHeaders(['Content-Type' => 'application/json'])
             ->withBody($json)
             ->withEndpoint(self::ENDPOINT)
             ->buildWithSign($this->secretPhrase)
         ;
 
         $response = $this->client->sendRequest($request);
-        $result = $this->responseHandler->handleResponse($response);
+        $data = $this->responseHandler->handleResponse($response);
 
-        return CreatedInvoiceResponse::fromArray($result);
-    }
+        try {
+            /**
+             * @var InvoicesData $invoicesData
+             */
+            $invoicesData = $this->denormalizer->denormalize($data, InvoicesData::class);
+        } catch (ExceptionInterface $e) {
+            throw new WrongDataException($e->getMessage(), $e->getCode(), $e);
+        }
 
-    public function getInvoice(GetInvoiceRequest $command): GetInvoiceResponse
-    {
-        $request = (new RequestBuilder())
-            ->withMethod('GET')
-            ->withHeaders(['Content-Type' => 'application/json']) // TODO вынести в конфиг клиента
-            ->withEndpoint(\sprintf("%s/%s", self::ENDPOINT, $command->getUuid()))
-            ->buildWithSign($this->secretPhrase)
-        ;
-
-        $response = $this->client->sendRequest($request);
-        $result = $this->responseHandler->handleResponse($response);
-
-        return GetInvoiceResponse::fromArray($result);
-    }
-
-    public function createRefund(string $invoiceUuid, CreateRefundRequest $command): CreatedRefundResponse
-    {
-        $json = $this->requestHandler->handleRequest($command);
-
-        $request = (new RequestBuilder())
-            ->withMethod('PUT')
-            ->withHeaders(['Content-Type' => 'application/json']) // TODO вынести в конфиг клиента
-            ->withBody($json)
-            ->withEndpoint(\sprintf('%s/%s%s', self::ENDPOINT, $invoiceUuid, self::REFUND_SLUG))
-            ->buildWithSign($this->secretPhrase)
-        ;
-
-        $response = $this->client->sendRequest($request);
-        $result = $this->responseHandler->handleResponse($response);
-
-        return CreatedRefundResponse::fromArray($result);
+        return $invoicesData;
     }
 }

@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk;
 
-use Tiyn\MerchantApiSdk\Client\Http\Guzzle\GuzzleClient;
-use Tiyn\MerchantApiSdk\Handler\InvoicesHandler;
+use Tiyn\MerchantApiSdk\Service\InvoicesService;
 
 final class MerchantApiSdk
 {
     public function __construct(
-        private readonly InvoicesHandler $invoicesHandler,
+        private readonly InvoicesService $invoicesService,
     ) {
     }
 
-    public function invoices(): InvoicesHandler
+    public function invoices(): InvoicesService
     {
-        return $this->invoicesHandler;
+        return $this->invoicesService;
     }
 }

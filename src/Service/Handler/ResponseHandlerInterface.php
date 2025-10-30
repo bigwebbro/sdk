@@ -11,6 +11,7 @@ use Tiyn\MerchantApiSdk\Exception\Api\EntityErrorException;
 use Tiyn\MerchantApiSdk\Exception\Api\SignException;
 use Tiyn\MerchantApiSdk\Exception\Validation\EmptyDataException;
 use Tiyn\MerchantApiSdk\Exception\Validation\JsonProcessingException;
+use Tiyn\MerchantApiSdk\Exception\Validation\WrongDataException;
 
 interface ResponseHandlerInterface
 {
@@ -24,6 +25,7 @@ interface ResponseHandlerInterface
      * @throws ApiMerchantErrorException
      * @throws JsonProcessingException
      * @throws EmptyDataException
+     * @throws WrongDataException
      */
     public function handleResponse(ResponseInterface $response): array;
 }
