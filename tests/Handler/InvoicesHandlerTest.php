@@ -18,8 +18,8 @@ use Tiyn\MerchantApiSdk\Exception\Validation\JsonProcessingException;
 use Tiyn\MerchantApiSdk\MerchantApiSdkBuilder;
 use Tiyn\MerchantApiSdk\Model\Error;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
-use Tiyn\MerchantApiSdk\Model\Invoice\CurrencyEnum;
-use Tiyn\MerchantApiSdk\Model\Invoice\DeliveryMethodEnum;
+use Tiyn\MerchantApiSdk\Model\Invoice\Enum\CurrencyEnum;
+use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
 
 class InvoicesHandlerTest extends TestCase
 {

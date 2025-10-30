@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Configuration\Validation;
 
-use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Constraint;
-use Tiyn\MerchantApiSdk\Model\Invoice\CurrencyEnum;
+use Symfony\Component\Validator\ConstraintValidator;
+use Tiyn\MerchantApiSdk\Model\Invoice\Enum\CurrencyEnum;
 
 class CurrencyConstraintValidator extends ConstraintValidator
 {
