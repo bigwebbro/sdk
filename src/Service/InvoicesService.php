@@ -7,15 +7,15 @@ namespace Tiyn\MerchantApiSdk\Service;
 use Psr\Http\Client\ClientInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Tiyn\MerchantApiSdk\Client\Guzzle\Request\RequestBuilder;
 use Tiyn\MerchantApiSdk\Exception\Validation\ValidationException;
-use Tiyn\MerchantApiSdk\Model\Invoice\AbstractInvoice;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreatedInvoiceResponse;
 use Tiyn\MerchantApiSdk\Exception\Validation\WrongDataException;
+use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
+use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceRequest;
 use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceResponse;
 use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandlerInterface;
+use Tiyn\MerchantApiSdk\Service\Handler\RequestHandlerInterface;
 
 class InvoicesService
 {
@@ -23,26 +23,16 @@ class InvoicesService
 
     public function __construct(
         private readonly ClientInterface $client,
-        private readonly ValidatorInterface $validator,
-        private readonly SerializerInterface $serializer,
         private readonly DenormalizerInterface $denormalizer,
+        private readonly RequestHandlerInterface $requestHandler,
         private readonly ResponseHandlerInterface $responseHandler,
         private readonly string $secretPhrase,
     ) {
     }
 
-    public function createInvoice(AbstractInvoice $createInvoices): CreatedInvoiceResponse
+    public function createInvoice(CreateInvoiceRequest $command): CreatedInvoiceResponse
     {
-        $violations = $this->validator->validate($createInvoices);
-        if ($violations->count() > 0) {
-            $messages = [];
-            foreach ($violations as $violation) {
-                $messages[] = $violation->getMessage();
-            }
-            throw new ValidationException(implode(', ', $messages));
-        }
-
-        $json = $this->serializer->serialize($createInvoices, 'json');
+        $json = $this->requestHandler->handleRequest($command);
 
         $request = (new RequestBuilder())
             ->withMethod('POST')
@@ -67,8 +57,17 @@ class InvoicesService
         return $invoiceData;
     }
 
-    public function getInvoice(): GetInvoiceResponse
+    public function getInvoice(GetInvoiceRequest $command): GetInvoiceResponse
     {
+        $violations = $this->validator->validate($command);
+        if ($violations->count() > 0) {
+            $messages = [];
+            foreach ($violations as $violation) {
+                $messages[] = $violation->getMessage();
+            }
+            throw new ValidationException(implode(', ', $messages));
+        }
+
         return new GetInvoiceResponse();
     }
 }
