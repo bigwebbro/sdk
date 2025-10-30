@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Handler;
+namespace Tiyn\MerchantApiSdk\Service;
 
 use Psr\Http\Client\ClientInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
@@ -14,8 +14,9 @@ use Tiyn\MerchantApiSdk\Exception\Validation\ValidationException;
 use Tiyn\MerchantApiSdk\Model\Invoices\CreateInvoicesRequest;
 use Tiyn\MerchantApiSdk\Model\Invoices\InvoicesData;
 use Tiyn\MerchantApiSdk\Exception\Validation\WrongDataException;
+use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandlerInterface;
 
-class InvoicesHandler
+class InvoicesService
 {
     public const ENDPOINT = '/invoices';
 

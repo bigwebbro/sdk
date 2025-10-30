@@ -23,10 +23,10 @@ use Tiyn\MerchantApiSdk\Client\HttpClientBuilderInterface;
 use Tiyn\MerchantApiSdk\Configuration\DecoderAwareInterface;
 use Tiyn\MerchantApiSdk\Configuration\DecoderAwareTrait;
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountNormalizer;
-use Tiyn\MerchantApiSdk\Handler\InvoicesHandler;
-use Tiyn\MerchantApiSdk\Handler\ResponseHandler;
 use Tiyn\MerchantApiSdk\Configuration\ValidatorAwareInterface;
 use Tiyn\MerchantApiSdk\Configuration\ValidatorAwareTrait;
+use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandler;
+use Tiyn\MerchantApiSdk\Service\InvoicesService;
 
 final class MerchantApiSdkBuilder implements
     SerializerAwareInterface,
@@ -170,7 +170,7 @@ final class MerchantApiSdkBuilder implements
                 ->getValidator();
         }
 
-        $invoicesHandler = new InvoicesHandler(
+        $invoicesService = new InvoicesService(
             $client,
             $this->validator,
             $this->serializer,
@@ -179,6 +179,6 @@ final class MerchantApiSdkBuilder implements
             $this->secretPhrase,
         );
 
-        return new MerchantApiSdk($invoicesHandler);
+        return new MerchantApiSdk($invoicesService);
     }
 }

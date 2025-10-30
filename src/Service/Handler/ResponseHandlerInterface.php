@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Handler;
+namespace Tiyn\MerchantApiSdk\Service\Handler;
 
 use Psr\Http\Message\ResponseInterface;
 use Tiyn\MerchantApiSdk\Exception\Api\ApiKeyException;
