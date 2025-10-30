@@ -170,7 +170,7 @@ final class MerchantApiSdkBuilder implements
                 ->getValidator();
         }
 
-        $invoicesService = new InvoicesService(
+        $invoiceService = new InvoicesService(
             $client,
             $this->validator,
             $this->serializer,
@@ -179,6 +179,6 @@ final class MerchantApiSdkBuilder implements
             $this->secretPhrase,
         );
 
-        return new MerchantApiSdk($invoicesService);
+        return new MerchantApiSdk($invoiceService);
     }
 }

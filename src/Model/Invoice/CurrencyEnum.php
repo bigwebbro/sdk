@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Model\Invoices;
+namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
 enum CurrencyEnum: string
 {

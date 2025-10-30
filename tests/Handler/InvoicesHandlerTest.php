@@ -17,9 +17,9 @@ use Tiyn\MerchantApiSdk\Exception\Api\SignException;
 use Tiyn\MerchantApiSdk\Exception\Validation\JsonProcessingException;
 use Tiyn\MerchantApiSdk\MerchantApiSdkBuilder;
 use Tiyn\MerchantApiSdk\Model\Error;
-use Tiyn\MerchantApiSdk\Model\Invoices\CreateInvoicesRequest;
-use Tiyn\MerchantApiSdk\Model\Invoices\CurrencyEnum;
-use Tiyn\MerchantApiSdk\Model\Invoices\DeliveryMethodEnum;
+use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
+use Tiyn\MerchantApiSdk\Model\Invoice\CurrencyEnum;
+use Tiyn\MerchantApiSdk\Model\Invoice\DeliveryMethodEnum;
 
 class InvoicesHandlerTest extends TestCase
 {
@@ -69,7 +69,7 @@ class InvoicesHandlerTest extends TestCase
             $this->expectException($exception);
         }
 
-        $invoiceRequest = (new CreateInvoicesRequest())
+        $invoiceRequest = (new CreateInvoiceRequest())
             ->setExternalId('1')
             ->setAmount('104.55')
             ->setCurrency(CurrencyEnum::KZT->value)
@@ -77,7 +77,7 @@ class InvoicesHandlerTest extends TestCase
             ->setDeliveryMethod(DeliveryMethodEnum::URL->value)
             ->setExpirationDate((new \DateTimeImmutable())->add(new \DateInterval('P1D')))
         ;
-        $invoicesData = $sdk->invoices()->createInvoices($invoiceRequest);
+        $invoicesData = $sdk->invoice()->createInvoice($invoiceRequest);
 
         switch ($exception) {
             case EntityErrorException::class:

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Model\Invoices;
+namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountNormalizerAwareInterface;
@@ -10,7 +10,7 @@ use Tiyn\MerchantApiSdk\Configuration\Validation\DeliveryMethodConstraint as Ass
 use Tiyn\MerchantApiSdk\Configuration\Validation\CurrencyConstraint as AssertCurrency;
 use Tiyn\MerchantApiSdk\Configuration\Validation\ExpirationDateConstraint as AssertExpirationDate;
 
-class CreateInvoicesRequest implements AmountNormalizerAwareInterface
+class CreateInvoiceRequest implements AmountNormalizerAwareInterface
 {
     #[Assert\NotBlank]
     #[Assert\Length(min: 1, max: 100)]
