@@ -6,7 +6,7 @@ namespace Tiyn\MerchantApiSdk\Configuration\Validation;
 
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Constraint;
-use Tiyn\MerchantApiSdk\Model\Invoices\CurrencyEnum;
+use Tiyn\MerchantApiSdk\Model\Invoice\CurrencyEnum;
 
 class CurrencyConstraintValidator extends ConstraintValidator
 {

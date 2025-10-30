@@ -9,12 +9,12 @@ use Tiyn\MerchantApiSdk\Service\InvoicesService;
 final class MerchantApiSdk
 {
     public function __construct(
-        private readonly InvoicesService $invoicesService,
+        private readonly InvoicesService $invoiceService,
     ) {
     }
 
-    public function invoices(): InvoicesService
+    public function invoice(): InvoicesService
     {
-        return $this->invoicesService;
+        return $this->invoiceService;
     }
 }

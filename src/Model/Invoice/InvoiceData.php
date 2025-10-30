@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Model\Invoices;
+namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
-final class InvoicesData
+final class InvoiceData
 {
     public function __construct(
         private readonly string $uuid,
@@ -25,6 +25,6 @@ final class InvoicesData
 
     public function getPaymentLink(): string
     {
-        return trim($this->paymentLink); // убираем возможные пробелы в конце
+        return trim($this->paymentLink);
     }
 }

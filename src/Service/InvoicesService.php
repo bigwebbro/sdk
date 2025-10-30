@@ -11,8 +11,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Tiyn\MerchantApiSdk\Client\Guzzle\Request\RequestBuilder;
 use Tiyn\MerchantApiSdk\Exception\Validation\ValidationException;
-use Tiyn\MerchantApiSdk\Model\Invoices\CreateInvoicesRequest;
-use Tiyn\MerchantApiSdk\Model\Invoices\InvoicesData;
+use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
+use Tiyn\MerchantApiSdk\Model\Invoice\InvoiceData;
 use Tiyn\MerchantApiSdk\Exception\Validation\WrongDataException;
 use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandlerInterface;
 
@@ -30,7 +30,7 @@ class InvoicesService
     ) {
     }
 
-    public function createInvoices(CreateInvoicesRequest $createInvoices): InvoicesData
+    public function createInvoice(CreateInvoiceRequest $createInvoices): InvoiceData
     {
         $violations = $this->validator->validate($createInvoices);
         if ($violations->count() > 0) {
@@ -56,13 +56,13 @@ class InvoicesService
 
         try {
             /**
-             * @var InvoicesData $invoicesData
+             * @var InvoiceData $invoiceData
              */
-            $invoicesData = $this->denormalizer->denormalize($data, InvoicesData::class);
+            $invoiceData = $this->denormalizer->denormalize($data, InvoiceData::class);
         } catch (ExceptionInterface $e) {
             throw new WrongDataException($e->getMessage(), $e->getCode(), $e);
         }
 
-        return $invoicesData;
+        return $invoiceData;
     }
 }
