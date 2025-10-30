@@ -10,22 +10,16 @@ use GuzzleHttp\Psr7\Response;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Validator\Validation;
-use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientExceptionDecorator;
 use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientLoggingDecorator;
-use Tiyn\MerchantApiSdk\Client\Guzzle\GuzzleHttpClientBuilder;
 use Tiyn\MerchantApiSdk\Exception\Api\ApiKeyException;
 use Tiyn\MerchantApiSdk\Exception\Api\EntityErrorException;
 use Tiyn\MerchantApiSdk\Exception\Api\SignException;
-use Tiyn\MerchantApiSdk\Handler\InvoicesHandler;
-use Tiyn\MerchantApiSdk\Handler\ResponseHandler;
 use Tiyn\MerchantApiSdk\Exception\Validation\JsonProcessingException;
+use Tiyn\MerchantApiSdk\MerchantApiSdkBuilder;
 use Tiyn\MerchantApiSdk\Model\Error;
 use Tiyn\MerchantApiSdk\Model\Invoices\CreateInvoicesRequest;
+use Tiyn\MerchantApiSdk\Model\Invoices\CurrencyEnum;
+use Tiyn\MerchantApiSdk\Model\Invoices\DeliveryMethodEnum;
 
 class InvoicesHandlerTest extends TestCase
 {
@@ -39,14 +33,23 @@ class InvoicesHandlerTest extends TestCase
     public const ERROR_ENTITY_MESSAGE = "Invalid expiration date";
     public const ERROR_CORRELATION_ID = "9f63d8d9-4260-432f-a47d-3eead8a3c6e7";
 
-    private LoggerInterface $logger;
+    private MerchantApiSdkBuilder $sdkBuilder;
 
     protected function setUp(): void
     {
         $logger = new Logger('test-logger');
         $logger->pushHandler(new StreamHandler('php://stdout'));
 
-        $this->logger = $logger;
+        $builder = (new MerchantApiSdkBuilder())
+            ->setBaseUri('https://test')
+            ->setTimeout(5)
+            ->setApiKey('test-api-key')
+            ->addHttpApiClientDecorator(HttpClientLoggingDecorator::class)
+            ->setSecretPhrase('test-secret-phrase')
+        ;
+        $builder->setLogger($logger);
+
+        $this->sdkBuilder = $builder;
     }
 
     /**
@@ -56,29 +59,25 @@ class InvoicesHandlerTest extends TestCase
      */
     public function createInvoicesSuccessCreatedTest(?string $exception, MockHandler $mock): void
     {
-        $client = (new GuzzleHttpClientBuilder())
-            ->setBaseUri('https://test')
-            ->setTimeout(5)
-            ->setApiKey('test-api-key')
-            ->setOptions(['handler' => HandlerStack::create($mock)])
-            ->build();
-
-        $exceptionDecorator = new HttpClientExceptionDecorator($client);
-        $loggerDecorator = new HttpClientLoggingDecorator($exceptionDecorator);
-        $loggerDecorator->setLogger($this->logger);
-        $serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
-        $handler = new InvoicesHandler(
-            $loggerDecorator,
-            Validation::createValidator(),
-            $serializer,
-            $serializer,
-            new ResponseHandler($serializer, $serializer),
-            'secret'
-        );
+        $sdk = $this
+            ->sdkBuilder
+            ->setClientOptions(['handler' => HandlerStack::create($mock)])
+            ->build()
+        ;
 
         if (null !== $exception) {
             $this->expectException($exception);
         }
+
+        $invoiceRequest = (new CreateInvoicesRequest())
+            ->setExternalId('1')
+            ->setAmount('104.55')
+            ->setCurrency(CurrencyEnum::KZT->value)
+            ->setDescription('test')
+            ->setDeliveryMethod(DeliveryMethodEnum::URL->value)
+            ->setExpirationDate((new \DateTimeImmutable())->add(new \DateInterval('P1D')))
+        ;
+        $invoicesData = $sdk->invoices()->createInvoices($invoiceRequest);
 
         switch ($exception) {
             case EntityErrorException::class:
@@ -115,8 +114,6 @@ class InvoicesHandlerTest extends TestCase
                 $this->expectExceptionObject($e);
                 break;
         }
-
-        $invoicesData = $handler->createInvoices(new CreateInvoicesRequest());
 
         self::assertEquals($invoicesData->getUuid(), self::INVOICE_UUID);
         self::assertEquals($invoicesData->getExternalId(), self::INVOICE_EXTERNAL_ID);
