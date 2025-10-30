@@ -4,16 +4,18 @@ namespace Tiyn\MerchantApiSk\Model\Invoice\Payment;
 
 final class Payment
 {
-    public function __construct(
-        private readonly string $paymentMethod,
-        private readonly Details $details,
-        private readonly Status $status,
-    ) {
-    }
+    private string $paymentMethod;
+    private Details $details;
+    private Status $status;
 
     public function getPaymentMethod(): string
     {
         return $this->paymentMethod;
+    }
+
+    public function setPaymentMethod(string $paymentMethod): void
+    {
+        $this->paymentMethod = $paymentMethod;
     }
 
     public function getDetails(): Details
@@ -21,8 +23,18 @@ final class Payment
         return $this->details;
     }
 
+    public function setDetails(Details $details): void
+    {
+        $this->details = $details;
+    }
+
     public function getStatus(): Status
     {
         return $this->status;
+    }
+
+    public function setStatus(Status $status): void
+    {
+        $this->status = $status;
     }
 }

@@ -33,6 +33,6 @@ class AmountDenormalizer implements DenormalizerInterface
 
     public function supportsDenormalization(mixed $data, string $type, ?string $format = null)
     {
-        return is_a($type, AmountDenormalizerAwareInterface::class, true);
+        return is_a($type, AmountDenormalizerAwareInterface::class, true) && (isset($data['amount']) || isset($data['finalAmount']));
     }
 }

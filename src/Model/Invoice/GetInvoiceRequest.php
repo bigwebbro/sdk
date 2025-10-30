@@ -2,7 +2,9 @@
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
-final class GetInvoiceRequest
+use Tiyn\MerchantApiSdk\Model\RequestModelInterface;
+
+final class GetInvoiceRequest implements RequestModelInterface
 {
     public function __construct(
         private readonly string $uuid,
