@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace Tiyn\MerchantApiSdk\Handler;
 
 use Psr\Http\Client\ClientInterface;
-use Psr\Http\Client\NetworkExceptionInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Tiyn\MerchantApiSdk\Client\Guzzle\Request\RequestBuilder;
-use Tiyn\MerchantApiSdk\Exception\Transport\ConnectionException;
 use Tiyn\MerchantApiSdk\Exception\Validation\ValidationException;
-use Tiyn\MerchantApiSdk\Model\Invoices\CreateInvoices;
+use Tiyn\MerchantApiSdk\Model\Invoices\CreateInvoicesRequest;
 use Tiyn\MerchantApiSdk\Model\Invoices\InvoicesData;
 use Tiyn\MerchantApiSdk\Exception\Validation\WrongDataException;
 
@@ -31,11 +29,15 @@ class InvoicesHandler
     ) {
     }
 
-    public function createInvoices(CreateInvoices $createInvoices): InvoicesData
+    public function createInvoices(CreateInvoicesRequest $createInvoices): InvoicesData
     {
         $violations = $this->validator->validate($createInvoices);
         if ($violations->count() > 0) {
-            throw new ValidationException('Invalid data');
+            $messages = [];
+            foreach ($violations as $violation) {
+                $messages[] = $violation->getMessage();
+            }
+            throw new ValidationException(implode(', ', $messages));
         }
 
         $json = $this->serializer->serialize($createInvoices, 'json');

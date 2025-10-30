@@ -34,7 +34,7 @@ class ResponseHandler implements ResponseHandlerInterface
         $statusCode = $response->getStatusCode();
         $body = (string) $response->getBody();
         try {
-            $array = $this->decoder->decode($body, 'json');
+            $array = $this->decoder->decode($body, 'json', ['json_decode_associative' => true]);
         } catch (ExceptionInterface $e) {
             throw new JsonProcessingException($e->getMessage(), $e->getCode(), $e);
         }
