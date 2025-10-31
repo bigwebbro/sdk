@@ -2,7 +2,7 @@
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
-use Tiyn\MerchantApiSk\Model\Invoice\Payment\Payment;
+use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment;
 
 final class GetInvoiceResponse extends AbstractInvoice
 {

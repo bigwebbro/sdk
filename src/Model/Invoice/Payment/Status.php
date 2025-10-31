@@ -1,6 +1,6 @@
 <?php
 
-namespace Tiyn\MerchantApiSk\Model\Invoice\Payment;
+namespace Tiyn\MerchantApiSdk\Model\Invoice\Payment;
 
 final class Status
 {

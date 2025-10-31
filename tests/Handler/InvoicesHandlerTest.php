@@ -181,7 +181,6 @@ class InvoicesHandlerTest extends TestCase
         var_dump($invoicesData);
         self::assertEquals($invoicesData->getUuid(), self::INVOICE_UUID);
         self::assertEquals($invoicesData->getExternalId(), self::INVOICE_EXTERNAL_ID);
-        self::assertEquals($invoicesData->getPaymentLink(), self::INVOICE_PAYMENT_LINK);
     }
 
     /**

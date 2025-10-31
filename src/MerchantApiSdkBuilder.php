@@ -158,19 +158,17 @@ final class MerchantApiSdkBuilder implements
             $defaultNormalizer = new ObjectNormalizer(
                 propertyTypeExtractor: $extractor
             );
-            $amountDenormalize = new AmountDenormalizer($defaultNormalizer);
+
             $this->serializer = new Serializer(
                 [
-//                    new DateTimeNormalizer([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s.uP']),
-//                    $amountDenormalize,
-//                    new AmountNormalizer($defaultNormalizer),
+                    new DateTimeNormalizer([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s.uP']),
+                    new AmountDenormalizer($defaultNormalizer),
+                    new AmountNormalizer($defaultNormalizer),
                     new ArrayDenormalizer(),
                     $defaultNormalizer,
                 ],
                 [new JsonEncoder()]
             );
-//            $amountDenormalize->setDenormalizer($this->serializer);
-//            $defaultNormalizer->setSerializer($this->serializer);
             $this->denormalizer = $this->serializer;
         }
 
