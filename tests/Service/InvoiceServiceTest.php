@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Handler;
+namespace Service;
 
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -10,10 +10,6 @@ use GuzzleHttp\Psr7\Response;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientLoggingDecorator;
 use Tiyn\MerchantApiSdk\Exception\Api\ApiKeyException;
 use Tiyn\MerchantApiSdk\Exception\Api\EntityErrorException;
@@ -22,12 +18,12 @@ use Tiyn\MerchantApiSdk\Exception\Validation\JsonProcessingException;
 use Tiyn\MerchantApiSdk\MerchantApiSdkBuilder;
 use Tiyn\MerchantApiSdk\Model\Error;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
+use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundRequest;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\CurrencyEnum;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
 use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceRequest;
-use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceResponse;
 
-class InvoicesHandlerTest extends TestCase
+class InvoiceServiceTest extends TestCase
 {
     public const INVOICE_UUID = "1fd64b0c-a8e7-4dc1-a799-f0cfa3ebad3a";
     public const INVOICE_EXTERNAL_ID = "3c5301df-d806-4fb0-9f96-f44d5d2d3827";
@@ -148,7 +144,7 @@ class InvoicesHandlerTest extends TestCase
               "ofdData": null,
               "status": {
                 "name": "InvoicePaid",
-                "time": "2020-03-14 11:08:24.0909150+03:00",
+                "time": "2020-03-14 11:08:24.909150+03:00",
                 "message": "message"
               },
               "payments": [
@@ -181,6 +177,45 @@ class InvoicesHandlerTest extends TestCase
         var_dump($invoicesData);
         self::assertEquals($invoicesData->getUuid(), self::INVOICE_UUID);
         self::assertEquals($invoicesData->getExternalId(), self::INVOICE_EXTERNAL_ID);
+    }
+
+    /**
+     * @test
+     * @covers \Tiyn\MerchantApiSdk\Service\InvoicesService::createRefund
+     */
+    public function createRefundTest(): void
+    {
+        $invoiceUuid = '1fd64b0c-a8e7-4dc1-a799-f0cfa3ebad3a';
+        $requestId = 'd1f6b55c-e8a1-add7-a719-a1cfd3eda3ad';
+        $returnedJson = <<<JSON
+            {
+              "success": true,
+              "data": {
+                "uuid": "$invoiceUuid",
+                "requestId": "$requestId"
+              }
+            }
+        JSON;
+
+        $mock = new MockHandler(
+            [
+                new Response(200, [], $returnedJson)
+            ]
+        );
+        $sdk = $this
+            ->sdkBuilder
+            ->setClientOptions(['handler' => HandlerStack::create($mock)])
+            ->build();
+
+        $createRefundRequest = (new CreateRefundRequest())
+            ->setRequestId('requestId')
+            ->setAmount("105.51")
+            ->setReason("reason")
+        ;
+
+        $createdRefundResponse = $sdk->invoice()->createRefund($invoiceUuid, $createRefundRequest);
+        self::assertEquals($invoiceUuid, $createdRefundResponse->getUuid());
+        self::assertEquals($requestId, $createdRefundResponse->getRequestId());
     }
 
     /**

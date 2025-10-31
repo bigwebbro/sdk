@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Configuration\Normalizer;
 
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class AmountNormalizer implements NormalizerInterface
+class AmountNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
-    public function __construct(private readonly NormalizerInterface $inner)
-    {
-    }
+    use NormalizerAwareTrait;
 
     /**
      * @param mixed $object
@@ -21,7 +21,9 @@ class AmountNormalizer implements NormalizerInterface
      */
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
-        $array = $this->inner->normalize($object, $format, $context);
+        $context['__amount_normalizer_running'] = true;
+
+        $array = $this->normalizer->normalize($object, $format, $context);
         if (isset($array['amount'])) {
             $array['amount'] = round((float) $array['amount'], 2);
         }
@@ -31,6 +33,10 @@ class AmountNormalizer implements NormalizerInterface
 
     public function supportsNormalization(mixed $data, string $format = null): bool
     {
+        if (!empty($context['__amount_normalizer_running'])) {
+            return false;
+        }
+
         return $data instanceof AmountNormalizerAwareInterface;
     }
 }

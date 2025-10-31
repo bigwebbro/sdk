@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Tiyn\MerchantApiSdk\Model\ToArrayInterface;
+use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountNormalizerAwareInterface;
+use Tiyn\MerchantApiSdk\Model\RequestModelInterface;
 
-final class CreateRefundRequest implements ToArrayInterface
+final class CreateRefundRequest implements AmountNormalizerAwareInterface, RequestModelInterface
 {
     #[Assert\NotBlank]
     private string $requestId;
@@ -43,17 +44,5 @@ final class CreateRefundRequest implements ToArrayInterface
         $this->reason = $reason;
 
         return $this;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function toArray(): array
-    {
-        return [
-            'requestId' => $this->requestId,
-            'amount' => $this->amount,
-            'reason' => $this->reason,
-        ];
     }
 }

@@ -6,6 +6,8 @@ namespace Tiyn\MerchantApiSdk;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
@@ -18,6 +20,7 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
@@ -31,6 +34,7 @@ use Tiyn\MerchantApiSdk\Configuration\DecoderAwareTrait;
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountDenormalizer;
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountNormalizer;
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\DataTimeDenormalizer;
+use Tiyn\MerchantApiSdk\Configuration\SerializerFactory;
 use Tiyn\MerchantApiSdk\Configuration\ValidatorAwareInterface;
 use Tiyn\MerchantApiSdk\Configuration\ValidatorAwareTrait;
 use Tiyn\MerchantApiSdk\Service\Handler\RequestHandler;
@@ -154,21 +158,7 @@ final class MerchantApiSdkBuilder implements
 
         /** @phpstan-ignore isset.property */
         if (!isset($this->serializer)) {
-            $extractor = new PropertyInfoExtractor(typeExtractors: [new PhpDocExtractor(), new ReflectionExtractor()]);
-            $defaultNormalizer = new ObjectNormalizer(
-                propertyTypeExtractor: $extractor
-            );
-
-            $this->serializer = new Serializer(
-                [
-                    new DateTimeNormalizer([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s.uP']),
-                    new AmountDenormalizer($defaultNormalizer),
-                    new AmountNormalizer($defaultNormalizer),
-                    new ArrayDenormalizer(),
-                    $defaultNormalizer,
-                ],
-                [new JsonEncoder()]
-            );
+            $this->serializer = SerializerFactory::init();
             $this->denormalizer = $this->serializer;
         }
 
@@ -190,6 +180,7 @@ final class MerchantApiSdkBuilder implements
         $invoiceService = new InvoicesService(
             $client,
             $this->denormalizer,
+            $this->serializer,
             new RequestHandler($this->validator, $this->serializer),
             new ResponseHandler($this->decoder, $this->denormalizer),
             $this->secretPhrase,
