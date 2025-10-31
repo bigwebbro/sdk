@@ -4,42 +4,29 @@ namespace Tiyn\MerchantApiSdk\Model\Invoice\Payment;
 
 final class Details
 {
-    private Details $details;
+    private string $account;
 
-    private string  $paymentMethod;
+    private string $paymentToken;
 
-    private Status  $status;
-
-    public function getDetails(): Details
+    public function getAccount(): string
     {
-        return $this->details;
+        return $this->account;
     }
 
-    public function setDetails(Details $details): Details
+    public function setAccount(string $account): Details
     {
-        $this->details = $details;
+        $this->account = $account;
         return $this;
     }
 
-    public function getPaymentMethod(): string
+    public function getPaymentToken(): string
     {
-        return $this->paymentMethod;
+        return $this->paymentToken;
     }
 
-    public function setPaymentMethod(string $paymentMethod): Details
+    public function setPaymentToken(string $paymentToken): Details
     {
-        $this->paymentMethod = $paymentMethod;
-        return $this;
-    }
-
-    public function getStatus(): Status
-    {
-        return $this->status;
-    }
-
-    public function setStatus(Status $status): Details
-    {
-        $this->status = $status;
+        $this->paymentToken = $paymentToken;
         return $this;
     }
 }
