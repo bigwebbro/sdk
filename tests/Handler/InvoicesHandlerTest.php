@@ -68,6 +68,7 @@ class InvoicesHandlerTest extends TestCase
     /**
      * @test
      * @dataProvider mockHandlerProvider
+     * @covers \Tiyn\MerchantApiSdk\Service\InvoicesService::createInvoice
      */
     public function createInvoiceTest(?string $exception, MockHandler $mock): void
     {
@@ -132,6 +133,7 @@ class InvoicesHandlerTest extends TestCase
 
     /**
      * @test
+     * @covers \Tiyn\MerchantApiSdk\Service\InvoicesService::getInvoice
      */
     public function getInvoiceTest(): void
     {
@@ -192,6 +194,7 @@ class InvoicesHandlerTest extends TestCase
 
     /**
      * @test
+     * @covers \Tiyn\MerchantApiSdk\Service\InvoicesService::createRefund
      */
     public function createRefundTest(): void
     {
