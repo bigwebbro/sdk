@@ -1,11 +1,11 @@
 <?php
 
-namespace Tiyn\MerchantApiSk\Model\Invoice\Payment;
+namespace Tiyn\MerchantApiSdk\Model\Invoice\Payment;
 
 final class Payment
 {
     private string $paymentMethod;
-    private Details $details;
+    private ?Details $details = null;
     private Status $status;
 
     public function getPaymentMethod(): string
@@ -13,19 +13,9 @@ final class Payment
         return $this->paymentMethod;
     }
 
-    public function setPaymentMethod(string $paymentMethod): void
-    {
-        $this->paymentMethod = $paymentMethod;
-    }
-
-    public function getDetails(): Details
+    public function getDetails(): ?Details
     {
         return $this->details;
-    }
-
-    public function setDetails(Details $details): void
-    {
-        $this->details = $details;
     }
 
     public function getStatus(): Status
@@ -37,4 +27,15 @@ final class Payment
     {
         $this->status = $status;
     }
-}
+
+    public static function fromArray(array $data): self
+    {
+        $payment = new self();
+        $payment->paymentMethod = $data['paymentMethod'];
+        if (isset($data['details'])) {
+            $payment->details = Details::fromArray($data['details']);
+        }
+        $payment->status = Status::fromArray($data['status']);
+
+        return $payment;
+    }}

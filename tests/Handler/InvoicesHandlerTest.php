@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Handler;
+namespace Tests\Handler;
 
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializerInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
@@ -41,6 +43,8 @@ class InvoicesHandlerTest extends TestCase
 
     private MerchantApiSdkBuilder $sdkBuilder;
 
+    private SerializerInterface $serializer;
+
     protected function setUp(): void
     {
         $logger = new Logger('test-logger');
@@ -55,6 +59,14 @@ class InvoicesHandlerTest extends TestCase
         $builder->setLogger($logger);
 
         $this->sdkBuilder = $builder;
+
+        $serializebuilder = SerializerBuilder::create();
+        $serializebuilder->setPropertyNamingStrategy(new \JMS\Serializer\Naming\IdenticalPropertyNamingStrategy());
+        $serializebuilder->configureHandlers(function (\JMS\Serializer\Handler\HandlerRegistry $registry) {
+            $registry->registerSubscribingHandler(new MyHandler());
+        });
+
+        $this->serializer = $serializebuilder->build();
     }
 
     /**
@@ -78,7 +90,7 @@ class InvoicesHandlerTest extends TestCase
             ->setCurrency(CurrencyEnum::KZT->value)
             ->setDescription('test')
             ->setDeliveryMethod(DeliveryMethodEnum::URL->value)
-            ->setExpirationDate((new \DateTimeImmutable())->add(new \DateInterval('P1D')));
+            ->setExpirationDate(\DateTimeImmutable::createFromFormat('Y-m-d H:i:s.uP', '2026-03-14 11:08:24.909150+03:00'));
         $invoicesData = $sdk->invoice()->createInvoice($invoiceRequest);
 
         switch ($exception) {
@@ -127,7 +139,7 @@ class InvoicesHandlerTest extends TestCase
      */
     public function getInvoiceTest(): void
     {
-        $json = <<<JSON
+        $returnJson = <<<JSON
             {
               "externalId": "3c5301df-d806-4fb0-9f96-f44d5d2d3827",
               "uuid": "1fd64b0c-a8e7-4dc1-a799-f0cfa3ebad3a",
@@ -148,7 +160,7 @@ class InvoicesHandlerTest extends TestCase
               "ofdData": null,
               "status": {
                 "name": "InvoicePaid",
-                "time": "2020-03-14 11:08:24.0909150+03:00",
+                "time": "2020-03-14 11:08:24.909150+03:00",
                 "message": "message"
               },
               "payments": [
@@ -168,7 +180,7 @@ class InvoicesHandlerTest extends TestCase
 
         $mock = new MockHandler(
             [
-                new Response(200, [], $json)
+                new Response(200, [], $returnJson)
             ]
         );
         $sdk = $this
@@ -178,10 +190,8 @@ class InvoicesHandlerTest extends TestCase
 
         $invoiceRequest = new GetInvoiceRequest('asdasd');
         $invoicesData = $sdk->invoice()->getInvoice($invoiceRequest);
-        var_dump($invoicesData);
-        self::assertEquals($invoicesData->getUuid(), self::INVOICE_UUID);
-        self::assertEquals($invoicesData->getExternalId(), self::INVOICE_EXTERNAL_ID);
-        self::assertEquals($invoicesData->getPaymentLink(), self::INVOICE_PAYMENT_LINK);
+        $json = $this->serializer->serialize($invoicesData, 'json');
+        self::assertJsonStringEqualsJsonString($returnJson, $json);
     }
 
     /**

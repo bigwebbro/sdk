@@ -4,7 +4,8 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Tiyn\\MerchantApiSdk\\": "src/"
+            "Tiyn\\MerchantApiSdk\\": "src/",
+            "Tests\\": "tests/"
         }
     },
     "authors": [

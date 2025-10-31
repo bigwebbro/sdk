@@ -39,100 +39,34 @@ abstract class AbstractInvoice implements AmountNormalizerAwareInterface, Amount
         pattern: '/^\+7\d{10}$/',
         message: 'Номер телефона должен быть в формате +7xxxxxxxxxx (10 цифр после +7).'
     )]
-    protected string $customerPhone;
+    protected ?string $customerPhone = null;
 
     #[Assert\Email]
-    protected string $customerEmail;
+    protected ?string $customerEmail = null;
 
     /**
      * @var array<string, mixed>
      */
-    protected array $customData;
+    protected ?array $customData = null;
 
     #[Assert\Url]
-    protected string $successUrl;
+    protected ?string $successUrl = null;
 
     #[Assert\Url]
-    protected string $failUrl;
+    protected ?string $failUrl = null;
 
     #[AssertDeliveryMethod]
-    protected string $deliveryMethod;
+    protected ?string $deliveryMethod = null;
 
     #[AssertExpirationDate]
-    protected \DateTimeImmutable $expirationDate;
+    protected ?\DateTimeImmutable $expirationDate = null;
 
     /**
      * @var null|array<string, mixed>
      */
     protected ?array $ofdData = null;
 
-    public function getExternalId(): string
-    {
-        return $this->externalId;
-    }
-
-    public function getAmount(): string
-    {
-        return $this->amount;
-    }
-
-    public function getCurrency(): string
-    {
-        return $this->currency;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function getCustomerPhone(): string
-    {
-        return $this->customerPhone;
-    }
-
-    public function getCustomerEmail(): string
-    {
-        return $this->customerEmail;
-    }
-
-    /**
-     * @return array<string,mixed>
-     */
-    public function getCustomData(): array
-    {
-        return $this->customData;
-    }
-
-    public function getSuccessUrl(): string
-    {
-        return $this->successUrl;
-    }
-
-    public function getFailUrl(): string
-    {
-        return $this->failUrl;
-    }
-
-    public function getDeliveryMethod(): string
-    {
-        return $this->deliveryMethod;
-    }
-
-    public function getExpirationDate(): \DateTimeImmutable
-    {
-        return $this->expirationDate;
-    }
-
-    /**
-     * @return array<string,mixed>
-     */
-    public function getOfdData(): ?array
-    {
-        return $this->ofdData;
-    }
-
-    public function setExternalId(string $externalId): self
+    public function setExternalId(string $externalId): static
     {
         $this->externalId = $externalId;
         return $this;
@@ -156,37 +90,36 @@ abstract class AbstractInvoice implements AmountNormalizerAwareInterface, Amount
         return $this;
     }
 
-    public function setCustomerPhone(string $customerPhone): self
+    public function setCustomerPhone(?string $customerPhone): self
     {
         $this->customerPhone = $customerPhone;
         return $this;
     }
 
-    public function setCustomerEmail(string $customerEmail): self
+    public function setCustomerEmail(?string $customerEmail): self
     {
         $this->customerEmail = $customerEmail;
         return $this;
     }
 
     /**
-     * @param array<string,mixed> $customData
-     * @return $this
+     * @param null|array<string,mixed> $customData
      */
-    public function setCustomData(array $customData): self
+    public function setCustomData(?array $customData): self
     {
         $this->customData = $customData;
         return $this;
     }
 
-    public function setSuccessUrl(string $successUrl): self
+    public function setSuccessUrl(?string $successUrl): self
     {
-        $this->successUrl = trim($successUrl);
+        $this->successUrl = $successUrl !== null ? trim($successUrl) : null;
         return $this;
     }
 
-    public function setFailUrl(string $failUrl): self
+    public function setFailUrl(?string $failUrl): self
     {
-        $this->failUrl = trim($failUrl);
+        $this->failUrl = $failUrl !== null ? trim($failUrl) : null;
         return $this;
     }
 
@@ -196,19 +129,62 @@ abstract class AbstractInvoice implements AmountNormalizerAwareInterface, Amount
         return $this;
     }
 
-    public function setExpirationDate(\DateTimeImmutable|string $expirationDate): self
+    public function setExpirationDate(\DateTimeImmutable $expirationDate): self
     {
-        $this->expirationDate = is_string($expirationDate) ? \DateTimeImmutable::createFromFormat('Y-m-d H:i:s.uP', $expirationDate) : $expirationDate;
+        $this->expirationDate = $expirationDate;
         return $this;
     }
 
     /**
      * @param null|array<string,mixed> $ofdData
-     * @return $this
      */
     public function setOfdData(?array $ofdData): self
     {
         $this->ofdData = $ofdData;
         return $this;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        $result = [
+            'externalId' => $this->externalId,
+            'amount' => $this->amount,
+            'currency' => $this->currency,
+            'description' => $this->description,
+            'deliveryMethod' => $this->deliveryMethod,
+        ];
+
+        if ($this->deliveryMethod !== null) {
+            $result['deliveryMethod'] = $this->deliveryMethod;
+        }
+
+        if ($this->expirationDate !== null) {
+            $result['expirationDate'] = $this->expirationDate->format('Y-m-d H:i:s.uP');
+        }
+
+        if ($this->customData !== null) {
+            $result['customData'] = $this->customData;
+        }
+
+        if ($this->customerPhone !== null) {
+            $result['customerPhone'] = $this->customerPhone;
+        }
+        if ($this->customerEmail !== null) {
+            $result['customerEmail'] = $this->customerEmail;
+        }
+        if ($this->successUrl !== null) {
+            $result['successUrl'] = $this->successUrl;
+        }
+        if ($this->failUrl !== null) {
+            $result['failUrl'] = $this->failUrl;
+        }
+        if ($this->ofdData !== null) {
+            $result['ofdData'] = $this->ofdData;
+        }
+
+        return $result;
     }
 }

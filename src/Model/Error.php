@@ -27,4 +27,13 @@ final class Error
     {
         return $this->correlationId;
     }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            code: $data['code'],
+            message: $data['message'],
+            correlationId: $data['correlationId']
+        );
+    }
 }

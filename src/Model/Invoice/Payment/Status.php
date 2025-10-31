@@ -1,6 +1,6 @@
 <?php
 
-namespace Tiyn\MerchantApiSk\Model\Invoice\Payment;
+namespace Tiyn\MerchantApiSdk\Model\Invoice\Payment;
 
 final class Status
 {
@@ -11,8 +11,11 @@ final class Status
         return $this->name;
     }
 
-    public function setName(string $name): void
+    public static function fromArray(array $data): self
     {
-        $this->name = $name;
+        $status = new self();
+        $status->name = $data['name'];
+
+        return $status;
     }
 }

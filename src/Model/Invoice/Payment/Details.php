@@ -1,28 +1,33 @@
 <?php
 
-namespace Tiyn\MerchantApiSk\Model\Invoice\Payment;
+namespace Tiyn\MerchantApiSdk\Model\Invoice\Payment;
 
 final class Details
 {
-    public function __construct(
-        private readonly Details $details,
-        private readonly string  $paymentMethod,
-        private readonly Status  $status,
-    ) {
+    private ?string $account;
+
+    private ?string $paymentToken;
+
+    public function getAccount(): ?string
+    {
+        return $this->account;
     }
 
-    public function getDetails(): Details
+    public function getPaymentToken(): ?string
     {
-        return $this->details;
+        return $this->paymentToken;
     }
 
-    public function getPaymentMethod(): string
+    public static function fromArray(array $data): self
     {
-        return $this->paymentMethod;
-    }
+        $details = new self();
+        if (isset($data['account'])) {
+            $details->account = $data['account'];
+        }
+        if (isset($data['paymentToken'])) {
+            $details->paymentToken = $data['paymentToken'];
+        }
 
-    public function getStatus(): Status
-    {
-        return $this->status;
+        return $details;
     }
 }

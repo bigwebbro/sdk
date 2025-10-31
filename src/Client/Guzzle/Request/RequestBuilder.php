@@ -17,7 +17,7 @@ class RequestBuilder
      * @var string[]|string[][]
      */
     private array $headers;
-    private string $body;
+    private ?string $body = null;
 
     public function withMethod(string $method): self
     {
@@ -54,7 +54,10 @@ class RequestBuilder
     public function buildWithSign(string $secretPhrase): PsrRequestInterface
     {
         $request = new Request($this->method, $this->endpoint, $this->headers, $this->body);
-        $request->withAddedHeader('X-Sign', Sign::hash($this->body, $secretPhrase));
+
+        if (null !== $this->body) {
+            $request->withAddedHeader('X-Sign', Sign::hash($this->body, $secretPhrase));
+        }
 
         return $request;
     }

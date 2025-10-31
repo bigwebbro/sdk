@@ -27,4 +27,13 @@ final class CreatedInvoiceResponse
     {
         return trim($this->paymentLink);
     }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            uuid: $data['uuid'],
+            externalId: $data['externalId'],
+            paymentLink: $data['paymentLink']
+        );
+    }
 }
