@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Handler;
 
 use JMS\Serializer\Context;
@@ -30,13 +32,11 @@ class MyHandler implements SubscribingHandlerInterface
 
     public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, \DateTimeImmutable $date, array $type, Context $context)
     {
-        var_dump($context->getCurrentPath());
-        return $date->format($type['params'][0]);
+        return $date->format('Y-m-d H:i:s.uP');
     }
 
     public function deserializeDateTimeToJson(JsonDeserializationVisitor $visitor, $dateAsString, array $type, Context $context)
     {
-        var_dump($visitor);
-        return new \DateTimeImmutable($dateAsString);
+        return \DateTimeImmutable::createFromFormat('Y-m-d H:i:s.uP', $dateAsString);
     }
 }

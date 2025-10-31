@@ -12,10 +12,6 @@ use JMS\Serializer\SerializerInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientLoggingDecorator;
 use Tiyn\MerchantApiSdk\Exception\Api\ApiKeyException;
 use Tiyn\MerchantApiSdk\Exception\Api\EntityErrorException;
@@ -24,10 +20,10 @@ use Tiyn\MerchantApiSdk\Exception\Validation\JsonProcessingException;
 use Tiyn\MerchantApiSdk\MerchantApiSdkBuilder;
 use Tiyn\MerchantApiSdk\Model\Error;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
+use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundRequest;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\CurrencyEnum;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
 use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceRequest;
-use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceResponse;
 
 class InvoicesHandlerTest extends TestCase
 {
@@ -62,7 +58,7 @@ class InvoicesHandlerTest extends TestCase
 
         $serializebuilder = SerializerBuilder::create();
         $serializebuilder->setPropertyNamingStrategy(new \JMS\Serializer\Naming\IdenticalPropertyNamingStrategy());
-        $serializebuilder->configureHandlers(function (\JMS\Serializer\Handler\HandlerRegistry $registry) {
+        $serializebuilder->configureHandlers(function (\JMS\Serializer\Handler\HandlerRegistry $registry): void {
             $registry->registerSubscribingHandler(new MyHandler());
         });
 
@@ -139,7 +135,7 @@ class InvoicesHandlerTest extends TestCase
      */
     public function getInvoiceTest(): void
     {
-        $returnJson = <<<JSON
+        $returnedJson = <<<JSON
             {
               "externalId": "3c5301df-d806-4fb0-9f96-f44d5d2d3827",
               "uuid": "1fd64b0c-a8e7-4dc1-a799-f0cfa3ebad3a",
@@ -157,7 +153,7 @@ class InvoicesHandlerTest extends TestCase
               "failUrl": "http://empty.com/failUrl",
               "deliveryMethod": "URL",
               "expirationDate": "2021-03-14 11:08:24.909150+03:00",
-              "ofdData": null,
+              "ofdData": ["data"],
               "status": {
                 "name": "InvoicePaid",
                 "time": "2020-03-14 11:08:24.909150+03:00",
@@ -180,7 +176,7 @@ class InvoicesHandlerTest extends TestCase
 
         $mock = new MockHandler(
             [
-                new Response(200, [], $returnJson)
+                new Response(200, [], $returnedJson)
             ]
         );
         $sdk = $this
@@ -188,10 +184,48 @@ class InvoicesHandlerTest extends TestCase
             ->setClientOptions(['handler' => HandlerStack::create($mock)])
             ->build();
 
-        $invoiceRequest = new GetInvoiceRequest('asdasd');
-        $invoicesData = $sdk->invoice()->getInvoice($invoiceRequest);
+        $getInvoiceRequest = new GetInvoiceRequest('asdasd');
+        $invoicesData = $sdk->invoice()->getInvoice($getInvoiceRequest);
         $json = $this->serializer->serialize($invoicesData, 'json');
-        self::assertJsonStringEqualsJsonString($returnJson, $json);
+        self::assertJsonStringEqualsJsonString($returnedJson, $json);
+    }
+
+    /**
+     * @test
+     */
+    public function createRefundTest(): void
+    {
+        $invoiceUuid = '1fd64b0c-a8e7-4dc1-a799-f0cfa3ebad3a';
+        $requestId = 'd1f6b55c-e8a1-add7-a719-a1cfd3eda3ad';
+        $returnedJson = <<<JSON
+            {
+              "success": true,
+              "data": {
+                "uuid": "$invoiceUuid",
+                "requestId": "$requestId"
+              }
+            }
+        JSON;
+
+        $mock = new MockHandler(
+            [
+                new Response(200, [], $returnedJson)
+            ]
+        );
+        $sdk = $this
+            ->sdkBuilder
+            ->setClientOptions(['handler' => HandlerStack::create($mock)])
+            ->build();
+
+        $createRefundRequest = (new CreateRefundRequest())
+            ->setRequestId('requestId')
+            ->setAmount("105.51")
+            ->setReason("reason")
+        ;
+
+        $createdRefundResponse = $sdk->invoice()->createRefund($invoiceUuid, $createRefundRequest);
+        self::assertEquals($invoiceUuid, $createdRefundResponse->getUuid());
+        self::assertEquals($requestId, $createdRefundResponse->getRequestId());
     }
 
     /**

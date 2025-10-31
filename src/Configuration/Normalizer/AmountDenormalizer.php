@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tiyn\MerchantApiSdk\Configuration\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 class AmountDenormalizer implements DenormalizerInterface
 {
-    public function __construct(private DenormalizerInterface $inner)
+    public function __construct(private readonly DenormalizerInterface $inner)
     {
     }
 

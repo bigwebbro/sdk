@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
 use Tiyn\MerchantApiSdk\Exception\Validation\WrongDataException;
@@ -31,6 +33,9 @@ final class GetInvoiceResponse extends AbstractInvoice
         return $this->finalAmount;
     }
 
+    /**
+     * @return Payment[]
+     */
     public function getPayments(): array
     {
         return $this->payments;
@@ -72,6 +77,9 @@ final class GetInvoiceResponse extends AbstractInvoice
         return $this->customerEmail;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getCustomData(): ?array
     {
         return $this->customData;
@@ -97,18 +105,25 @@ final class GetInvoiceResponse extends AbstractInvoice
         return $this->expirationDate;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getOfdData(): ?array
     {
         return $this->ofdData;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @return self
+     */
     public static function fromArray(array $data): self
     {
         // TODO вынести
         $expirationDate = null;
         if (!empty($data['expirationDate'])) {
             $expirationDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s.uP', $data['expirationDate']);
-            if ($expirationDate === false) {
+            if (false === $expirationDate) {
                 throw new WrongDataException('Invalid expirationDate format');
             }
         }

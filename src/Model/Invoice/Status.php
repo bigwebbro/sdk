@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
 use Tiyn\MerchantApiSdk\Exception\Validation\WrongDataException;
@@ -27,13 +29,17 @@ final class Status
         return $this->time;
     }
 
+    /**
+     * @param array<string,mixed> $data
+     * @return self
+     */
     public static function fromArray(array $data): self
     {
         // TODO вынести
         $time = null;
         if (isset($data['time'])) {
             $time = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s.uP', $data['time']);
-            if ($time === false) {
+            if (false === $time) {
                 throw new WrongDataException('Invalid expirationDate format');
             }
         }

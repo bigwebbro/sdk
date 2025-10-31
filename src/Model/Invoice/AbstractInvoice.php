@@ -8,8 +8,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountDenormalizerAwareInterface;
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountNormalizerAwareInterface;
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\DateTimeDenormalizerAwareInterface;
-use Tiyn\MerchantApiSdk\Configuration\Validation\DeliveryMethodConstraint as AssertDeliveryMethod;
 use Tiyn\MerchantApiSdk\Configuration\Validation\CurrencyConstraint as AssertCurrency;
+use Tiyn\MerchantApiSdk\Configuration\Validation\DeliveryMethodConstraint as AssertDeliveryMethod;
 use Tiyn\MerchantApiSdk\Configuration\Validation\ExpirationDateConstraint as AssertExpirationDate;
 
 abstract class AbstractInvoice implements AmountNormalizerAwareInterface, AmountDenormalizerAwareInterface, DateTimeDenormalizerAwareInterface
@@ -113,13 +113,13 @@ abstract class AbstractInvoice implements AmountNormalizerAwareInterface, Amount
 
     public function setSuccessUrl(?string $successUrl): self
     {
-        $this->successUrl = $successUrl !== null ? trim($successUrl) : null;
+        $this->successUrl = null !== $successUrl ? trim($successUrl) : null;
         return $this;
     }
 
     public function setFailUrl(?string $failUrl): self
     {
-        $this->failUrl = $failUrl !== null ? trim($failUrl) : null;
+        $this->failUrl = null !== $failUrl ? trim($failUrl) : null;
         return $this;
     }
 
@@ -157,31 +157,31 @@ abstract class AbstractInvoice implements AmountNormalizerAwareInterface, Amount
             'deliveryMethod' => $this->deliveryMethod,
         ];
 
-        if ($this->deliveryMethod !== null) {
+        if (null !== $this->deliveryMethod) {
             $result['deliveryMethod'] = $this->deliveryMethod;
         }
 
-        if ($this->expirationDate !== null) {
+        if (null !== $this->expirationDate) {
             $result['expirationDate'] = $this->expirationDate->format('Y-m-d H:i:s.uP');
         }
 
-        if ($this->customData !== null) {
+        if (null !== $this->customData) {
             $result['customData'] = $this->customData;
         }
 
-        if ($this->customerPhone !== null) {
+        if (null !== $this->customerPhone) {
             $result['customerPhone'] = $this->customerPhone;
         }
-        if ($this->customerEmail !== null) {
+        if (null !== $this->customerEmail) {
             $result['customerEmail'] = $this->customerEmail;
         }
-        if ($this->successUrl !== null) {
+        if (null !== $this->successUrl) {
             $result['successUrl'] = $this->successUrl;
         }
-        if ($this->failUrl !== null) {
+        if (null !== $this->failUrl) {
             $result['failUrl'] = $this->failUrl;
         }
-        if ($this->ofdData !== null) {
+        if (null !== $this->ofdData) {
             $result['ofdData'] = $this->ofdData;
         }
 

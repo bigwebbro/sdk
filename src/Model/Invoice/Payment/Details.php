@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tiyn\MerchantApiSdk\Model\Invoice\Payment;
 
 final class Details
 {
-    private ?string $account;
+    private ?string $account = null;
 
-    private ?string $paymentToken;
+    private ?string $paymentToken = null;
 
     public function getAccount(): ?string
     {
@@ -18,6 +20,10 @@ final class Details
         return $this->paymentToken;
     }
 
+    /**
+     * @param array<string, string> $data
+     * @return self
+     */
     public static function fromArray(array $data): self
     {
         $details = new self();

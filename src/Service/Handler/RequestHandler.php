@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tiyn\MerchantApiSdk\Service\Handler;
 
 use Symfony\Component\Validator\Validator\ValidatorInterface;

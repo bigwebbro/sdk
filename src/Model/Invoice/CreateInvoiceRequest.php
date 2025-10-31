@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
 use Symfony\Component\Validator\Constraints as Assert;
@@ -14,7 +16,7 @@ final class CreateInvoiceRequest extends AbstractInvoice implements ToArrayInter
     {
         $result = parent::toArray();
 
-        if ($this->customerIp !== null) {
+        if (null !== $this->customerIp) {
             $result['customerIp'] = $this->customerIp;
         }
 

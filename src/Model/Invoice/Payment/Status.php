@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tiyn\MerchantApiSdk\Model\Invoice\Payment;
 
 final class Status
@@ -11,6 +13,10 @@ final class Status
         return $this->name;
     }
 
+    /**
+     * @param array<string,mixed> $data
+     * @return self
+     */
     public static function fromArray(array $data): self
     {
         $status = new self();
