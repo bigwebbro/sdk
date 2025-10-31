@@ -15,9 +15,13 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountDenormalizer;
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountNormalizer;
+use Tiyn\MerchantApiSdk\Configuration\Normalizer\DateTimeDenormalizer;
+use Tiyn\MerchantApiSdk\Configuration\Normalizer\StatusDenormalizer;
 
 class SerializerFactory
 {
+    const DATE_TIME_FORMAT = 'Y-m-d H:i:s.uP';
+
     public static function init(): SerializerInterface | NormalizerInterface | DenormalizerInterface
     {
         $reflectionExtractor = new ReflectionExtractor();
@@ -28,7 +32,9 @@ class SerializerFactory
 
         return new Serializer(
             [
-                new DateTimeNormalizer([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s.uP']),
+                new StatusDenormalizer($objectNormalizer),
+                new DateTimeDenormalizer($objectNormalizer),
+                new DateTimeNormalizer([DateTimeNormalizer::FORMAT_KEY => self::DATE_TIME_FORMAT]),
                 new PropertyNormalizer(),
                 new AmountDenormalizer(),
                 new AmountNormalizer(),

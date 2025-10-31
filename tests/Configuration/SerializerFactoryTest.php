@@ -7,7 +7,6 @@ use Tiyn\MerchantApiSdk\Configuration\SerializerFactory;
 use PHPUnit\Framework\TestCase;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreatedRefundResponse;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundRequest;
-use function PHPUnit\Framework\assertEquals;
 
 class SerializerFactoryTest extends TestCase
 {
@@ -21,7 +20,7 @@ class SerializerFactoryTest extends TestCase
     /**
      * @test
      */
-    function SuccessSerializationWhenObjectWithoutSettersTest()
+    function SuccessSerializationWhenObjectWithoutGettersTest()
     {
         $expectedJson = '{"requestId":"requestId","amount":"105.51","reason":"reason"}';
         $createRefundRequest = (new CreateRefundRequest())
@@ -45,8 +44,8 @@ class SerializerFactoryTest extends TestCase
 
         $result = $this->serializer->deserialize(sprintf('{"requestId":"%s","uuid":"%s"}', $requestId, $uuid), CreatedRefundResponse::class, 'json');
 
-        assertEquals($requestId, $result->getRequestId());
-        assertEquals($uuid, $result->getUuid());
+        self::assertEquals($requestId, $result->getRequestId());
+        self::assertEquals($uuid, $result->getUuid());
     }
 
 }

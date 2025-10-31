@@ -174,7 +174,7 @@ class InvoiceServiceTest extends TestCase
 
         $invoiceRequest = new GetInvoiceRequest('asdasd');
         $invoicesData = $sdk->invoice()->getInvoice($invoiceRequest);
-        var_dump($invoicesData);
+
         self::assertEquals($invoicesData->getUuid(), self::INVOICE_UUID);
         self::assertEquals($invoicesData->getExternalId(), self::INVOICE_EXTERNAL_ID);
     }

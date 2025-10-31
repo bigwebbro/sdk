@@ -51,8 +51,6 @@ class InvoicesService
             ->buildWithSign($this->secretPhrase)
         ;
 
-        var_dump($json);
-
         $response = $this->client->sendRequest($request);
         $result = $this->responseHandler->handleResponse($response);
 
@@ -86,12 +84,7 @@ class InvoicesService
             /**
              * @var GetInvoiceResponse $invoiceData
              */
-            $invoiceData = $this->denormalizer->denormalize($result, GetInvoiceResponse::class, context: [
-                AbstractNormalizer::CALLBACKS => [
-                    'expirationDate' => fn($v) => \DateTimeImmutable::createFromFormat('Y-m-d H:i:s.uP', $v),
-                    'status' => fn($v) => $this->serializer->denormalize($v, Status::class, 'json')
-                ],
-            ]);
+            $invoiceData = $this->denormalizer->denormalize($result, GetInvoiceResponse::class);
         } catch (ExceptionInterface $e) {
             throw new WrongDataException($e->getMessage(), $e->getCode(), $e);
         }
@@ -102,7 +95,6 @@ class InvoicesService
     public function createRefund(string $invoiceUuid, CreateRefundRequest $command): CreatedRefundResponse
     {
         $json = $this->requestHandler->handleRequest($command);
-        var_dump($json);
 
         $request = (new RequestBuilder())
             ->withMethod('PUT')

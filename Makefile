@@ -50,4 +50,4 @@ phpstan:
 	vendor/bin/phpstan analyse -c phpstan.neon
 
 phpunit:
-	vendor/bin/phpunit
+	vendor/bin/phpunit -c phpunit.xml
