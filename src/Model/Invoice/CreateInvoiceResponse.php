@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
-final class CreatedInvoiceResponse
+final class CreateInvoiceResponse
 {
     public function __construct(
         private readonly string $uuid,

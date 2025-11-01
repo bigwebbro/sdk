@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountDenormalizerAwareInterface;
@@ -85,6 +87,7 @@ final class GetInvoiceResponse implements AmountDenormalizerAwareInterface, Date
 
     /**
      * @var Status
+     * @phpstan-ignore-next-line
      */
     private Status $status;
 

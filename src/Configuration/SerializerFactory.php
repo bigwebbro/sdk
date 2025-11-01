@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tiyn\MerchantApiSdk\Configuration;
 
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -31,7 +33,7 @@ use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Details;
 
 class SerializerFactory
 {
-    const DATE_TIME_FORMAT = 'Y-m-d H:i:s.uP';
+    public const DATE_TIME_FORMAT = 'Y-m-d H:i:s.uP';
 
     public static function init(): SerializerInterface | NormalizerInterface | DenormalizerInterface
     {

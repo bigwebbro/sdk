@@ -4,22 +4,17 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Service;
 
-use JMS\Serializer\SerializerInterface;
 use Psr\Http\Client\ClientInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Tiyn\MerchantApiSdk\Client\Guzzle\Request\RequestBuilder;
-use Tiyn\MerchantApiSdk\Model\Invoice\CreatedInvoiceResponse;
+use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceResponse;
 use Tiyn\MerchantApiSdk\Exception\Validation\WrongDataException;
-use Tiyn\MerchantApiSdk\Model\Invoice\CreatedRefundResponse;
+use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundResponse;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundRequest;
 use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceRequest;
 use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceResponse;
-use Tiyn\MerchantApiSdk\Model\Invoice\Status;
 use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandlerInterface;
 use Tiyn\MerchantApiSdk\Service\Handler\RequestHandlerInterface;
 
@@ -32,14 +27,13 @@ class InvoicesService
     public function __construct(
         private readonly ClientInterface $client,
         private readonly DenormalizerInterface $denormalizer,
-        private readonly \Symfony\Component\Serializer\SerializerInterface $serializer,
         private readonly RequestHandlerInterface $requestHandler,
         private readonly ResponseHandlerInterface $responseHandler,
         private readonly string $secretPhrase,
     ) {
     }
 
-    public function createInvoice(CreateInvoiceRequest $command): CreatedInvoiceResponse
+    public function createInvoice(CreateInvoiceRequest $command): CreateInvoiceResponse
     {
         $json = $this->requestHandler->handleRequest($command);
 
@@ -56,10 +50,7 @@ class InvoicesService
 
         // TODO перенести в ResponseHandler
         try {
-            /**
-             * @var CreatedInvoiceResponse $invoiceData
-             */
-            $invoiceData = $this->denormalizer->denormalize($result, CreatedInvoiceResponse::class);
+            $invoiceData = $this->denormalizer->denormalize($result, CreateInvoiceResponse::class);
         } catch (ExceptionInterface $e) {
             throw new WrongDataException($e->getMessage(), $e->getCode(), $e);
         }
@@ -72,7 +63,7 @@ class InvoicesService
         $request = (new RequestBuilder())
             ->withMethod('GET')
             ->withHeaders(['Content-Type' => 'application/json']) // TODO вынести в конфиг клиента
-            ->withEndpoint(sprintf('%s/%s', self::INVOICE_ENDPOINT, $command->getUuid()))
+            ->withEndpoint(\sprintf('%s/%s', self::INVOICE_ENDPOINT, $command->getUuid()))
             ->buildWithSign($this->secretPhrase)
         ;
 
@@ -81,18 +72,15 @@ class InvoicesService
 
         // TODO перенести в ResponseHandler
         try {
-            /**
-             * @var GetInvoiceResponse $invoiceData
-             */
-            $invoiceData = $this->denormalizer->denormalize($result, GetInvoiceResponse::class);
+            $invoice = $this->denormalizer->denormalize($result, GetInvoiceResponse::class);
         } catch (ExceptionInterface $e) {
             throw new WrongDataException($e->getMessage(), $e->getCode(), $e);
         }
 
-        return $invoiceData;
+        return $invoice;
     }
 
-    public function createRefund(string $invoiceUuid, CreateRefundRequest $command): CreatedRefundResponse
+    public function makeRefundByInvoice(string $invoiceUuid, CreateRefundRequest $command): CreateRefundResponse
     {
         $json = $this->requestHandler->handleRequest($command);
 
@@ -108,10 +96,7 @@ class InvoicesService
         $result = $this->responseHandler->handleResponse($response);
 
         try {
-            /**
-             * @var CreatedRefundResponse $invoiceData
-             */
-            $refundData = $this->denormalizer->denormalize($result, CreatedRefundResponse::class);
+            $refundData = $this->denormalizer->denormalize($result, CreateRefundResponse::class);
         } catch (ExceptionInterface $e) {
             throw new WrongDataException($e->getMessage(), $e->getCode(), $e);
         }

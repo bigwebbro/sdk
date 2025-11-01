@@ -162,10 +162,10 @@ final class MerchantApiSdkBuilder implements
             $this->denormalizer = $this->serializer;
         }
 
-//        if (!isset($this->denormalizer)) {
-//            $denormalizer = new ObjectNormalizer();
-//            $denormalizer->setSerializer($this->serializer);
-//        }
+        //        if (!isset($this->denormalizer)) {
+        //            $denormalizer = new ObjectNormalizer();
+        //            $denormalizer->setSerializer($this->serializer);
+        //        }
 
         if (!isset($this->decoder)) {
             $this->decoder = new JsonDecode();
@@ -180,7 +180,6 @@ final class MerchantApiSdkBuilder implements
         $invoiceService = new InvoicesService(
             $client,
             $this->denormalizer,
-            $this->serializer,
             new RequestHandler($this->validator, $this->serializer),
             new ResponseHandler($this->decoder, $this->denormalizer),
             $this->secretPhrase,

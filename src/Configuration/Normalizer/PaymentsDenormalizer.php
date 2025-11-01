@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tiyn\MerchantApiSdk\Configuration\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
@@ -14,24 +16,24 @@ class PaymentsDenormalizer implements DenormalizerInterface, DenormalizerAwareIn
     private const CONTEXT_FLAG = '__payments_denormalizer_running';
 
     /**
-     * @param mixed $data
-     * @param string $type
-     * @param string|null $format
-     * @param array<string,mixed> $context
-     * @return mixed|string
-     * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
+     * @inheritDoc
+     * @phpstan-ignore-next-line
      */
     public function denormalize($data, $type, $format = null, array $context = [])
     {
         $context[self::CONTEXT_FLAG] = true;
 
-        if ($data['payments'] && is_array($data['payments'])) {
+        if ($data['payments'] && \is_array($data['payments'])) {
             $data['payments'] = $this->denormalizer->denormalize($data['payments'], Payment::class . '[]', $format, $context);
         }
 
         return $this->denormalizer->denormalize($data, $type, $format, $context);
     }
 
+    /**
+     * @inheritDoc
+     * @phpstan-ignore-next-line
+     */
     public function supportsDenormalization($data, $type, $format = null, ...$args)
     {
         $context = $args[0] ?? [];

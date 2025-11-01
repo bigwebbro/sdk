@@ -14,6 +14,10 @@ class AmountNormalizer implements NormalizerInterface, NormalizerAwareInterface
 
     private const CONTEXT_FLAG = '__amount_normalizer_running';
 
+    /**
+     * @inheritDoc
+     * @phpstan-ignore-next-line
+     */
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
         $context[self::CONTEXT_FLAG] = true;
@@ -27,6 +31,10 @@ class AmountNormalizer implements NormalizerInterface, NormalizerAwareInterface
         return $array;
     }
 
+    /**
+     * @inheritDoc
+     * @phpstan-ignore-next-line
+     */
     public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
         if (!empty($context[self::CONTEXT_FLAG])) {

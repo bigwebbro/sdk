@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tiyn\MerchantApiSdk\Model\Invoice\Payment;
 
 use Tiyn\MerchantApiSdk\Model\Invoice\Status;
@@ -11,8 +13,16 @@ final class Payment
     use PaymentMethodTrait;
     use PaymentMethodGetterTrait;
 
+    /**
+     * @var Details
+     * @phpstan-ignore-next-line
+     */
     private Details $details;
 
+    /**
+     * @var Status
+     * @phpstan-ignore-next-line
+     */
     private Status $status;
 
     public function getDetails(): Details

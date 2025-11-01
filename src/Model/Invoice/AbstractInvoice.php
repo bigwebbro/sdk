@@ -198,7 +198,7 @@ abstract class AbstractInvoice implements AmountNormalizerAwareInterface, Amount
 
     public function setExpirationDate(\DateTimeImmutable|string $expirationDate): self
     {
-        $this->expirationDate = is_string($expirationDate) ? \DateTimeImmutable::createFromFormat('Y-m-d H:i:s.uP', $expirationDate) : $expirationDate;
+        $this->expirationDate = \is_string($expirationDate) ? \DateTimeImmutable::createFromFormat('Y-m-d H:i:s.uP', $expirationDate) : $expirationDate;
         return $this;
     }
 

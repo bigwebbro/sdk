@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tiyn\MerchantApiSdk\Configuration\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
@@ -13,6 +15,10 @@ class StatusDenormalizer implements DenormalizerInterface, DenormalizerAwareInte
 
     private const CONTEXT_FLAG = '__status_denormalizer_running';
 
+    /**
+     * @inheritDoc
+     * @phpstan-ignore-next-line
+     */
     public function denormalize($data, $type, $format = null, array $context = [])
     {
         $context[self::CONTEXT_FLAG] = true;
@@ -23,6 +29,10 @@ class StatusDenormalizer implements DenormalizerInterface, DenormalizerAwareInte
         return $this->denormalizer->denormalize($data, $type, $format, $context);
     }
 
+    /**
+     * @inheritDoc
+     * @phpstan-ignore-next-line
+     */
     public function supportsDenormalization($data, $type, $format = null, ...$args): bool
     {
         $context = $args[0] ?? [];

@@ -2,3 +2,8 @@ parameters:
 	level: 6
 	paths:
 		- src
+		- tests
+	ignoreErrors:
+		-
+			message: '#Trait .* is used zero times and is not analysed#'
+			path: src/Model/Property

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Configuration;
 
 use Symfony\Component\Serializer\SerializerInterface;
 use Tiyn\MerchantApiSdk\Configuration\SerializerFactory;
 use PHPUnit\Framework\TestCase;
-use Tiyn\MerchantApiSdk\Model\Invoice\CreatedRefundResponse;
+use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundResponse;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundRequest;
 
 class SerializerFactoryTest extends TestCase
@@ -20,7 +22,7 @@ class SerializerFactoryTest extends TestCase
     /**
      * @test
      */
-    function SuccessSerializationWhenObjectWithoutGettersTest()
+    public function SuccessSerializationWhenObjectWithoutGettersTest(): void
     {
         $expectedJson = '{"requestId":"requestId","amount":105.51,"reason":"reason"}';
         $createRefundRequest = (new CreateRefundRequest())
@@ -37,12 +39,12 @@ class SerializerFactoryTest extends TestCase
     /**
      * @test
      */
-    function successDeserializationWhenObjectWithoutSettersTest()
+    public function successDeserializationWhenObjectWithoutSettersTest(): void
     {
         $requestId = 'requestId';
         $uuid = '123';
 
-        $result = $this->serializer->deserialize(sprintf('{"requestId":"%s","uuid":"%s"}', $requestId, $uuid), CreatedRefundResponse::class, 'json');
+        $result = $this->serializer->deserialize(\sprintf('{"requestId":"%s","uuid":"%s"}', $requestId, $uuid), CreateRefundResponse::class, 'json');
 
         self::assertEquals($requestId, $result->getRequestId());
         self::assertEquals($uuid, $result->getUuid());

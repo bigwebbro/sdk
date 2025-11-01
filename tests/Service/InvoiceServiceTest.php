@@ -185,7 +185,7 @@ class InvoiceServiceTest extends TestCase
 
     /**
      * @test
-     * @covers \Tiyn\MerchantApiSdk\Service\InvoicesService::createRefund
+     * @covers \Tiyn\MerchantApiSdk\Service\InvoicesService::makeRefundByInvoice
      */
     public function createRefundTest(): void
     {
@@ -217,7 +217,7 @@ class InvoiceServiceTest extends TestCase
             ->setReason("reason")
         ;
 
-        $createdRefundResponse = $sdk->invoice()->createRefund($invoiceUuid, $createRefundRequest);
+        $createdRefundResponse = $sdk->invoice()->makeRefundByInvoice($invoiceUuid, $createRefundRequest);
         self::assertEquals($invoiceUuid, $createdRefundResponse->getUuid());
         self::assertEquals($requestId, $createdRefundResponse->getRequestId());
     }

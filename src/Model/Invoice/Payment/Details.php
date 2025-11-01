@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tiyn\MerchantApiSdk\Model\Invoice\Payment;
 
 use Tiyn\MerchantApiSdk\Model\Property\Account\AccountGetterTrait;
