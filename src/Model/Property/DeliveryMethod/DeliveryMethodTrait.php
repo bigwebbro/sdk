@@ -9,5 +9,5 @@ use Tiyn\MerchantApiSdk\Configuration\Validation\DeliveryMethodConstraint as Ass
 trait DeliveryMethodTrait
 {
     #[AssertDeliveryMethod]
-    protected string $deliveryMethod;
+    private string $deliveryMethod;
 }

@@ -9,5 +9,5 @@ use Symfony\Component\Validator\Constraints as Assert;
 trait FailUrlTrait
 {
     #[Assert\Url]
-    protected string $failUrl;
+    private string $failUrl;
 }

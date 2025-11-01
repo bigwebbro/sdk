@@ -9,5 +9,5 @@ trait CustomDataTrait
     /**
      * @var array<string, mixed>
      */
-    protected array $customData;
+    private array $customData;
 }

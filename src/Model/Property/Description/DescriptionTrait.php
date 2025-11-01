@@ -10,5 +10,5 @@ trait DescriptionTrait
 {
     #[Assert\NotBlank]
     #[Assert\Length(min: 1, max: 1000)]
-    protected string $description;
+    private string $description;
 }

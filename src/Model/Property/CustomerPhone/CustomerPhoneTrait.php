@@ -12,5 +12,5 @@ trait CustomerPhoneTrait
         pattern: '/^\+7\d{10}$/',
         message: 'Номер телефона должен быть в формате +7xxxxxxxxxx (10 цифр после +7).'
     )]
-    protected string $customerPhone;
+    private string $customerPhone;
 }

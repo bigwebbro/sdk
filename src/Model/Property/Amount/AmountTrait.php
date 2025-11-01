@@ -15,5 +15,5 @@ trait AmountTrait
     )]
     #[Assert\GreaterThanOrEqual(value: 0.01, message: 'Минимальная сумма — 0.01')]
     #[Assert\LessThanOrEqual(value: 999999999999999.99, message: 'Максимальная сумма — 999 999 999 999 999.99')]
-    protected string $amount;
+    private string $amount;
 }

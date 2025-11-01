@@ -10,5 +10,5 @@ trait ExternalIdTrait
 {
     #[Assert\NotBlank]
     #[Assert\Length(min: 1, max: 100)]
-    protected string $externalId;
+    private string $externalId;
 }

@@ -9,5 +9,5 @@ trait OfdDataTrait
     /**
      * @var null|array<string, mixed>
      */
-    protected ?array $ofdData = null;
+    private ?array $ofdData = null;
 }

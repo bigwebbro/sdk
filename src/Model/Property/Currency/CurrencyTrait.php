@@ -11,5 +11,5 @@ trait CurrencyTrait
 {
     #[Assert\NotBlank]
     #[AssertCurrency]
-    protected string $currency;
+    private string $currency;
 }
