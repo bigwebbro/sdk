@@ -12,18 +12,14 @@ class AmountNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
 
-    /**
-     * @param mixed $object
-     * @param string|null $format
-     * @param string[] $context
-     * @return array<string, mixed>
-     * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
-     */
+    private const CONTEXT_FLAG = '__amount_normalizer_running';
+
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
-        $context['__amount_normalizer_running'] = true;
+        $context[self::CONTEXT_FLAG] = true;
 
         $array = $this->normalizer->normalize($object, $format, $context);
+
         if (isset($array['amount'])) {
             $array['amount'] = $this->stringToFloat($array['amount']);
         }
@@ -31,11 +27,9 @@ class AmountNormalizer implements NormalizerInterface, NormalizerAwareInterface
         return $array;
     }
 
-    public function supportsNormalization(mixed $data, string $format = null, ...$args): bool
+    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
-        $context = $args[0] ?? [];
-
-        if (!empty($context['__amount_normalizer_running'])) {
+        if (!empty($context[self::CONTEXT_FLAG])) {
             return false;
         }
 

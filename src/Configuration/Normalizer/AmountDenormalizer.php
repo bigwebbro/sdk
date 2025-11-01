@@ -10,17 +10,11 @@ class AmountDenormalizer implements DenormalizerInterface, DenormalizerAwareInte
 {
     use DenormalizerAwareTrait;
 
-    /**
-     * @param mixed $data
-     * @param string $type
-     * @param string|null $format
-     * @param array<string,mixed> $context
-     * @return mixed|string
-     * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
-     */
-    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = [])
+    private const CONTEXT_FLAG = '__amount_denormalizer_running';
+
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
-        $context['__amount_denormalizer_running'] = true;
+        $context[self::CONTEXT_FLAG] = true;
 
         if (isset($data['amount'])) {
             $data['amount'] = (string) $data['amount'];
@@ -33,14 +27,13 @@ class AmountDenormalizer implements DenormalizerInterface, DenormalizerAwareInte
         return $this->denormalizer->denormalize($data, $type, $format, $context);
     }
 
-    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, ...$args)
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
     {
-        $context = $args[0] ?? [];
-
-        if (!empty($context['__amount_denormalizer_running'])) {
+        if (!empty($context[self::CONTEXT_FLAG])) {
             return false;
         }
 
-        return is_a($type, AmountDenormalizerAwareInterface::class, true) && (isset($data['amount']) || isset($data['finalAmount']));
+        return is_a($type, AmountDenormalizerAwareInterface::class, true)
+            && (isset($data['amount']) || isset($data['finalAmount']));
     }
 }
