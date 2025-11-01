@@ -2,69 +2,102 @@
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
+use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountDenormalizerAwareInterface;
+use Tiyn\MerchantApiSdk\Configuration\Normalizer\DateTimeDenormalizerAwareInterface;
 use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment;
+use Tiyn\MerchantApiSdk\Model\Property\Amount\AmountGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\Amount\AmountTrait;
+use Tiyn\MerchantApiSdk\Model\Property\Currency\CurrencyGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\Currency\CurrencyTrait;
+use Tiyn\MerchantApiSdk\Model\Property\CustomData\CustomDataGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\CustomData\CustomDataTrait;
+use Tiyn\MerchantApiSdk\Model\Property\CustomerPhone\CustomerPhoneGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\CustomerPhone\CustomerPhoneTrait;
+use Tiyn\MerchantApiSdk\Model\Property\DeliveryMethod\DeliveryMethodGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\DeliveryMethod\DeliveryMethodTrait;
+use Tiyn\MerchantApiSdk\Model\Property\Description\DescriptionGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\Description\DescriptionTrait;
+use Tiyn\MerchantApiSdk\Model\Property\Email\CustomerEmailGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\Email\CustomerEmailTrait;
+use Tiyn\MerchantApiSdk\Model\Property\ExpirationDate\ExpirationDateGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\ExpirationDate\ExpirationDateTrait;
+use Tiyn\MerchantApiSdk\Model\Property\ExternalId\ExternalIdGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\ExternalId\ExternalIdTrait;
+use Tiyn\MerchantApiSdk\Model\Property\FailUrl\FailUrlGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\FailUrl\FailUrlTrait;
+use Tiyn\MerchantApiSdk\Model\Property\FinalAmount\FinalAmountGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\FinalAmount\FinalAmountTrait;
+use Tiyn\MerchantApiSdk\Model\Property\OfdData\OfdDataGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\OfdData\OfdDataTrait;
+use Tiyn\MerchantApiSdk\Model\Property\SuccessUrl\SuccessUrlGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\SuccessUrl\SuccessUrlTrait;
+use Tiyn\MerchantApiSdk\Model\Property\Uuid\UuidGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\Uuid\UuidTrait;
 
-final class GetInvoiceResponse extends AbstractInvoice
+final class GetInvoiceResponse implements AmountDenormalizerAwareInterface, DateTimeDenormalizerAwareInterface
 {
-    private string $uuid;
+    use UuidTrait;
+    use UuidGetterTrait;
 
-    private string $finalAmount;
+    use ExternalIdTrait;
+    use ExternalIdGetterTrait;
+
+    use AmountTrait;
+    use AmountGetterTrait;
+
+    use FinalAmountTrait;
+    use FinalAmountGetterTrait;
+
+    use CurrencyTrait;
+    use CurrencyGetterTrait;
+
+    use DescriptionTrait;
+    use DescriptionGetterTrait;
+
+    use CustomerPhoneTrait;
+    use CustomerPhoneGetterTrait;
+
+    use CustomerEmailTrait;
+    use CustomerEmailGetterTrait;
+
+    use CustomDataTrait;
+    use CustomDataGetterTrait;
+
+    use SuccessUrlTrait;
+    use SuccessUrlGetterTrait;
+
+    use FailUrlTrait;
+    use FailUrlGetterTrait;
+
+    use DeliveryMethodTrait;
+    use DeliveryMethodGetterTrait;
+
+    use ExpirationDateTrait;
+    use ExpirationDateGetterTrait;
+
+    use OfdDataTrait;
+    use OfdDataGetterTrait;
 
     /**
      * @var Payment[]
      */
-    private array $payments;
+    private array $payments = [];
 
     /**
      * @var Status
      */
     private Status $status;
 
-    public function getUuid(): string
-    {
-        return $this->uuid;
-    }
-
-    public function setUuid(string $uuid): void
-    {
-        $this->uuid = $uuid;
-    }
-
-    public function getFinalAmount(): string
-    {
-        return $this->finalAmount;
-    }
-
-    public function setFinalAmount(string $finalAmount): void
-    {
-        $this->finalAmount = $finalAmount;
-    }
-
+    /**
+     * @return Payment[]
+     */
     public function getPayments(): array
     {
         return $this->payments;
     }
 
-    /**
-     * @param Payment[] $payments
-     * @return void
-     */
-    public function setPayments(array $payments): void
-    {
-        $this->payments = $payments;
-    }
-
     public function getStatus(): Status
     {
         return $this->status;
-    }
-
-    /**
-     * @param Status $status
-     * @return void
-     */
-    public function setStatus(Status $status): void
-    {
-        $this->status = $status;
     }
 }

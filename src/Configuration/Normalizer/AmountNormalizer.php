@@ -25,18 +25,25 @@ class AmountNormalizer implements NormalizerInterface, NormalizerAwareInterface
 
         $array = $this->normalizer->normalize($object, $format, $context);
         if (isset($array['amount'])) {
-            $array['amount'] = round((float) $array['amount'], 2);
+            $array['amount'] = $this->stringToFloat($array['amount']);
         }
 
         return $array;
     }
 
-    public function supportsNormalization(mixed $data, string $format = null): bool
+    public function supportsNormalization(mixed $data, string $format = null, ...$args): bool
     {
+        $context = $args[0] ?? [];
+
         if (!empty($context['__amount_normalizer_running'])) {
             return false;
         }
 
         return $data instanceof AmountNormalizerAwareInterface;
+    }
+
+    private function stringToFloat(string $stringFloat): float
+    {
+        return round((float) $stringFloat, 2);
     }
 }

@@ -22,8 +22,7 @@
         "symfony/serializer": ">=v6.1.0",
         "symfony/property-access": ">=v6.1.0",
         "symfony/property-info": "^6.4",
-        "phpdocumentor/reflection-docblock": "^5.6",
-        "jms/serializer": "^3.32"
+        "phpdocumentor/reflection-docblock": "^5.6"
     },
     "require-dev": {
         "phpstan/phpstan": "2.1.31",

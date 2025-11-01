@@ -2,23 +2,76 @@
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
-use Symfony\Component\Validator\Constraints as Assert;
+use Tiyn\MerchantApiSdk\Model\Property\{
+    Amount\AmountSetterTrait,
+    Amount\AmountTrait,
+    Currency\CurrencySetterTrait,
+    Currency\CurrencyTrait,
+    CustomData\CustomDataSetterTrait,
+    CustomData\CustomDataTrait,
+    CustomerIp\CustomerIpTrait,
+    CustomerPhone\CustomerPhoneSetterTrait,
+    CustomerPhone\CustomerPhoneTrait,
+    DeliveryMethod\DeliveryMethodSetterTrait,
+    DeliveryMethod\DeliveryMethodTrait,
+    Description\DescriptionSetterTrait,
+    Description\DescriptionTrait,
+    Email\CustomerEmailSetterTrait,
+    Email\CustomerEmailTrait,
+    ExpirationDate\ExpirationDateSetterTrait,
+    ExpirationDate\ExpirationDateTrait,
+    ExternalId\ExternalIdSetterTrait,
+    ExternalId\ExternalIdTrait,
+    FailUrl\FailUrlSetterTrait,
+    FailUrl\FailUrlTrait,
+    OfdData\OfdDataSetterTrait,
+    OfdData\OfdDataTrait,
+    SuccessUrl\SuccessUrlSetterTrait,
+    SuccessUrl\SuccessUrlTrait
+};
+use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountNormalizerAwareInterface;
 use Tiyn\MerchantApiSdk\Model\RequestModelInterface;
 
-final class CreateInvoiceRequest extends AbstractInvoice implements RequestModelInterface
+final class CreateInvoiceRequest implements
+    RequestModelInterface,
+    AmountNormalizerAwareInterface
 {
-    #[Assert\Ip]
-    private string $customerIp;
+    use ExternalIdTrait;
+    use ExternalIdSetterTrait;
 
-    public function getCustomerIp(): string
-    {
-        return $this->customerIp;
-    }
+    use AmountTrait;
+    use AmountSetterTrait;
 
-    public function setCustomerIp(string $customerIp): self
-    {
-        $this->customerIp = $customerIp;
+    use CurrencyTrait;
+    use CurrencySetterTrait;
 
-        return $this;
-    }
+    use DescriptionTrait;
+    use DescriptionSetterTrait;
+
+    use CustomerPhoneTrait;
+    use CustomerPhoneSetterTrait;
+
+    use CustomerEmailTrait;
+    use CustomerEmailSetterTrait;
+
+    use CustomDataTrait;
+    use CustomDataSetterTrait;
+
+    use SuccessUrlTrait;
+    use SuccessUrlSetterTrait;
+
+    use FailUrlTrait;
+    use FailUrlSetterTrait;
+
+    use DeliveryMethodTrait;
+    use DeliveryMethodSetterTrait;
+
+    use ExpirationDateTrait;
+    use ExpirationDateSetterTrait;
+
+    use OfdDataTrait;
+    use OfdDataSetterTrait;
+
+    use CustomerIpTrait;
+    use CustomDataSetterTrait;
 }

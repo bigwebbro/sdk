@@ -1,0 +1,45 @@
+<?php
+
+namespace Tiyn\MerchantApiSdk\Configuration\Normalizer;
+
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment;
+
+class PaymentsDenormalizer implements DenormalizerInterface, DenormalizerAwareInterface
+{
+    use DenormalizerAwareTrait;
+
+    private const CONTEXT_FLAG = '__payments_denormalizer_running';
+
+    /**
+     * @param mixed $data
+     * @param string $type
+     * @param string|null $format
+     * @param array<string,mixed> $context
+     * @return mixed|string
+     * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
+     */
+    public function denormalize($data, $type, $format = null, array $context = [])
+    {
+        $context[self::CONTEXT_FLAG] = true;
+
+        if ($data['payments'] && is_array($data['payments'])) {
+            $data['payments'] = $this->denormalizer->denormalize($data['payments'], Payment::class . '[]', $format, $context);
+        }
+
+        return $this->denormalizer->denormalize($data, $type, $format, $context);
+    }
+
+    public function supportsDenormalization($data, $type, $format = null, ...$args)
+    {
+        $context = $args[0] ?? [];
+
+        if (!empty($context[self::CONTEXT_FLAG])) {
+            return false;
+        }
+
+        return isset($data['payments']);
+    }
+}

@@ -2,39 +2,26 @@
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice\Payment;
 
+use Tiyn\MerchantApiSdk\Model\Invoice\Status;
+use Tiyn\MerchantApiSdk\Model\Property\PaymentMethod\PaymentMethodGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\PaymentMethod\PaymentMethodTrait;
+
 final class Payment
 {
-    private string $paymentMethod;
+    use PaymentMethodTrait;
+    use PaymentMethodGetterTrait;
+
     private Details $details;
+
     private Status $status;
-
-    public function getPaymentMethod(): string
-    {
-        return $this->paymentMethod;
-    }
-
-    public function setPaymentMethod(string $paymentMethod): void
-    {
-        $this->paymentMethod = $paymentMethod;
-    }
 
     public function getDetails(): Details
     {
         return $this->details;
     }
 
-    public function setDetails(Details $details): void
-    {
-        $this->details = $details;
-    }
-
     public function getStatus(): Status
     {
         return $this->status;
-    }
-
-    public function setStatus(Status $status): void
-    {
-        $this->status = $status;
     }
 }

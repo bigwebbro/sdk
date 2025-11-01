@@ -4,7 +4,7 @@ namespace Tiyn\MerchantApiSdk\Model\Property\Description;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-trait Description
+trait DescriptionTrait
 {
     #[Assert\NotBlank]
     #[Assert\Length(min: 1, max: 1000)]

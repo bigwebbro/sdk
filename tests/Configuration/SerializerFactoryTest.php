@@ -22,7 +22,7 @@ class SerializerFactoryTest extends TestCase
      */
     function SuccessSerializationWhenObjectWithoutGettersTest()
     {
-        $expectedJson = '{"requestId":"requestId","amount":"105.51","reason":"reason"}';
+        $expectedJson = '{"requestId":"requestId","amount":105.51,"reason":"reason"}';
         $createRefundRequest = (new CreateRefundRequest())
             ->setRequestId('requestId')
             ->setAmount("105.51")

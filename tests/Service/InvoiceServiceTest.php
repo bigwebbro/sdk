@@ -22,6 +22,7 @@ use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundRequest;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\CurrencyEnum;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
 use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceRequest;
+use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment;
 
 class InvoiceServiceTest extends TestCase
 {
@@ -173,10 +174,13 @@ class InvoiceServiceTest extends TestCase
             ->build();
 
         $invoiceRequest = new GetInvoiceRequest('asdasd');
-        $invoicesData = $sdk->invoice()->getInvoice($invoiceRequest);
+        $invoice = $sdk->invoice()->getInvoice($invoiceRequest);
+        self::assertEquals($invoice->getUuid(), self::INVOICE_UUID);
+        self::assertEquals($invoice->getExternalId(), self::INVOICE_EXTERNAL_ID);
 
-        self::assertEquals($invoicesData->getUuid(), self::INVOICE_UUID);
-        self::assertEquals($invoicesData->getExternalId(), self::INVOICE_EXTERNAL_ID);
+        foreach ($invoice->getPayments() as $payment) {
+            self::assertInstanceOf(Payment::class, $payment);
+        }
     }
 
     /**

@@ -33,8 +33,10 @@ class AmountDenormalizer implements DenormalizerInterface, DenormalizerAwareInte
         return $this->denormalizer->denormalize($data, $type, $format, $context);
     }
 
-    public function supportsDenormalization(mixed $data, string $type, ?string $format = null)
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, ...$args)
     {
+        $context = $args[0] ?? [];
+
         if (!empty($context['__amount_denormalizer_running'])) {
             return false;
         }
