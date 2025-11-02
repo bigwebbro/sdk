@@ -6,7 +6,7 @@ namespace Tiyn\MerchantApiSdk\Client\Guzzle\Request;
 
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface as PsrRequestInterface;
-use Tiyn\MerchantApiSdk\Client\Sign\Sign;
+use Tiyn\MerchantApiSdk\Client\Util\Sign\Sign;
 
 class RequestBuilder
 {
