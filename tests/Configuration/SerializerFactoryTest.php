@@ -24,11 +24,10 @@ class SerializerFactoryTest extends TestCase
      */
     public function SuccessSerializationWhenObjectWithoutGettersTest(): void
     {
-        $expectedJson = '{"requestId":"requestId","amount":105.51,"reason":"reason"}';
+        $expectedJson = '{"requestId":"requestId","reason":"reason"}';
         $createRefundRequest = (new CreateRefundRequest())
             ->setRequestId('requestId')
-            ->setAmount("105.51")
-            ->setReason("reason")
+            ->setReason('reason')
         ;
 
         $result = $this->serializer->serialize($createRefundRequest, 'json');
@@ -44,10 +43,58 @@ class SerializerFactoryTest extends TestCase
         $requestId = 'requestId';
         $uuid = '123';
 
-        $result = $this->serializer->deserialize(\sprintf('{"requestId":"%s","uuid":"%s"}', $requestId, $uuid), CreateRefundResponse::class, 'json');
+        $result = $this->serializer->deserialize(
+            \sprintf('{"requestId":"%s","uuid":"%s"}', $requestId, $uuid),
+            CreateRefundResponse::class,
+            'json'
+        );
 
         self::assertEquals($requestId, $result->getRequestId());
         self::assertEquals($uuid, $result->getUuid());
     }
 
+    /**
+     * @test
+     * @dataProvider amountProvider
+     */
+    public function SerializationAmountToFloat(string $stringAmount, float $floatAmount): void
+    {
+        $expectedJson = \sprintf('{"requestId":"requestId","amount":%f,"reason":"reason"}', $floatAmount);
+        $createRefundRequest = (new CreateRefundRequest())
+            ->setRequestId('requestId')
+            ->setAmount($stringAmount)
+            ->setReason('reason')
+        ;
+
+        $result = $this->serializer->serialize($createRefundRequest, 'json');
+
+        self::assertJsonStringEqualsJsonString($expectedJson, $result);
+    }
+
+    /**
+     * @test
+     * @dataProvider amountProvider
+     */
+    public function DeserializationAmountToString(string $stringAmount, float $floatAmount): void
+    {
+        $result = $this->serializer->deserialize(
+            \sprintf('{"requestId":"requestId","amount":%f,"reason":"reason"}', $floatAmount),
+            CreateRefundRequest::class,
+            'json'
+        );
+
+        $property = (new \ReflectionClass($result))->getProperty('amount');
+
+        self::assertIsString($property->getValue($result));
+        self::assertEquals((string) round((float) $stringAmount, 2), $property->getValue($result));
+    }
+
+    public static function amountProvider(): array
+    {
+        return [
+            ['13.1', 13.1],
+            ['2444.444444', 2444.44],
+            ['2444.445', 2444.45],
+        ];
+    }
 }
