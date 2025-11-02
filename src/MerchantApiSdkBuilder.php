@@ -6,22 +6,9 @@ namespace Tiyn\MerchantApiSdk;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
-use Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor;
-use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
-use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
-use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\Serializer\Encoder\JsonDecode;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Validator\Validation;
@@ -29,10 +16,9 @@ use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientExceptionDecorator;
 use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientLoggingDecorator;
 use Tiyn\MerchantApiSdk\Client\Guzzle\GuzzleHttpClientBuilder;
 use Tiyn\MerchantApiSdk\Client\HttpClientBuilderInterface;
+use Tiyn\MerchantApiSdk\Client\Util\Clock\Clock;
 use Tiyn\MerchantApiSdk\Configuration\DecoderAwareInterface;
 use Tiyn\MerchantApiSdk\Configuration\DecoderAwareTrait;
-use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountDenormalizer;
-use Tiyn\MerchantApiSdk\Configuration\Normalizer\AmountNormalizer;
 use Tiyn\MerchantApiSdk\Configuration\Normalizer\DataTimeDenormalizer;
 use Tiyn\MerchantApiSdk\Configuration\SerializerFactory;
 use Tiyn\MerchantApiSdk\Configuration\ValidatorAwareInterface;
@@ -152,6 +138,7 @@ final class MerchantApiSdkBuilder implements
 
                 if (HttpClientLoggingDecorator::class === $decorator) {
                     $client->setLogger($this->logger);
+                    $client->setClock(new Clock());
                 }
             }
         }
