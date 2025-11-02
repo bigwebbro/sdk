@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Service;
 
+use GuzzleHttp\Exception\ConnectException as GuzzleConnectException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -14,6 +16,8 @@ use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientLoggingDecorator;
 use Tiyn\MerchantApiSdk\Exception\Api\ApiKeyException;
 use Tiyn\MerchantApiSdk\Exception\Api\EntityErrorException;
 use Tiyn\MerchantApiSdk\Exception\Api\SignException;
+use Tiyn\MerchantApiSdk\Exception\Service\ServiceUnavailableException;
+use Tiyn\MerchantApiSdk\Exception\Transport\ConnectionException;
 use Tiyn\MerchantApiSdk\Exception\Validation\JsonProcessingException;
 use Tiyn\MerchantApiSdk\MerchantApiSdkBuilder;
 use Tiyn\MerchantApiSdk\Model\Error;
@@ -283,6 +287,15 @@ class InvoiceServiceTest extends TestCase
                         "correlationId": "%s"
                     }
                 }', self::ERROR_CODE, self::ERROR_FORBIDDEN_MESSAGE, self::ERROR_CORRELATION_ID))])
+            ],
+            // 500 & string body
+            [
+                ServiceUnavailableException::class,
+                new MockHandler([new Response(500, [], '500 Service Unavailable')])
+            ],
+            [
+                ConnectionException::class,
+                new MockHandler([new GuzzleConnectException('111', new Request('GET', 'http://test'))])
             ],
         ];
     }
