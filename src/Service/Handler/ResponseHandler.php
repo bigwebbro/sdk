@@ -8,11 +8,11 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 use Tiyn\MerchantApiSdk\Exception\Api\ApiKeyException;
 use Tiyn\MerchantApiSdk\Exception\Api\ApiMerchantErrorException;
 use Tiyn\MerchantApiSdk\Exception\Api\EntityErrorException;
 use Tiyn\MerchantApiSdk\Exception\Api\SignException;
+use Tiyn\MerchantApiSdk\Exception\Service\ServiceUnavailableException;
 use Tiyn\MerchantApiSdk\Exception\Validation\JsonProcessingException;
 use Tiyn\MerchantApiSdk\Exception\Validation\WrongDataException;
 use Tiyn\MerchantApiSdk\Model\Error;
@@ -23,7 +23,8 @@ class ResponseHandler implements ResponseHandlerInterface
     public function __construct(
         private readonly DecoderInterface      $decoder,
         private readonly DenormalizerInterface $denormalizer,
-    ) {
+    )
+    {
     }
 
     /**
@@ -32,7 +33,12 @@ class ResponseHandler implements ResponseHandlerInterface
     public function handleResponse(ResponseInterface $response): array
     {
         $statusCode = $response->getStatusCode();
-        $body = (string) $response->getBody();
+        $body = (string)$response->getBody();
+
+        if ($statusCode >= 500) {
+            throw new ServiceUnavailableException(sprintf('Service unavailable with status code %d', $statusCode), $statusCode);
+        }
+
         try {
             $array = $this->decoder->decode($body, 'json', ['json_decode_associative' => true]);
         } catch (ExceptionInterface $e) {
