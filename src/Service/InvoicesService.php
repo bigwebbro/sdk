@@ -18,7 +18,7 @@ use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceResponse;
 use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandlerInterface;
 use Tiyn\MerchantApiSdk\Service\Handler\RequestHandlerInterface;
 
-class InvoicesService
+class InvoicesService implements InvoicesServiceInterface
 {
     public const INVOICE_ENDPOINT = '/invoices';
 
@@ -39,7 +39,6 @@ class InvoicesService
 
         $request = (new RequestBuilder())
             ->withMethod('POST')
-            ->withHeaders(['Content-Type' => 'application/json']) // TODO вынести в конфиг клиента
             ->withBody($json)
             ->withEndpoint(self::INVOICE_ENDPOINT)
             ->buildWithSign($this->secretPhrase)
@@ -48,7 +47,6 @@ class InvoicesService
         $response = $this->client->sendRequest($request);
         $result = $this->responseHandler->handleResponse($response);
 
-        // TODO перенести в ResponseHandler
         try {
             $invoiceData = $this->denormalizer->denormalize($result, CreateInvoiceResponse::class);
         } catch (ExceptionInterface $e) {
@@ -62,15 +60,13 @@ class InvoicesService
     {
         $request = (new RequestBuilder())
             ->withMethod('GET')
-            ->withHeaders(['Content-Type' => 'application/json']) // TODO вынести в конфиг клиента
             ->withEndpoint(\sprintf('%s/%s', self::INVOICE_ENDPOINT, $command->getUuid()))
-            ->buildWithSign($this->secretPhrase)
+            ->build()
         ;
 
         $response = $this->client->sendRequest($request);
         $result = $this->responseHandler->handleResponse($response);
 
-        // TODO перенести в ResponseHandler
         try {
             $invoice = $this->denormalizer->denormalize($result, GetInvoiceResponse::class);
         } catch (ExceptionInterface $e) {
@@ -86,7 +82,6 @@ class InvoicesService
 
         $request = (new RequestBuilder())
             ->withMethod('PUT')
-            ->withHeaders(['Content-Type' => 'application/json']) // TODO вынести в конфиг клиента
             ->withBody($json)
             ->withEndpoint(\sprintf(self::INVOICE_REFUND_ENDPOINT, $invoiceUuid))
             ->buildWithSign($this->secretPhrase)

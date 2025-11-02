@@ -12,7 +12,10 @@ use GuzzleHttp\Psr7\Response;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
-use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientLoggingDecorator;
+use Tiyn\MerchantApiSdk\Client\ClientBuilderInterface;
+use Tiyn\MerchantApiSdk\Client\Decorator\ClientLoggingDecorator;
+use Tiyn\MerchantApiSdk\Client\Guzzle\ClientBuilder;
+use Tiyn\MerchantApiSdk\Client\Util\Clock\Clock;
 use Tiyn\MerchantApiSdk\Exception\Api\ApiKeyException;
 use Tiyn\MerchantApiSdk\Exception\Api\EntityErrorException;
 use Tiyn\MerchantApiSdk\Exception\Api\SignException;
@@ -40,6 +43,8 @@ class InvoiceServiceTest extends TestCase
     public const ERROR_ENTITY_MESSAGE = "Invalid expiration date";
     public const ERROR_CORRELATION_ID = "9f63d8d9-4260-432f-a47d-3eead8a3c6e7";
 
+    private ClientBuilderInterface $client;
+
     private MerchantApiSdkBuilder $sdkBuilder;
 
     protected function setUp(): void
@@ -47,15 +52,16 @@ class InvoiceServiceTest extends TestCase
         $logger = new Logger('test-logger');
         $logger->pushHandler(new StreamHandler('php://stdout'));
 
-        $builder = (new MerchantApiSdkBuilder())
+        $this->client = (new ClientBuilder())
             ->setBaseUri('https://test')
             ->setTimeout(5)
             ->setApiKey('test-api-key')
-            ->addHttpApiClientDecorator(HttpClientLoggingDecorator::class)
-            ->setSecretPhrase('test-secret-phrase');
-        $builder->setLogger($logger);
+            ->addDecorator(new ClientLoggingDecorator($logger, new Clock()))
+        ;
 
-        $this->sdkBuilder = $builder;
+        $this->sdkBuilder = (new MerchantApiSdkBuilder())
+            ->setSecretPhrase('test-secret-phrase')
+        ;
     }
 
     /**
@@ -66,7 +72,11 @@ class InvoiceServiceTest extends TestCase
     {
         $sdk = $this
             ->sdkBuilder
-            ->setClientOptions(['handler' => HandlerStack::create($mock)])
+            ->setClient(
+                $this->client
+                ->setOptions(['handler' => HandlerStack::create($mock)])
+                ->build()
+            )
             ->build();
 
         if (null !== $exception) {
@@ -172,9 +182,14 @@ class InvoiceServiceTest extends TestCase
                 new Response(200, [], $json)
             ]
         );
+
         $sdk = $this
             ->sdkBuilder
-            ->setClientOptions(['handler' => HandlerStack::create($mock)])
+            ->setClient(
+                $this->client
+                    ->setOptions(['handler' => HandlerStack::create($mock)])
+                    ->build()
+            )
             ->build();
 
         $invoiceRequest = new GetInvoiceRequest('asdasd');
@@ -210,9 +225,14 @@ class InvoiceServiceTest extends TestCase
                 new Response(200, [], $returnedJson)
             ]
         );
+
         $sdk = $this
             ->sdkBuilder
-            ->setClientOptions(['handler' => HandlerStack::create($mock)])
+            ->setClient(
+                $this->client
+                    ->setOptions(['handler' => HandlerStack::create($mock)])
+                    ->build()
+            )
             ->build();
 
         $createRefundRequest = (new CreateRefundRequest())

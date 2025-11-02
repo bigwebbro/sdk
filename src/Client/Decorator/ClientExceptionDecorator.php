@@ -10,12 +10,9 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Tiyn\MerchantApiSdk\Exception\Transport\ConnectionException;
 
-final class HttpClientExceptionDecorator implements ClientInterface
+final class ClientExceptionDecorator implements ClientInterface, ClientDecoratorAwareInterface
 {
-    public function __construct(
-        private readonly ClientInterface $inner,
-    ) {
-    }
+    use ClientDecoratorAwareTrait;
 
     /**
      * @inheritdoc

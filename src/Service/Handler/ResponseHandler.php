@@ -23,8 +23,7 @@ class ResponseHandler implements ResponseHandlerInterface
     public function __construct(
         private readonly DecoderInterface      $decoder,
         private readonly DenormalizerInterface $denormalizer,
-    )
-    {
+    ) {
     }
 
     /**
@@ -36,7 +35,7 @@ class ResponseHandler implements ResponseHandlerInterface
         $body = (string)$response->getBody();
 
         if ($statusCode >= 500) {
-            throw new ServiceUnavailableException(sprintf('Service unavailable with status code %d', $statusCode), $statusCode);
+            throw new ServiceUnavailableException(\sprintf('Service unavailable with status code %d', $statusCode), $statusCode);
         }
 
         try {

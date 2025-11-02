@@ -8,19 +8,17 @@ use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
-use Tiyn\MerchantApiSdk\Client\Util\Clock\ClockAwareInterface;
-use Tiyn\MerchantApiSdk\Client\Util\Clock\ClockAwareTrait;
+use Psr\Log\LoggerInterface;
+use Tiyn\MerchantApiSdk\Client\Util\Clock\ClockInterface;
 
-final class HttpClientLoggingDecorator implements ClientInterface, LoggerAwareInterface, ClockAwareInterface
+final class ClientLoggingDecorator implements ClientInterface, ClientDecoratorAwareInterface
 {
-    use LoggerAwareTrait;
-    use ClockAwareTrait;
+    use ClientDecoratorAwareTrait;
 
-    public function __construct(
-        private ClientInterface $inner,
-    ) {
+    private ClientInterface $inner;
+
+    public function __construct(private readonly LoggerInterface $logger, private readonly ClockInterface $clock)
+    {
     }
 
     /**

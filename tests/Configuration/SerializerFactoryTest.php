@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Configuration;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
-use Tiyn\MerchantApiSdk\Configuration\SerializerFactory;
-use PHPUnit\Framework\TestCase;
+use Tiyn\MerchantApiSdk\Configuration\Serializer\SerializerFactory;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
-use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundResponse;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundRequest;
+use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundResponse;
 
 class SerializerFactoryTest extends TestCase
 {
@@ -91,6 +91,9 @@ class SerializerFactoryTest extends TestCase
         self::assertEquals((string) round((float) $stringAmount, 2), $property->getValue($result));
     }
 
+    /**
+     * @return array<int, list<string|float>>
+     */
     public static function amountProvider(): array
     {
         return [
