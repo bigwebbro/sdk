@@ -9,7 +9,6 @@ use Tiyn\MerchantApiSdk\Configuration\Validation\CurrencyConstraint as AssertCur
 
 trait CurrencyTrait
 {
-    #[Assert\NotBlank]
     #[AssertCurrency]
     private string $currency;
 }
