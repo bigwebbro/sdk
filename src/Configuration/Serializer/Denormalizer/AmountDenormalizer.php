@@ -37,8 +37,11 @@ final class AmountDenormalizer implements DenormalizerInterface, DenormalizerAwa
      * @inheritDoc
      * @phpstan-ignore-next-line
      */
-    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null): bool
     {
+        $args = \func_get_args();
+        $context = $args[3] ?? [];
+
         if (!empty($context[self::CONTEXT_FLAG])) {
             return false;
         }

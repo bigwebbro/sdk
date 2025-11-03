@@ -34,9 +34,10 @@ final class DetailsDenormalizer implements DenormalizerInterface, DenormalizerAw
      * @inheritDoc
      * @phpstan-ignore-next-line
      */
-    public function supportsDenormalization($data, $type, $format = null, ...$args)
+    public function supportsDenormalization($data, $type, $format = null)
     {
-        $context = $args[0] ?? [];
+        $args = \func_get_args();
+        $context = $args[3] ?? [];
 
         if (!empty($context[self::CONTEXT_FLAG])) {
             return false;

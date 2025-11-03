@@ -38,9 +38,10 @@ final class DateTimeDenormalizer implements DenormalizerInterface, DenormalizerA
      * @inheritDoc
      * @phpstan-ignore-next-line
      */
-    public function supportsDenormalization($data, $type, $format = null, ...$args): bool
+    public function supportsDenormalization($data, $type, $format = null): bool
     {
-        $context = $args[0] ?? [];
+        $args = \func_get_args();
+        $context = $args[3] ?? [];
 
         if (!empty($context[self::CONTEXT_FLAG])) {
             return false;
