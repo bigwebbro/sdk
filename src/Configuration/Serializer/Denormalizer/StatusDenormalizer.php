@@ -31,7 +31,6 @@ final class StatusDenormalizer implements DenormalizerInterface, DenormalizerAwa
 
     /**
      * @inheritDoc
-     * @phpstan-ignore-next-line
      */
     public function supportsDenormalization($data, $type, $format = null): bool
     {

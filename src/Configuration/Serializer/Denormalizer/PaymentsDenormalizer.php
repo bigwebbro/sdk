@@ -32,7 +32,6 @@ final class PaymentsDenormalizer implements DenormalizerInterface, DenormalizerA
 
     /**
      * @inheritDoc
-     * @phpstan-ignore-next-line
      */
     public function supportsDenormalization($data, $type, $format = null)
     {

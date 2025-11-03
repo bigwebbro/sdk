@@ -38,12 +38,12 @@ final class SerializerFactory
 
         return new Serializer(
             [
-                new DetailsDenormalizer(),
+                DetailsDenormalizer::create(),
                 new PaymentsDenormalizer(),
                 new StatusDenormalizer(),
                 new DateTimeDenormalizer(),
                 new DateTimeNormalizer([DateTimeNormalizer::FORMAT_KEY => self::DATE_TIME_FORMAT]),
-                new AmountDenormalizer(),
+                AmountDenormalizer::create(),
                 new AmountNormalizer(),
                 new PropertyNormalizer(),
                 new ArrayDenormalizer(),

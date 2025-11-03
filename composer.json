@@ -6,7 +6,10 @@
         "psr-4": {
             "Tiyn\\MerchantApiSdk\\": "src/",
             "Tests\\": "tests/"
-        }
+        },
+        "files": [
+            "src/functions.php"
+        ]
     },
     "authors": [
         {
