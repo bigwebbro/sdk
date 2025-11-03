@@ -7,8 +7,7 @@ permissions:
   contents: read
 
 jobs:
-  quality_checks:
-
+  quality_checks_on_high_versions:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -51,3 +50,47 @@ jobs:
 
     - name: Run tests with PHP ${{ matrix.php-versions }}
       run: make phpunit
+
+  quality_checks_on_low_versions:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: ['8.1', '8.2', '8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Set up PHP ${{ matrix.php-versions }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        run: composer update --prefer-lowest --prefer-dist
+
+      - name: Composer audit
+        run: make audit
+
+      - name: Run linting with PHP ${{ matrix.php-versions }}
+        run: make csfix-dry
+
+      - name: Run rector with PHP ${{ matrix.php-versions }}
+        run: make rector-dry
+
+      - name: Run phpstan with PHP ${{ matrix.php-versions }}
+        run: make phpstan
+
+      - name: Run tests with PHP ${{ matrix.php-versions }}
+        run: make phpunit

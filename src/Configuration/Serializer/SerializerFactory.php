@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Configuration\Serializer;
 
-use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -30,7 +29,6 @@ class SerializerFactory
     public static function init(): SerializerInterface | NormalizerInterface |DenormalizerInterface
     {
         $extractor = new PropertyInfoExtractor(typeExtractors: [
-            new PhpDocExtractor(),
             new ReflectionExtractor(),
         ]);
 
