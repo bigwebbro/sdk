@@ -16,17 +16,4 @@ final class CreateRefundResponse
 
     use RequestIdTrait;
     use RequestIdGetterTrait;
-    //    private string $uuid;
-
-    //    private string $requestId;
-
-    //    public function getUuid(): string
-    //    {
-    //        return $this->uuid;
-    //    }
-    //
-    //    public function getRequestId(): string
-    //    {
-    //        return $this->requestId;
-    //    }
 }

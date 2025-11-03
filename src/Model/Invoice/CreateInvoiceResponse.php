@@ -4,27 +4,21 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
+use Tiyn\MerchantApiSdk\Model\Property\ExternalId\ExternalIdGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\ExternalId\ExternalIdTrait;
+use Tiyn\MerchantApiSdk\Model\Property\PaymentLink\PaymentLinkGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\PaymentLink\PaymentLinkTrait;
+use Tiyn\MerchantApiSdk\Model\Property\Uuid\UuidGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\Uuid\UuidTrait;
+
 final class CreateInvoiceResponse
 {
-    public function __construct(
-        private readonly string $uuid,
-        private readonly string $externalId,
-        private readonly string $paymentLink
-    ) {
-    }
+    use UuidTrait;
+    use UuidGetterTrait;
 
-    public function getUuid(): string
-    {
-        return $this->uuid;
-    }
+    use ExternalIdTrait;
+    use ExternalIdGetterTrait;
 
-    public function getExternalId(): string
-    {
-        return $this->externalId;
-    }
-
-    public function getPaymentLink(): string
-    {
-        return trim($this->paymentLink);
-    }
+    use PaymentLinkTrait;
+    use PaymentLinkGetterTrait;
 }
