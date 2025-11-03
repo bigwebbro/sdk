@@ -6,7 +6,7 @@ namespace Tiyn\MerchantApiSdk\Client\Guzzle\Request;
 
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface as PsrRequestInterface;
-use Tiyn\MerchantApiSdk\Client\Sign\Sign;
+use Tiyn\MerchantApiSdk\Client\Util\Sign\Sign;
 
 class RequestBuilder
 {
@@ -16,7 +16,7 @@ class RequestBuilder
     /**
      * @var string[]|string[][]
      */
-    private array $headers;
+    private array $headers = [];
     private ?string $body = null;
 
     public function withMethod(string $method): self
@@ -60,5 +60,10 @@ class RequestBuilder
         }
 
         return $request;
+    }
+
+    public function build(): PsrRequestInterface
+    {
+        return new Request($this->method, $this->endpoint, $this->headers, $this->body);
     }
 }

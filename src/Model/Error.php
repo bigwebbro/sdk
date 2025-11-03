@@ -27,17 +27,4 @@ final class Error
     {
         return $this->correlationId;
     }
-
-    /**
-     * @param array<string, mixed> $data
-     * @return self
-     */
-    public static function fromArray(array $data): self
-    {
-        return new self(
-            code: $data['code'],
-            message: $data['message'],
-            correlationId: $data['correlationId']
-        );
-    }
 }

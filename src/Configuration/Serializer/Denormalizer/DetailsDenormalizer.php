@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer;
+
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Details;
+
+class DetailsDenormalizer implements DenormalizerInterface, DenormalizerAwareInterface
+{
+    use DenormalizerAwareTrait;
+
+    private const CONTEXT_FLAG = '__details_denormalizer_running';
+
+    /**
+     * @inheritDoc
+     * @phpstan-ignore-next-line
+     */
+    public function denormalize($data, $type, $format = null, array $context = [])
+    {
+        $context[self::CONTEXT_FLAG] = true;
+
+        if ($data['details'] && \is_array($data['details'])) {
+            $data['details'] = $this->denormalizer->denormalize($data['details'], Details::class, $format, $context);
+        }
+
+        return $this->denormalizer->denormalize($data, $type, $format, $context);
+    }
+
+    /**
+     * @inheritDoc
+     * @phpstan-ignore-next-line
+     */
+    public function supportsDenormalization($data, $type, $format = null, ...$args)
+    {
+        $context = $args[0] ?? [];
+
+        if (!empty($context[self::CONTEXT_FLAG])) {
+            return false;
+        }
+
+        return isset($data['details']);
+    }
+}

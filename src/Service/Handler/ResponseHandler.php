@@ -5,31 +5,52 @@ declare(strict_types=1);
 namespace Tiyn\MerchantApiSdk\Service\Handler;
 
 use Psr\Http\Message\ResponseInterface;
-use Tiyn\MerchantApiSdk\Exception\Api\ApiKeyException;
-use Tiyn\MerchantApiSdk\Exception\Api\ApiMerchantErrorException;
-use Tiyn\MerchantApiSdk\Exception\Api\EntityErrorException;
-use Tiyn\MerchantApiSdk\Exception\Api\SignException;
-use Tiyn\MerchantApiSdk\Exception\Validation\JsonProcessingException;
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Tiyn\MerchantApiSdk\Model\Error;
-use Tiyn\MerchantApiSdk\Exception\Validation\EmptyDataException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiKeyException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiMerchantErrorException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\EntityErrorException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\SignException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceUnavailableException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\EmptyDataException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\WrongDataException;
 
-class ResponseHandler implements ResponseHandlerInterface
+final class ResponseHandler implements ResponseHandlerInterface
 {
+    public function __construct(
+        private readonly DecoderInterface      $decoder,
+        private readonly DenormalizerInterface $denormalizer,
+    ) {
+    }
+
     /**
      * @inheritDoc
      */
     public function handleResponse(ResponseInterface $response): array
     {
         $statusCode = $response->getStatusCode();
-        $body = (string) $response->getBody();
-        try {
-            $result = json_decode($body, true, flags: JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
-            throw new JsonProcessingException($e->getMessage(), $statusCode, $e);
+        $body = (string)$response->getBody();
+
+        if ($statusCode >= 500) {
+            throw new ServiceUnavailableException(\sprintf('Service unavailable with status code %d', $statusCode), $statusCode);
         }
 
-        if (isset($result['error'])) {
-            $error = Error::fromArray($result['error']);
+        try {
+            $array = $this->decoder->decode($body, 'json', ['json_decode_associative' => true]);
+        } catch (ExceptionInterface $e) {
+            throw new JsonProcessingException($e->getMessage(), $e->getCode(), $e);
+        }
+
+        if (isset($array['error'])) {
+            try {
+                $error = $this->denormalizer->denormalize($array['error'], Error::class, 'json');
+            } catch (ExceptionInterface $e) {
+                throw new WrongDataException($e->getMessage(), $e->getCode(), $e);
+            }
+
             throw match ($statusCode) {
                 400 => new EntityErrorException($error, $statusCode),
                 401 => new ApiKeyException($error, $statusCode),
@@ -38,12 +59,12 @@ class ResponseHandler implements ResponseHandlerInterface
             };
         }
 
-        if (isset($result['data'])) {
-            return $result['data'];
+        if (isset($array['data'])) {
+            return $array['data'];
         }
 
-        if (!empty($result)) {
-            return $result;
+        if (!empty($array)) {
+            return $array;
         }
 
         throw new EmptyDataException("Unexpected error", $response->getStatusCode());

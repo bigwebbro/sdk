@@ -4,34 +4,94 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
-use Tiyn\MerchantApiSdk\Exception\Validation\WrongDataException;
+use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\AmountDenormalizerAwareInterface;
+use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\AmountNormalizerAwareInterface;
 use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment;
+use Tiyn\MerchantApiSdk\Model\Property\{
+    Amount\AmountGetterTrait,
+    Amount\AmountTrait,
+    Currency\CurrencyGetterTrait,
+    Currency\CurrencyTrait,
+    CustomData\CustomDataGetterTrait,
+    CustomData\CustomDataTrait,
+    CustomerPhone\CustomerPhoneGetterTrait,
+    CustomerPhone\CustomerPhoneTrait,
+    DeliveryMethod\DeliveryMethodGetterTrait,
+    DeliveryMethod\DeliveryMethodTrait,
+    Description\DescriptionGetterTrait,
+    Description\DescriptionTrait,
+    Email\CustomerEmailGetterTrait,
+    Email\CustomerEmailTrait,
+    ExpirationDate\ExpirationDateGetterTrait,
+    ExpirationDate\ExpirationDateTrait,
+    ExternalId\ExternalIdGetterTrait,
+    ExternalId\ExternalIdTrait,
+    FailUrl\FailUrlGetterTrait,
+    FailUrl\FailUrlTrait,
+    FinalAmount\FinalAmountGetterTrait,
+    FinalAmount\FinalAmountTrait,
+    OfdData\OfdDataGetterTrait,
+    OfdData\OfdDataTrait,
+    SuccessUrl\SuccessUrlGetterTrait,
+    SuccessUrl\SuccessUrlTrait,
+    Uuid\UuidGetterTrait,
+    Uuid\UuidTrait
+};
 
-final class GetInvoiceResponse extends AbstractInvoice
+final class GetInvoiceResponse implements AmountDenormalizerAwareInterface, AmountNormalizerAwareInterface
 {
-    private string $uuid;
+    use UuidTrait;
+    use UuidGetterTrait;
 
-    private string $finalAmount;
+    use ExternalIdTrait;
+    use ExternalIdGetterTrait;
+
+    use AmountTrait;
+    use AmountGetterTrait;
+
+    use FinalAmountTrait;
+    use FinalAmountGetterTrait;
+
+    use CurrencyTrait;
+    use CurrencyGetterTrait;
+
+    use DescriptionTrait;
+    use DescriptionGetterTrait;
+
+    use CustomerPhoneTrait;
+    use CustomerPhoneGetterTrait;
+
+    use CustomerEmailTrait;
+    use CustomerEmailGetterTrait;
+
+    use CustomDataTrait;
+    use CustomDataGetterTrait;
+
+    use SuccessUrlTrait;
+    use SuccessUrlGetterTrait;
+
+    use FailUrlTrait;
+    use FailUrlGetterTrait;
+
+    use DeliveryMethodTrait;
+    use DeliveryMethodGetterTrait;
+
+    use ExpirationDateTrait;
+    use ExpirationDateGetterTrait;
+
+    use OfdDataTrait;
+    use OfdDataGetterTrait;
 
     /**
      * @var Payment[]
      */
-    private array $payments;
+    private array $payments = [];
 
     /**
      * @var Status
+     * @phpstan-ignore-next-line
      */
     private Status $status;
-
-    public function getUuid(): string
-    {
-        return $this->uuid;
-    }
-
-    public function getFinalAmount(): string
-    {
-        return $this->finalAmount;
-    }
 
     /**
      * @return Payment[]
@@ -44,126 +104,5 @@ final class GetInvoiceResponse extends AbstractInvoice
     public function getStatus(): Status
     {
         return $this->status;
-    }
-
-
-    public function getExternalId(): string
-    {
-        return $this->externalId;
-    }
-
-    public function getAmount(): string
-    {
-        return $this->amount;
-    }
-
-    public function getCurrency(): string
-    {
-        return $this->currency;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function getCustomerPhone(): ?string
-    {
-        return $this->customerPhone;
-    }
-
-    public function getCustomerEmail(): ?string
-    {
-        return $this->customerEmail;
-    }
-
-    /**
-     * @return array<string, mixed>|null
-     */
-    public function getCustomData(): ?array
-    {
-        return $this->customData;
-    }
-
-    public function getSuccessUrl(): ?string
-    {
-        return $this->successUrl;
-    }
-
-    public function getFailUrl(): ?string
-    {
-        return $this->failUrl;
-    }
-
-    public function getDeliveryMethod(): ?string
-    {
-        return $this->deliveryMethod;
-    }
-
-    public function getExpirationDate(): ?\DateTimeImmutable
-    {
-        return $this->expirationDate;
-    }
-
-    /**
-     * @return array<string, mixed>|null
-     */
-    public function getOfdData(): ?array
-    {
-        return $this->ofdData;
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     * @return self
-     */
-    public static function fromArray(array $data): self
-    {
-        // TODO вынести
-        $expirationDate = null;
-        if (!empty($data['expirationDate'])) {
-            $expirationDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s.uP', $data['expirationDate']);
-            if (false === $expirationDate) {
-                throw new WrongDataException('Invalid expirationDate format');
-            }
-        }
-
-        $invoice = new self();
-        $invoice->externalId = $data['externalId'];
-        $invoice->amount = $data['amount'];
-        $invoice->finalAmount = $data['finalAmount'];
-        $invoice->currency = $data['currency'];
-        $invoice->description = $data['description'];
-        $invoice->deliveryMethod = $data['deliveryMethod'];
-        $invoice->expirationDate = $expirationDate;
-        $invoice->uuid = $data['uuid'];
-        $invoice->status = Status::fromArray($data['status']);
-
-        if (isset($data['customerPhone'])) {
-            $invoice->customerPhone = $data['customerPhone'];
-        }
-        if (isset($data['customerEmail'])) {
-            $invoice->customerEmail = $data['customerEmail'];
-        }
-        if (isset($data['customData'])) {
-            $invoice->customData = $data['customData'];
-        }
-        if (isset($data['successUrl'])) {
-            $invoice->successUrl = $data['successUrl'];
-        }
-        if (isset($data['failUrl'])) {
-            $invoice->failUrl = $data['failUrl'];
-        }
-        if (isset($data['ofdData'])) {
-            $invoice->ofdData = $data['ofdData'];
-        }
-
-        $payments = [];
-        foreach ($data['payments'] ?? [] as $paymentData) {
-            $payments[] = Payment::fromArray($paymentData);
-        }
-        $invoice->payments = $payments;
-
-        return $invoice;
     }
 }

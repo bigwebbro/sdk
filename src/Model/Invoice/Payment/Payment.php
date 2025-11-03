@@ -4,18 +4,28 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice\Payment;
 
+use Tiyn\MerchantApiSdk\Model\Invoice\Status;
+use Tiyn\MerchantApiSdk\Model\Property\PaymentMethod\PaymentMethodGetterTrait;
+use Tiyn\MerchantApiSdk\Model\Property\PaymentMethod\PaymentMethodTrait;
+
 final class Payment
 {
-    private string $paymentMethod;
-    private ?Details $details = null;
+    use PaymentMethodTrait;
+    use PaymentMethodGetterTrait;
+
+    /**
+     * @var Details
+     * @phpstan-ignore-next-line
+     */
+    private Details $details;
+
+    /**
+     * @var Status
+     * @phpstan-ignore-next-line
+     */
     private Status $status;
 
-    public function getPaymentMethod(): string
-    {
-        return $this->paymentMethod;
-    }
-
-    public function getDetails(): ?Details
+    public function getDetails(): Details
     {
         return $this->details;
     }
@@ -23,26 +33,5 @@ final class Payment
     public function getStatus(): Status
     {
         return $this->status;
-    }
-
-    public function setStatus(Status $status): void
-    {
-        $this->status = $status;
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     * @return self
-     */
-    public static function fromArray(array $data): self
-    {
-        $payment = new self();
-        $payment->paymentMethod = $data['paymentMethod'];
-        if (isset($data['details'])) {
-            $payment->details = Details::fromArray($data['details']);
-        }
-        $payment->status = Status::fromArray($data['status']);
-
-        return $payment;
     }
 }

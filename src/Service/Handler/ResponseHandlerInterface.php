@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Tiyn\MerchantApiSdk\Service\Handler;
 
 use Psr\Http\Message\ResponseInterface;
-use Tiyn\MerchantApiSdk\Exception\Api\ApiKeyException;
-use Tiyn\MerchantApiSdk\Exception\Api\ApiMerchantErrorException;
-use Tiyn\MerchantApiSdk\Exception\Api\EntityErrorException;
-use Tiyn\MerchantApiSdk\Exception\Api\SignException;
-use Tiyn\MerchantApiSdk\Exception\Validation\EmptyDataException;
-use Tiyn\MerchantApiSdk\Exception\Validation\JsonProcessingException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiKeyException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiMerchantErrorException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\EntityErrorException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\SignException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\EmptyDataException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\WrongDataException;
 
 interface ResponseHandlerInterface
 {
@@ -24,6 +25,7 @@ interface ResponseHandlerInterface
      * @throws ApiMerchantErrorException
      * @throws JsonProcessingException
      * @throws EmptyDataException
+     * @throws WrongDataException
      */
     public function handleResponse(ResponseInterface $response): array;
 }

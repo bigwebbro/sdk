@@ -4,92 +4,33 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
+use Psr\Http\Client\ClientInterface;
+use Symfony\Component\Serializer\Encoder\JsonDecode;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validation;
-use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientExceptionDecorator;
-use Tiyn\MerchantApiSdk\Client\Decorator\HttpClientLoggingDecorator;
-use Tiyn\MerchantApiSdk\Client\Guzzle\GuzzleHttpClientBuilder;
-use Tiyn\MerchantApiSdk\Client\HttpClientBuilderInterface;
-use Tiyn\MerchantApiSdk\Configuration\ValidatorAwareInterface;
-use Tiyn\MerchantApiSdk\Configuration\ValidatorAwareTrait;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Tiyn\MerchantApiSdk\Configuration\Serializer\SerializerFactory;
+use Tiyn\MerchantApiSdk\Service\CallbackService;
 use Tiyn\MerchantApiSdk\Service\Handler\RequestHandler;
 use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandler;
 use Tiyn\MerchantApiSdk\Service\InvoicesService;
 
-final class MerchantApiSdkBuilder implements
-    LoggerAwareInterface,
-    ValidatorAwareInterface
+final class MerchantApiSdkBuilder implements MerchantApiSdkBuilderInterface
 {
-    use LoggerAwareTrait;
-    use ValidatorAwareTrait;
+    private SerializerInterface | DenormalizerInterface $serializer;
 
-    /**
-     * @var class-string[]
-     */
-    private array $decorators = [];
+    private ValidatorInterface $validator;
 
-    private ?HttpClientBuilderInterface $builder = null;
-
-    private int $timeout = 5;
-
-    private string $baseUri;
-
-    private string $apiKey;
-
-    /**
-     * @var array<string, mixed>
-     */
-    private array $options;
+    private DenormalizerInterface $denormalizer;
 
     private string $secretPhrase;
 
-    /**
-     * @param class-string $fqcn
-     * @return $this
-     */
-    public function addHttpApiClientDecorator(string $fqcn): self
+    private ClientInterface $client;
+
+    public function setClient(ClientInterface $client): self
     {
-        $this->decorators[] = $fqcn;
-
-        return $this;
-    }
-
-    public function setHttpClientBuilder(HttpClientBuilderInterface $builder): self
-    {
-        $this->builder = $builder;
-
-        return $this;
-    }
-
-    public function setTimeout(int $timeout): self
-    {
-        $this->timeout = $timeout;
-
-        return $this;
-    }
-
-    public function setBaseUri(string $baseUri): self
-    {
-        $this->baseUri = $baseUri;
-
-        return $this;
-    }
-
-    /**
-     * @param array<string, mixed> $options
-     * @return $this
-     */
-    public function setClientOptions(array $options): self
-    {
-        $this->options = $options;
-
-        return $this;
-    }
-
-    public function setApiKey(string $apiKey): self
-    {
-        $this->apiKey = $apiKey;
+        $this->client = $client;
 
         return $this;
     }
@@ -101,29 +42,23 @@ final class MerchantApiSdkBuilder implements
         return $this;
     }
 
-    public function build(): MerchantApiSdk
+    public function setSerializer(SerializerInterface $serializer): MerchantApiSdkBuilder
     {
-        if (null === $this->builder) {
-            $this->builder = new GuzzleHttpClientBuilder();
-        }
+        $this->serializer = $serializer;
+        return $this;
+    }
 
-        $client = $this->builder
-            ->setBaseUri($this->baseUri)
-            ->setApiKey($this->apiKey)
-            ->setTimeout($this->timeout)
-            ->setOptions($this->options)
-            ->build();
+    public function setValidator(ValidatorInterface $validator): MerchantApiSdkBuilder
+    {
+        $this->validator = $validator;
+        return $this;
+    }
 
-        $client = new HttpClientExceptionDecorator($client);
-
-        if (!empty($this->decorators)) {
-            foreach ($this->decorators as $decorator) {
-                $client = new $decorator($client);
-
-                if (HttpClientLoggingDecorator::class === $decorator) {
-                    $client->setLogger($this->logger);
-                }
-            }
+    public function build(): MerchantApiSdkInterface
+    {
+        if (!isset($this->serializer)) {
+            $this->serializer = SerializerFactory::init();
+            $this->denormalizer = $this->serializer;
         }
 
         if (!isset($this->validator)) {
@@ -133,12 +68,15 @@ final class MerchantApiSdkBuilder implements
         }
 
         $invoiceService = new InvoicesService(
-            $client,
-            new RequestHandler($this->validator),
-            new ResponseHandler(),
+            $this->client,
+            $this->denormalizer,
+            new RequestHandler($this->validator, $this->serializer),
+            new ResponseHandler(new JsonDecode(), $this->denormalizer),
             $this->secretPhrase,
         );
 
-        return new MerchantApiSdk($invoiceService);
+        $callbackService = new CallbackService($this->serializer);
+
+        return new MerchantApiSdk($invoiceService, $callbackService);
     }
 }
