@@ -22,5 +22,7 @@ interface ClientBuilderInterface
 
     public function addDecorator(ClientInterface $decorator): self;
 
+    public function enableRetry(int $maxAttempts, float $multiplier): self;
+
     public function build(): ClientInterface;
 }

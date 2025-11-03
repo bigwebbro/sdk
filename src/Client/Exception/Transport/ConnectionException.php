@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Exception\Transport;
+namespace Tiyn\MerchantApiSdk\Client\Exception\Transport;
 
 use Psr\Http\Client\ClientExceptionInterface;
 

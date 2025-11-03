@@ -8,7 +8,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Client\NetworkExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Tiyn\MerchantApiSdk\Exception\Transport\ConnectionException;
+use Tiyn\MerchantApiSdk\Client\Exception\Transport\ConnectionException;
 
 final class ClientExceptionDecorator implements ClientInterface, ClientDecoratorAwareInterface
 {

@@ -11,12 +11,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Tests\Service\Trait\SetUpBuilderTrait;
-use Tiyn\MerchantApiSdk\Exception\Api\ApiKeyException;
-use Tiyn\MerchantApiSdk\Exception\Api\EntityErrorException;
-use Tiyn\MerchantApiSdk\Exception\Api\SignException;
-use Tiyn\MerchantApiSdk\Exception\Service\ServiceUnavailableException;
-use Tiyn\MerchantApiSdk\Exception\Transport\ConnectionException;
-use Tiyn\MerchantApiSdk\Exception\Validation\JsonProcessingException;
+use Tiyn\MerchantApiSdk\Client\Exception\Transport\ConnectionException;
 use Tiyn\MerchantApiSdk\Model\Error;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundRequest;
@@ -24,6 +19,11 @@ use Tiyn\MerchantApiSdk\Model\Invoice\Enum\CurrencyEnum;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
 use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceRequest;
 use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiKeyException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\EntityErrorException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\SignException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceUnavailableException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
 
 class InvoiceServiceTest extends TestCase
 {
@@ -286,7 +286,7 @@ class InvoiceServiceTest extends TestCase
             // 500 & string body
             [
                 ServiceUnavailableException::class,
-                new MockHandler([new Response(500, [], '500 Service Unavailable')])
+                new MockHandler([new Response(503, [], '503 Service Unavailable')])
             ],
             [
                 ConnectionException::class,

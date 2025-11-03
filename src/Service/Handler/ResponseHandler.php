@@ -8,15 +8,15 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Tiyn\MerchantApiSdk\Exception\Api\ApiKeyException;
-use Tiyn\MerchantApiSdk\Exception\Api\ApiMerchantErrorException;
-use Tiyn\MerchantApiSdk\Exception\Api\EntityErrorException;
-use Tiyn\MerchantApiSdk\Exception\Api\SignException;
-use Tiyn\MerchantApiSdk\Exception\Service\ServiceUnavailableException;
-use Tiyn\MerchantApiSdk\Exception\Validation\JsonProcessingException;
-use Tiyn\MerchantApiSdk\Exception\Validation\WrongDataException;
 use Tiyn\MerchantApiSdk\Model\Error;
-use Tiyn\MerchantApiSdk\Exception\Validation\EmptyDataException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiKeyException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiMerchantErrorException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\EntityErrorException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\SignException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceUnavailableException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\EmptyDataException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\WrongDataException;
 
 final class ResponseHandler implements ResponseHandlerInterface
 {

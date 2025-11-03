@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Exception\Api;
+namespace Tiyn\MerchantApiSdk\Service\Handler\Exception\Api;
 
 use Tiyn\MerchantApiSdk\Model\Error;
 

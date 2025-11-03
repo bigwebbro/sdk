@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Service\Handler;
 
-use Tiyn\MerchantApiSdk\Exception\Validation\ValidationException;
 use Tiyn\MerchantApiSdk\Model\RequestModelInterface;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\ValidationException;
 
 interface RequestHandlerInterface
 {

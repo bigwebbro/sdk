@@ -7,8 +7,8 @@ namespace Tiyn\MerchantApiSdk\Service\Handler;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Tiyn\MerchantApiSdk\Exception\Validation\ValidationException;
 use Tiyn\MerchantApiSdk\Model\RequestModelInterface;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\ValidationException;
 
 final class RequestHandler implements RequestHandlerInterface
 {
