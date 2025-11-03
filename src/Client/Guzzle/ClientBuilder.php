@@ -80,7 +80,7 @@ final class ClientBuilder implements ClientBuilderInterface
      * @param float $multiplier uses if response hasn't Retry-After header
      * @return ClientBuilderInterface
      */
-    public function enableRetry(int $maxAttempts, float $multiplier): ClientBuilderInterface
+    public function enableRetry(int $maxAttempts = 5, float $multiplier = 2.5): ClientBuilderInterface
     {
         if ($maxAttempts > 5) {
             throw new ClientConfigurationException('Max retry attempts should be less or equals 5');
