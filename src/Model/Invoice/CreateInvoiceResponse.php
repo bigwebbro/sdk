@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
-use Tiyn\MerchantApiSdk\Model\Property\ExternalId\ExternalIdGetterTrait;
-use Tiyn\MerchantApiSdk\Model\Property\ExternalId\ExternalIdTrait;
-use Tiyn\MerchantApiSdk\Model\Property\PaymentLink\PaymentLinkGetterTrait;
-use Tiyn\MerchantApiSdk\Model\Property\PaymentLink\PaymentLinkTrait;
-use Tiyn\MerchantApiSdk\Model\Property\Uuid\UuidGetterTrait;
-use Tiyn\MerchantApiSdk\Model\Property\Uuid\UuidTrait;
+use Tiyn\MerchantApiSdk\Model\Property\{
+    ExternalId\ExternalIdGetterTrait,
+    ExternalId\ExternalIdTrait,
+    PaymentLink\PaymentLinkGetterTrait,
+    PaymentLink\PaymentLinkTrait,
+    Uuid\UuidGetterTrait,
+    Uuid\UuidTrait
+};
 
 final class CreateInvoiceResponse
 {

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
-use Tiyn\MerchantApiSdk\Model\Property\RequestId\RequestIdGetterTrait;
-use Tiyn\MerchantApiSdk\Model\Property\RequestId\RequestIdTrait;
-use Tiyn\MerchantApiSdk\Model\Property\Uuid\UuidGetterTrait;
-use Tiyn\MerchantApiSdk\Model\Property\Uuid\UuidTrait;
+use Tiyn\MerchantApiSdk\Model\Property\{
+    RequestId\RequestIdGetterTrait,
+    RequestId\RequestIdTrait,
+    Uuid\UuidGetterTrait,
+    Uuid\UuidTrait
+};
 
 final class CreateRefundResponse
 {
