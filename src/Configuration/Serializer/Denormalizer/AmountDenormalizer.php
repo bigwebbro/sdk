@@ -20,7 +20,6 @@ final class AmountDenormalizer
 
                 /**
                  * @inheritDoc
-                 * @param array<string,mixed> $context
                  */
                 public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
                 {
@@ -39,7 +38,6 @@ final class AmountDenormalizer
 
                 /**
                  * @inheritDoc
-                 * @param array<string,mixed> $context
                  */
                 public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
                 {
@@ -52,8 +50,7 @@ final class AmountDenormalizer
                 }
 
                 /**
-                 * @param string|null $format
-                 * @return array<class-string, bool>
+                 * @inheritDoc
                  */
                 public function getSupportedTypes(?string $format): array
                 {
@@ -70,7 +67,6 @@ final class AmountDenormalizer
 
                 /**
                  * @inheritDoc
-                 * @phpstan-ignore-next-line
                  */
                 public function denormalize(mixed $data, string $type, ?string $format = null, array $context = [])
                 {

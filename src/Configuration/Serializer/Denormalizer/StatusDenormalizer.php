@@ -21,7 +21,6 @@ final class StatusDenormalizer
 
                 /**
                  * @inheritDoc
-                 * @phpstan-ignore-next-line
                  */
                 public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
                 {
@@ -35,7 +34,6 @@ final class StatusDenormalizer
 
                 /**
                  * @inheritDoc
-                 * @phpstan-ignore-next-line
                  */
                 public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
                 {
@@ -47,7 +45,7 @@ final class StatusDenormalizer
                 }
 
                 /**
-                 * @phpstan-ignore-next-line
+                 * @inheritDoc
                  */
                 public function getSupportedTypes(?string $format): array
                 {
@@ -64,7 +62,6 @@ final class StatusDenormalizer
 
                 /**
                  * @inheritDoc
-                 * @phpstan-ignore-next-line
                  */
                 public function denormalize(mixed $data, string $type, ?string $format = null, array $context = [])
                 {

@@ -16,7 +16,6 @@ final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInte
 
     /**
      * @inheritDoc
-     * @phpstan-ignore-next-line
      */
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
@@ -37,7 +36,6 @@ final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInte
 
     /**
      * @inheritDoc
-     * @phpstan-ignore-next-line
      */
     public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
@@ -49,7 +47,7 @@ final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInte
     }
 
     /**
-     * @phpstan-ignore-next-line
+     * @inheritDoc
      */
     public function getSupportedTypes(?string $format): array
     {

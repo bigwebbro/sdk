@@ -3,6 +3,9 @@ parameters:
 	paths:
 		- src
 		- tests
+	excludePaths:
+		- src/Configuration/Serializer/Denormalizer
+		- src/Configuration/Serializer/Normalizer
 	ignoreErrors:
 		-
 			message: '#Trait .* is used zero times and is not analysed#'
