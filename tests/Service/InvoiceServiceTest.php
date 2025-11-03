@@ -2,27 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Service;
+namespace Tests\Service;
 
 use GuzzleHttp\Exception\ConnectException as GuzzleConnectException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
-use Tiyn\MerchantApiSdk\Client\ClientBuilderInterface;
-use Tiyn\MerchantApiSdk\Client\Decorator\ClientLoggingDecorator;
-use Tiyn\MerchantApiSdk\Client\Guzzle\ClientBuilder;
-use Tiyn\MerchantApiSdk\Client\Util\Clock\Clock;
+use Tests\Service\Trait\SetUpBuilderTrait;
 use Tiyn\MerchantApiSdk\Exception\Api\ApiKeyException;
 use Tiyn\MerchantApiSdk\Exception\Api\EntityErrorException;
 use Tiyn\MerchantApiSdk\Exception\Api\SignException;
 use Tiyn\MerchantApiSdk\Exception\Service\ServiceUnavailableException;
 use Tiyn\MerchantApiSdk\Exception\Transport\ConnectionException;
 use Tiyn\MerchantApiSdk\Exception\Validation\JsonProcessingException;
-use Tiyn\MerchantApiSdk\MerchantApiSdkBuilder;
 use Tiyn\MerchantApiSdk\Model\Error;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundRequest;
@@ -33,6 +27,8 @@ use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment;
 
 class InvoiceServiceTest extends TestCase
 {
+    use SetUpBuilderTrait;
+
     public const INVOICE_UUID = "1fd64b0c-a8e7-4dc1-a799-f0cfa3ebad3a";
     public const INVOICE_EXTERNAL_ID = "3c5301df-d806-4fb0-9f96-f44d5d2d3827";
     public const INVOICE_PAYMENT_LINK = "https://payment";
@@ -42,27 +38,6 @@ class InvoiceServiceTest extends TestCase
     public const ERROR_FORBIDDEN_MESSAGE = "Forbidden";
     public const ERROR_ENTITY_MESSAGE = "Invalid expiration date";
     public const ERROR_CORRELATION_ID = "9f63d8d9-4260-432f-a47d-3eead8a3c6e7";
-
-    private ClientBuilderInterface $client;
-
-    private MerchantApiSdkBuilder $sdkBuilder;
-
-    protected function setUp(): void
-    {
-        $logger = new Logger('test-logger');
-        $logger->pushHandler(new StreamHandler('php://stdout'));
-
-        $this->client = (new ClientBuilder())
-            ->setBaseUri('https://test')
-            ->setTimeout(5)
-            ->setApiKey('test-api-key')
-            ->addDecorator(new ClientLoggingDecorator($logger, new Clock()))
-        ;
-
-        $this->sdkBuilder = (new MerchantApiSdkBuilder())
-            ->setSecretPhrase('test-secret-phrase')
-        ;
-    }
 
     /**
      * @test

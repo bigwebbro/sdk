@@ -18,7 +18,7 @@ use Tiyn\MerchantApiSdk\Exception\Validation\WrongDataException;
 use Tiyn\MerchantApiSdk\Model\Error;
 use Tiyn\MerchantApiSdk\Exception\Validation\EmptyDataException;
 
-class ResponseHandler implements ResponseHandlerInterface
+final class ResponseHandler implements ResponseHandlerInterface
 {
     public function __construct(
         private readonly DecoderInterface      $decoder,

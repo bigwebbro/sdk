@@ -18,7 +18,7 @@ use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceResponse;
 use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandlerInterface;
 use Tiyn\MerchantApiSdk\Service\Handler\RequestHandlerInterface;
 
-class InvoicesService implements InvoicesServiceInterface
+final class InvoicesService implements InvoicesServiceInterface
 {
     public const INVOICE_ENDPOINT = '/invoices';
 

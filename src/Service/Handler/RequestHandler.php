@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Tiyn\MerchantApiSdk\Exception\Validation\ValidationException;
 use Tiyn\MerchantApiSdk\Model\RequestModelInterface;
 
-class RequestHandler implements RequestHandlerInterface
+final class RequestHandler implements RequestHandlerInterface
 {
     public function __construct(
         private readonly ValidatorInterface $validator,

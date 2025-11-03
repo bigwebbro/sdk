@@ -27,7 +27,7 @@ class SerializerFactory
 {
     public const DATE_TIME_FORMAT = 'Y-m-d H:i:s.uP';
 
-    public static function init(): SerializerInterface | DenormalizerInterface
+    public static function init(): SerializerInterface | NormalizerInterface |DenormalizerInterface
     {
         $extractor = new PropertyInfoExtractor(typeExtractors: [
             new PhpDocExtractor(),

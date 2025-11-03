@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Tiyn\MerchantApiSdk\Configuration\Serializer\SerializerFactory;
+use Tiyn\MerchantApiSdk\Service\CallbackService;
 use Tiyn\MerchantApiSdk\Service\Handler\RequestHandler;
 use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandler;
 use Tiyn\MerchantApiSdk\Service\InvoicesService;
@@ -74,6 +75,8 @@ final class MerchantApiSdkBuilder implements MerchantApiSdkBuilderInterface
             $this->secretPhrase,
         );
 
-        return new MerchantApiSdk($invoiceService);
+        $callbackService = new CallbackService($this->serializer);
+
+        return new MerchantApiSdk($invoiceService, $callbackService);
     }
 }

@@ -28,6 +28,10 @@ class AmountNormalizer implements NormalizerInterface, NormalizerAwareInterface
             $array['amount'] = $this->stringToFloat($array['amount']);
         }
 
+        if (isset($array['finalAmount'])) {
+            $array['finalAmount'] = $this->stringToFloat($array['finalAmount']);
+        }
+
         return $array;
     }
 
