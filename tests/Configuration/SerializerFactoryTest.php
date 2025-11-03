@@ -9,8 +9,8 @@ use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Tiyn\MerchantApiSdk\Configuration\Serializer\SerializerFactory;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
-use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundRequest;
-use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundResponse;
+use Tiyn\MerchantApiSdk\Model\Refund\CreateRefundRequest;
+use Tiyn\MerchantApiSdk\Model\Refund\CreateRefundResponse;
 
 class SerializerFactoryTest extends TestCase
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Model\Invoice;
+namespace Tiyn\MerchantApiSdk\Model\Refund;
 
 use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\AmountNormalizerAwareInterface;
 use Tiyn\MerchantApiSdk\Model\Property\{

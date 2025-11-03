@@ -17,8 +17,10 @@ final class Status
 {
     use NameTrait;
     use NameGetterTrait;
+
     use MessageTrait;
     use MessageGetterTrait;
+
     use TimeTrait;
     use TimeGetterTrait;
 }
