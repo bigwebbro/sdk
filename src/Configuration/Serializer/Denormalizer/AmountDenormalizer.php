@@ -48,17 +48,17 @@ final class AmountDenormalizer
                     }
 
                     return is_a($type, AmountDenormalizerAwareInterface::class, true)
-                        && (isset($data['amount']) || isset($data['finalAmount']));
+                        && (isset($data['amount']) || isset($data['']));
                 }
 
                 /**
                  * @param string|null $format
-                 * @return class-string[]
+                 * @return array<class-string, bool>
                  */
                 public function getSupportedTypes(?string $format): array
                 {
                     return [
-                        AmountDenormalizerAwareInterface::class
+                        AmountDenormalizerAwareInterface::class => false,
                     ];
                 }
             };

@@ -12,8 +12,9 @@ use Tiyn\MerchantApiSdk\Model\Property\{
     Time\TimeGetterTrait,
     Time\TimeTrait
 };
+use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\DateTimeAwareDenormalizationInterface;
 
-final class Status
+final class Status implements DateTimeAwareDenormalizationInterface
 {
     use NameTrait;
     use NameGetterTrait;

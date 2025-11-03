@@ -48,6 +48,16 @@ final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInte
         return $data instanceof AmountNormalizerAwareInterface;
     }
 
+    /**
+     * @phpstan-ignore-next-line
+     */
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            AmountNormalizerAwareInterface::class => false,
+        ];
+    }
+
     private function stringToFloat(string $stringFloat): float
     {
         return round((float) $stringFloat, 2);

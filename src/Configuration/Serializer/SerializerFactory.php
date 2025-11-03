@@ -39,9 +39,9 @@ final class SerializerFactory
         return new Serializer(
             [
                 DetailsDenormalizer::create(),
-                new PaymentsDenormalizer(),
-                new StatusDenormalizer(),
-                new DateTimeDenormalizer(),
+                PaymentsDenormalizer::create(),
+                StatusDenormalizer::create(),
+                DateTimeDenormalizer::create(),
                 new DateTimeNormalizer([DateTimeNormalizer::FORMAT_KEY => self::DATE_TIME_FORMAT]),
                 AmountDenormalizer::create(),
                 new AmountNormalizer(),

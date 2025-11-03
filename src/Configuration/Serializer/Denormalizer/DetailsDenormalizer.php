@@ -49,12 +49,12 @@ final class DetailsDenormalizer
 
                 /**
                  * @param string|null $format
-                 * @return class-string[]
+                 * @return array<class-string, bool>
                  */
                 public function getSupportedTypes(?string $format): array
                 {
                     return [
-                        Details::class
+                        DetailsAwareDenormalizationInterface::class => false,
                     ];
                 }
             };

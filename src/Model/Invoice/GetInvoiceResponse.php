@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
 use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\AmountDenormalizerAwareInterface;
+use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\DateTimeAwareDenormalizationInterface;
+use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\PaymentAwareDenormalizationInterface;
+use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\StatusAwareDenormalizationInterface;
 use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\AmountNormalizerAwareInterface;
 use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment;
 use Tiyn\MerchantApiSdk\Model\Property\{
@@ -38,7 +41,12 @@ use Tiyn\MerchantApiSdk\Model\Property\{
     Uuid\UuidTrait
 };
 
-final class GetInvoiceResponse implements AmountDenormalizerAwareInterface, AmountNormalizerAwareInterface
+final class GetInvoiceResponse implements
+    AmountDenormalizerAwareInterface,
+    AmountNormalizerAwareInterface,
+    DateTimeAwareDenormalizationInterface,
+    StatusAwareDenormalizationInterface,
+    PaymentAwareDenormalizationInterface
 {
     use UuidTrait;
     use UuidGetterTrait;
