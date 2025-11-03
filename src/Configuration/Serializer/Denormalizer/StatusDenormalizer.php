@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Tiyn\MerchantApiSdk\Model\Invoice\Status;
 
-class StatusDenormalizer implements DenormalizerInterface, DenormalizerAwareInterface
+final class StatusDenormalizer implements DenormalizerInterface, DenormalizerAwareInterface
 {
     use DenormalizerAwareTrait;
 

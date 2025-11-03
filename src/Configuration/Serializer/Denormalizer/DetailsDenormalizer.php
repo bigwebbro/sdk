@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Details;
 
-class DetailsDenormalizer implements DenormalizerInterface, DenormalizerAwareInterface
+final class DetailsDenormalizer implements DenormalizerInterface, DenormalizerAwareInterface
 {
     use DenormalizerAwareTrait;
 

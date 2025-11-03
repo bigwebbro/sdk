@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\CurrencyEnum;
 
-class CurrencyConstraintValidator extends ConstraintValidator
+final class CurrencyConstraintValidator extends ConstraintValidator
 {
     public function validate(mixed $value, Constraint $constraint): void
     {

@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Tiyn\MerchantApiSdk\Configuration\Serializer\SerializerFactory;
 
-class DateTimeDenormalizer implements DenormalizerInterface, DenormalizerAwareInterface
+final class DateTimeDenormalizer implements DenormalizerInterface, DenormalizerAwareInterface
 {
     use DenormalizerAwareTrait;
 

@@ -8,7 +8,7 @@ use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface as PsrRequestInterface;
 use Tiyn\MerchantApiSdk\Client\Util\Sign\Sign;
 
-class RequestBuilder
+final class RequestBuilder
 {
     private string $method;
     private string $endpoint;

@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
 
-class DeliveryMethodConstraintValidator extends ConstraintValidator
+final class DeliveryMethodConstraintValidator extends ConstraintValidator
 {
     public function validate(mixed $value, Constraint $constraint): void
     {

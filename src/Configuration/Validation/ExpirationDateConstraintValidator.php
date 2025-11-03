@@ -7,7 +7,7 @@ namespace Tiyn\MerchantApiSdk\Configuration\Validation;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Constraint;
 
-class ExpirationDateConstraintValidator extends ConstraintValidator
+final class ExpirationDateConstraintValidator extends ConstraintValidator
 {
     public function validate(mixed $value, Constraint $constraint): void
     {

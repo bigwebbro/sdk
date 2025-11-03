@@ -22,7 +22,7 @@ use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\PaymentsDenormaliz
 use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\StatusDenormalizer;
 use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\AmountNormalizer;
 
-class SerializerFactory
+final class SerializerFactory
 {
     public const DATE_TIME_FORMAT = 'Y-m-d H:i:s.uP';
 

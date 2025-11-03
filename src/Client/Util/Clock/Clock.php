@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Client\Util\Clock;
 
-class Clock implements ClockInterface
+final class Clock implements ClockInterface
 {
     private ?float $timestamp = null;
 
