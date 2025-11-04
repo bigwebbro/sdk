@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
-use Tiyn\MerchantApiSdk\Model\Property\{
-    Message\MessageGetterTrait,
+use Tiyn\MerchantApiSdk\Model\Property\{Message\MessageGetterTrait,
     Message\MessageTrait,
     Name\NameGetterTrait,
     Name\NameTrait,
     Time\TimeGetterTrait,
-    Time\TimeTrait
-};
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\DateTimeAwareDenormalizationInterface;
+    Time\TimeTrait};
+use Tiyn\MerchantApiSdk\Serializer\Denormalizer\DateTimeAwareDenormalizationInterface;
 
 final class Status implements DateTimeAwareDenormalizationInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Configuration\Validation;
+namespace Tiyn\MerchantApiSdk\Validator;
 
 use Symfony\Component\Validator\Constraint;
 

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer;
+namespace Tiyn\MerchantApiSdk\Serializer\Denormalizer;
 
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\SerializerFactory;
+use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment;
 
-final class DateTimeDenormalizer
+final class PaymentsDenormalizer
 {
     public static function create(): DenormalizerInterface
     {
@@ -17,7 +17,7 @@ final class DateTimeDenormalizer
             return new class () implements DenormalizerInterface, DenormalizerAwareInterface {
                 use DenormalizerAwareTrait;
 
-                private const CONTEXT_FLAG = '__datetime_denormalizer_running';
+                private const CONTEXT_FLAG = '__payments_denormalizer_running';
 
                 /**
                  * @inheritDoc
@@ -26,12 +26,8 @@ final class DateTimeDenormalizer
                 {
                     $context[self::CONTEXT_FLAG] = true;
 
-                    if (isset($data['expirationDate']) && \is_string($data['expirationDate'])) {
-                        $data['expirationDate'] = \DateTimeImmutable::createFromFormat(SerializerFactory::DATE_TIME_FORMAT, $data['expirationDate']);
-                    }
-
-                    if (isset($data['time']) && \is_string($data['time'])) {
-                        $data['time'] = \DateTimeImmutable::createFromFormat(SerializerFactory::DATE_TIME_FORMAT, $data['time']);
+                    if ($data['payments'] && \is_array($data['payments'])) {
+                        $data['payments'] = $this->denormalizer->denormalize($data['payments'], Payment::class . '[]', $format, $context);
                     }
 
                     return $this->denormalizer->denormalize($data, $type, $format, $context);
@@ -46,7 +42,7 @@ final class DateTimeDenormalizer
                         return false;
                     }
 
-                    return isset($data['expirationDate']) || isset($data['time']);
+                    return isset($data['payments']);
                 }
 
                 /**
@@ -55,7 +51,7 @@ final class DateTimeDenormalizer
                 public function getSupportedTypes(?string $format): array
                 {
                     return [
-                        DateTimeAwareDenormalizationInterface::class => false,
+                        PaymentAwareDenormalizationInterface::class => false,
                     ];
                 }
             };
@@ -63,7 +59,8 @@ final class DateTimeDenormalizer
             return new class () implements DenormalizerInterface, DenormalizerAwareInterface {
                 use DenormalizerAwareTrait;
 
-                private const CONTEXT_FLAG = '__datetime_denormalizer_running';
+                private const CONTEXT_FLAG = '__payments_denormalizer_running';
+
 
                 /**
                  * @inheritDoc
@@ -72,12 +69,8 @@ final class DateTimeDenormalizer
                 {
                     $context[self::CONTEXT_FLAG] = true;
 
-                    if (isset($data['expirationDate']) && \is_string($data['expirationDate'])) {
-                        $data['expirationDate'] = \DateTimeImmutable::createFromFormat(SerializerFactory::DATE_TIME_FORMAT, $data['expirationDate']);
-                    }
-
-                    if (isset($data['time']) && \is_string($data['time'])) {
-                        $data['time'] = \DateTimeImmutable::createFromFormat(SerializerFactory::DATE_TIME_FORMAT, $data['time']);
+                    if ($data['payments'] && \is_array($data['payments'])) {
+                        $data['payments'] = $this->denormalizer->denormalize($data['payments'], Payment::class . '[]', $format, $context);
                     }
 
                     return $this->denormalizer->denormalize($data, $type, $format, $context);
@@ -95,7 +88,7 @@ final class DateTimeDenormalizer
                         return false;
                     }
 
-                    return isset($data['expirationDate']) || isset($data['time']);
+                    return isset($data['payments']);
                 }
             };
         }

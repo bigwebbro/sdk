@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Configuration\Validation;
+namespace Tiyn\MerchantApiSdk\Validator;
 
 use Symfony\Component\Validator\Constraint;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class CurrencyConstraint extends Constraint
+class ExpirationDateConstraint extends Constraint
 {
-    public string $message = 'Invalid currency "{{ value }}". Allowed: KZT.';
+    public string $message = 'The expiration date should be in the future';
 
     public function getTargets(): string
     {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer;
+namespace Tiyn\MerchantApiSdk\Serializer\Denormalizer;
 
 interface DateTimeAwareDenormalizationInterface
 {

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer;
+namespace Tiyn\MerchantApiSdk\Serializer\Denormalizer;
 
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\DeliveryMethodAwareNormalizationInterface;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
+use Tiyn\MerchantApiSdk\Serializer\Normalizer\DeliveryMethodAwareNormalizationInterface;
 
 final class DeliveryMethodDenormalizer
 {

@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer;
+namespace Tiyn\MerchantApiSdk\Serializer\Denormalizer;
 
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Tiyn\MerchantApiSdk\Serializer\SerializerFactory;
 
-final class AmountDenormalizer
+final class DateTimeDenormalizer
 {
     public static function create(): DenormalizerInterface
     {
@@ -16,7 +17,7 @@ final class AmountDenormalizer
             return new class () implements DenormalizerInterface, DenormalizerAwareInterface {
                 use DenormalizerAwareTrait;
 
-                private const CONTEXT_FLAG = '__amount_denormalizer_running';
+                private const CONTEXT_FLAG = '__datetime_denormalizer_running';
 
                 /**
                  * @inheritDoc
@@ -25,12 +26,12 @@ final class AmountDenormalizer
                 {
                     $context[self::CONTEXT_FLAG] = true;
 
-                    if (isset($data['amount'])) {
-                        $data['amount'] = (string) $data['amount'];
+                    if (isset($data['expirationDate']) && \is_string($data['expirationDate'])) {
+                        $data['expirationDate'] = \DateTimeImmutable::createFromFormat(SerializerFactory::DATE_TIME_FORMAT, $data['expirationDate']);
                     }
 
-                    if (isset($data['finalAmount'])) {
-                        $data['finalAmount'] = (string) $data['finalAmount'];
+                    if (isset($data['time']) && \is_string($data['time'])) {
+                        $data['time'] = \DateTimeImmutable::createFromFormat(SerializerFactory::DATE_TIME_FORMAT, $data['time']);
                     }
 
                     return $this->denormalizer->denormalize($data, $type, $format, $context);
@@ -45,8 +46,7 @@ final class AmountDenormalizer
                         return false;
                     }
 
-                    return is_a($type, AmountDenormalizerAwareInterface::class, true)
-                        && (isset($data['amount']) || isset($data['']));
+                    return isset($data['expirationDate']) || isset($data['time']);
                 }
 
                 /**
@@ -55,7 +55,7 @@ final class AmountDenormalizer
                 public function getSupportedTypes(?string $format): array
                 {
                     return [
-                        AmountDenormalizerAwareInterface::class => false,
+                        DateTimeAwareDenormalizationInterface::class => false,
                     ];
                 }
             };
@@ -63,7 +63,7 @@ final class AmountDenormalizer
             return new class () implements DenormalizerInterface, DenormalizerAwareInterface {
                 use DenormalizerAwareTrait;
 
-                private const CONTEXT_FLAG = '__amount_denormalizer_running';
+                private const CONTEXT_FLAG = '__datetime_denormalizer_running';
 
                 /**
                  * @inheritDoc
@@ -72,12 +72,12 @@ final class AmountDenormalizer
                 {
                     $context[self::CONTEXT_FLAG] = true;
 
-                    if (isset($data['amount'])) {
-                        $data['amount'] = (string) $data['amount'];
+                    if (isset($data['expirationDate']) && \is_string($data['expirationDate'])) {
+                        $data['expirationDate'] = \DateTimeImmutable::createFromFormat(SerializerFactory::DATE_TIME_FORMAT, $data['expirationDate']);
                     }
 
-                    if (isset($data['finalAmount'])) {
-                        $data['finalAmount'] = (string) $data['finalAmount'];
+                    if (isset($data['time']) && \is_string($data['time'])) {
+                        $data['time'] = \DateTimeImmutable::createFromFormat(SerializerFactory::DATE_TIME_FORMAT, $data['time']);
                     }
 
                     return $this->denormalizer->denormalize($data, $type, $format, $context);
@@ -95,8 +95,7 @@ final class AmountDenormalizer
                         return false;
                     }
 
-                    return is_a($type, AmountDenormalizerAwareInterface::class, true)
-                        && (isset($data['amount']) || isset($data['finalAmount']));
+                    return isset($data['expirationDate']) || isset($data['time']);
                 }
             };
         }

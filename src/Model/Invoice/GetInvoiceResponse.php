@@ -4,16 +4,8 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\AmountDenormalizerAwareInterface;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\DateTimeAwareDenormalizationInterface;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\DeliveryMethodAwareDenormalizationInterface;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\PaymentAwareDenormalizationInterface;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\StatusAwareDenormalizationInterface;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\AmountAwareNormalizationInterface;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\DeliveryMethodAwareNormalizationInterface;
 use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment;
-use Tiyn\MerchantApiSdk\Model\Property\{
-    Amount\AmountGetterTrait,
+use Tiyn\MerchantApiSdk\Model\Property\{Amount\AmountGetterTrait,
     Amount\AmountTrait,
     Currency\CurrencyGetterTrait,
     Currency\CurrencyTrait,
@@ -40,8 +32,14 @@ use Tiyn\MerchantApiSdk\Model\Property\{
     SuccessUrl\SuccessUrlGetterTrait,
     SuccessUrl\SuccessUrlTrait,
     Uuid\UuidGetterTrait,
-    Uuid\UuidTrait
-};
+    Uuid\UuidTrait};
+use Tiyn\MerchantApiSdk\Serializer\Denormalizer\AmountDenormalizerAwareInterface;
+use Tiyn\MerchantApiSdk\Serializer\Denormalizer\DateTimeAwareDenormalizationInterface;
+use Tiyn\MerchantApiSdk\Serializer\Denormalizer\DeliveryMethodAwareDenormalizationInterface;
+use Tiyn\MerchantApiSdk\Serializer\Denormalizer\PaymentAwareDenormalizationInterface;
+use Tiyn\MerchantApiSdk\Serializer\Denormalizer\StatusAwareDenormalizationInterface;
+use Tiyn\MerchantApiSdk\Serializer\Normalizer\AmountAwareNormalizationInterface;
+use Tiyn\MerchantApiSdk\Serializer\Normalizer\DeliveryMethodAwareNormalizationInterface;
 
 final class GetInvoiceResponse implements
     AmountDenormalizerAwareInterface,

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Model\Property\Currency;
 
-use Tiyn\MerchantApiSdk\Configuration\Validation\CurrencyConstraint as AssertCurrency;
+use Tiyn\MerchantApiSdk\Validator\CurrencyConstraint as AssertCurrency;
 
 trait CurrencyTrait
 {

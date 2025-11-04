@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\SerializerFactory;
+use Tiyn\MerchantApiSdk\Serializer\SerializerFactory;
 use Tiyn\MerchantApiSdk\Service\CallbackService;
 use Tiyn\MerchantApiSdk\Service\Handler\RequestHandler;
 use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandler;

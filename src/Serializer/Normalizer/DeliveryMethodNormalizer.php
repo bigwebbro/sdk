@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer;
+namespace Tiyn\MerchantApiSdk\Serializer\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInterface
+final class DeliveryMethodNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
 
@@ -21,12 +21,8 @@ final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInte
 
         $array = $this->normalizer->normalize($object, $format, $context);
 
-        if (isset($array['amount'])) {
-            $array['amount'] = $this->stringToFloat($array['amount']);
-        }
-
-        if (isset($array['finalAmount'])) {
-            $array['finalAmount'] = $this->stringToFloat($array['finalAmount']);
+        if (isset($array['deliveryMethod'])) {
+            $array['deliveryMethod'] = $array['deliveryMethod'][array_key_last($array['deliveryMethod'])];
         }
 
         return $array;
@@ -41,7 +37,7 @@ final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInte
             return false;
         }
 
-        return $data instanceof AmountAwareNormalizationInterface;
+        return $data instanceof DeliveryMethodAwareNormalizationInterface;
     }
 
     /**
@@ -50,12 +46,7 @@ final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInte
     public function getSupportedTypes(?string $format): array
     {
         return [
-            AmountAwareNormalizationInterface::class => false,
+            DeliveryMethodAwareNormalizationInterface::class => false,
         ];
-    }
-
-    private function stringToFloat(string $stringFloat): float
-    {
-        return round((float) $stringFloat, 2);
     }
 }

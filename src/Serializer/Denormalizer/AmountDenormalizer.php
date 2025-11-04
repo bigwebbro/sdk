@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer;
+namespace Tiyn\MerchantApiSdk\Serializer\Denormalizer;
 
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment;
 
-final class PaymentsDenormalizer
+final class AmountDenormalizer
 {
     public static function create(): DenormalizerInterface
     {
@@ -17,7 +16,7 @@ final class PaymentsDenormalizer
             return new class () implements DenormalizerInterface, DenormalizerAwareInterface {
                 use DenormalizerAwareTrait;
 
-                private const CONTEXT_FLAG = '__payments_denormalizer_running';
+                private const CONTEXT_FLAG = '__amount_denormalizer_running';
 
                 /**
                  * @inheritDoc
@@ -26,8 +25,12 @@ final class PaymentsDenormalizer
                 {
                     $context[self::CONTEXT_FLAG] = true;
 
-                    if ($data['payments'] && \is_array($data['payments'])) {
-                        $data['payments'] = $this->denormalizer->denormalize($data['payments'], Payment::class . '[]', $format, $context);
+                    if (isset($data['amount'])) {
+                        $data['amount'] = (string) $data['amount'];
+                    }
+
+                    if (isset($data['finalAmount'])) {
+                        $data['finalAmount'] = (string) $data['finalAmount'];
                     }
 
                     return $this->denormalizer->denormalize($data, $type, $format, $context);
@@ -42,7 +45,8 @@ final class PaymentsDenormalizer
                         return false;
                     }
 
-                    return isset($data['payments']);
+                    return is_a($type, AmountDenormalizerAwareInterface::class, true)
+                        && (isset($data['amount']) || isset($data['']));
                 }
 
                 /**
@@ -51,7 +55,7 @@ final class PaymentsDenormalizer
                 public function getSupportedTypes(?string $format): array
                 {
                     return [
-                        PaymentAwareDenormalizationInterface::class => false,
+                        AmountDenormalizerAwareInterface::class => false,
                     ];
                 }
             };
@@ -59,8 +63,7 @@ final class PaymentsDenormalizer
             return new class () implements DenormalizerInterface, DenormalizerAwareInterface {
                 use DenormalizerAwareTrait;
 
-                private const CONTEXT_FLAG = '__payments_denormalizer_running';
-
+                private const CONTEXT_FLAG = '__amount_denormalizer_running';
 
                 /**
                  * @inheritDoc
@@ -69,8 +72,12 @@ final class PaymentsDenormalizer
                 {
                     $context[self::CONTEXT_FLAG] = true;
 
-                    if ($data['payments'] && \is_array($data['payments'])) {
-                        $data['payments'] = $this->denormalizer->denormalize($data['payments'], Payment::class . '[]', $format, $context);
+                    if (isset($data['amount'])) {
+                        $data['amount'] = (string) $data['amount'];
+                    }
+
+                    if (isset($data['finalAmount'])) {
+                        $data['finalAmount'] = (string) $data['finalAmount'];
                     }
 
                     return $this->denormalizer->denormalize($data, $type, $format, $context);
@@ -88,7 +95,8 @@ final class PaymentsDenormalizer
                         return false;
                     }
 
-                    return isset($data['payments']);
+                    return is_a($type, AmountDenormalizerAwareInterface::class, true)
+                        && (isset($data['amount']) || isset($data['finalAmount']));
                 }
             };
         }

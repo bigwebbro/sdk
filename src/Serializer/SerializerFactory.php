@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Configuration\Serializer;
+namespace Tiyn\MerchantApiSdk\Serializer;
 
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
@@ -15,14 +15,14 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\AmountDenormalizer;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\DateTimeDenormalizer;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\DeliveryMethodDenormalizer;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\DetailsDenormalizer;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\PaymentsDenormalizer;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\StatusDenormalizer;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\AmountNormalizer;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\DeliveryMethodNormalizer;
+use Tiyn\MerchantApiSdk\Serializer\Denormalizer\AmountDenormalizer;
+use Tiyn\MerchantApiSdk\Serializer\Denormalizer\DateTimeDenormalizer;
+use Tiyn\MerchantApiSdk\Serializer\Denormalizer\DeliveryMethodDenormalizer;
+use Tiyn\MerchantApiSdk\Serializer\Denormalizer\DetailsDenormalizer;
+use Tiyn\MerchantApiSdk\Serializer\Denormalizer\PaymentsDenormalizer;
+use Tiyn\MerchantApiSdk\Serializer\Denormalizer\StatusDenormalizer;
+use Tiyn\MerchantApiSdk\Serializer\Normalizer\AmountNormalizer;
+use Tiyn\MerchantApiSdk\Serializer\Normalizer\DeliveryMethodNormalizer;
 
 final class SerializerFactory
 {

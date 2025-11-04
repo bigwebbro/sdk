@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Model\Refund;
 
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\AmountAwareNormalizationInterface;
-use Tiyn\MerchantApiSdk\Model\Property\{
-    Amount\AmountSetterTrait,
+use Tiyn\MerchantApiSdk\Model\Property\{Amount\AmountSetterTrait,
     Amount\AmountTrait,
     Reason\ReasonSetterTrait,
     Reason\ReasonTrait,
     RequestId\RequestIdSetterTrait,
-    RequestId\RequestIdTrait
-};
+    RequestId\RequestIdTrait};
 use Tiyn\MerchantApiSdk\Model\RequestModelInterface;
+use Tiyn\MerchantApiSdk\Serializer\Normalizer\AmountAwareNormalizationInterface;
 
 final class CreateRefundRequest implements AmountAwareNormalizationInterface, RequestModelInterface
 {

@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer;
+namespace Tiyn\MerchantApiSdk\Serializer\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
 
-final class DeliveryMethodNormalizer implements NormalizerInterface, NormalizerAwareInterface
+final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
 
@@ -22,8 +21,12 @@ final class DeliveryMethodNormalizer implements NormalizerInterface, NormalizerA
 
         $array = $this->normalizer->normalize($object, $format, $context);
 
-        if (isset($array['deliveryMethod'])) {
-            $array['deliveryMethod'] = $array['deliveryMethod'][array_key_last($array['deliveryMethod'])];
+        if (isset($array['amount'])) {
+            $array['amount'] = $this->stringToFloat($array['amount']);
+        }
+
+        if (isset($array['finalAmount'])) {
+            $array['finalAmount'] = $this->stringToFloat($array['finalAmount']);
         }
 
         return $array;
@@ -38,7 +41,7 @@ final class DeliveryMethodNormalizer implements NormalizerInterface, NormalizerA
             return false;
         }
 
-        return $data instanceof DeliveryMethodAwareNormalizationInterface;
+        return $data instanceof AmountAwareNormalizationInterface;
     }
 
     /**
@@ -47,7 +50,12 @@ final class DeliveryMethodNormalizer implements NormalizerInterface, NormalizerA
     public function getSupportedTypes(?string $format): array
     {
         return [
-            DeliveryMethodAwareNormalizationInterface::class => false,
+            AmountAwareNormalizationInterface::class => false,
         ];
+    }
+
+    private function stringToFloat(string $stringFloat): float
+    {
+        return round((float) $stringFloat, 2);
     }
 }

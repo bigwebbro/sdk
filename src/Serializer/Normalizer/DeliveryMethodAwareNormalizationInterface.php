@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer;
+namespace Tiyn\MerchantApiSdk\Serializer\Normalizer;
 
 /**
  * Marking interface

@@ -6,8 +6,7 @@ namespace Tests\Service;
 
 use PHPUnit\Framework\TestCase;
 use Tests\Service\Trait\SetUpSdkTrait;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\SerializerFactory;
-use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceResponse;
+use Tiyn\MerchantApiSdk\Serializer\SerializerFactory;
 
 class CallbackServiceTest extends TestCase
 {

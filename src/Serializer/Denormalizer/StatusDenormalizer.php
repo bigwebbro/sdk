@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer;
+namespace Tiyn\MerchantApiSdk\Serializer\Denormalizer;
 
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Details;
+use Tiyn\MerchantApiSdk\Model\Invoice\Status;
 
-final class DetailsDenormalizer
+final class StatusDenormalizer
 {
     public static function create(): DenormalizerInterface
     {
@@ -17,7 +17,7 @@ final class DetailsDenormalizer
             return new class () implements DenormalizerInterface, DenormalizerAwareInterface {
                 use DenormalizerAwareTrait;
 
-                private const CONTEXT_FLAG = '__details_denormalizer_running';
+                private const CONTEXT_FLAG = '__status_denormalizer_running';
 
                 /**
                  * @inheritDoc
@@ -26,10 +26,9 @@ final class DetailsDenormalizer
                 {
                     $context[self::CONTEXT_FLAG] = true;
 
-                    if ($data['details'] && \is_array($data['details'])) {
-                        $data['details'] = $this->denormalizer->denormalize($data['details'], Details::class, $format, $context);
+                    if (isset($data['status'])) {
+                        $data['status'] = $this->denormalizer->denormalize($data['status'], Status::class);
                     }
-
                     return $this->denormalizer->denormalize($data, $type, $format, $context);
                 }
 
@@ -42,7 +41,7 @@ final class DetailsDenormalizer
                         return false;
                     }
 
-                    return isset($data['details']);
+                    return isset($data['status']);
                 }
 
                 /**
@@ -51,7 +50,7 @@ final class DetailsDenormalizer
                 public function getSupportedTypes(?string $format): array
                 {
                     return [
-                        DetailsAwareDenormalizationInterface::class => false,
+                        StatusAwareDenormalizationInterface::class => false,
                     ];
                 }
             };
@@ -59,7 +58,7 @@ final class DetailsDenormalizer
             return new class () implements DenormalizerInterface, DenormalizerAwareInterface {
                 use DenormalizerAwareTrait;
 
-                private const CONTEXT_FLAG = '__details_denormalizer_running';
+                private const CONTEXT_FLAG = '__status_denormalizer_running';
 
                 /**
                  * @inheritDoc
@@ -68,13 +67,11 @@ final class DetailsDenormalizer
                 {
                     $context[self::CONTEXT_FLAG] = true;
 
-                    if ($data['details'] && \is_array($data['details'])) {
-                        $data['details'] = $this->denormalizer->denormalize($data['details'], Details::class, $format, $context);
+                    if (isset($data['status'])) {
+                        $data['status'] = $this->denormalizer->denormalize($data['status'], Status::class);
                     }
-
                     return $this->denormalizer->denormalize($data, $type, $format, $context);
                 }
-
 
                 /**
                  * @inheritDoc
@@ -88,7 +85,7 @@ final class DetailsDenormalizer
                         return false;
                     }
 
-                    return isset($data['details']);
+                    return isset($data['status']);
                 }
             };
         }
