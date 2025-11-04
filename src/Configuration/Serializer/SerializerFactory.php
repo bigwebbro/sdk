@@ -53,7 +53,11 @@ final class SerializerFactory
                 new ArrayDenormalizer(),
                 $objectNormalizer,
             ],
-            [new JsonEncoder()]
+            [
+                new JsonEncoder(defaultContext: [
+                    'json_encode_options' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+                ])
+            ]
         );
     }
 }
