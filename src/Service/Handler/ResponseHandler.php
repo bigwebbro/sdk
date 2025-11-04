@@ -23,12 +23,18 @@ use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\WrongDataException;
 
 final class ResponseHandler implements ResponseHandlerInterface
 {
-    const HANDLED_HTTP_4XX_CODES = [
-        400,
-        401,
-        403,
-        408,
-        418,
+    public const BAD_REQUEST = 400;
+    public const UNAUTHORIZED = 401;
+    public const FORBIDDEN = 403;
+    public const REQUEST_TIMEOUT = 408;
+    public const BLOCKED_REQUEST = 418;
+
+    public const HANDLED_HTTP_4XX_CODES = [
+        self::BAD_REQUEST,
+        self::UNAUTHORIZED,
+        self::FORBIDDEN,
+        self::REQUEST_TIMEOUT,
+        self::BLOCKED_REQUEST,
     ];
 
     public function __construct(
@@ -52,8 +58,8 @@ final class ResponseHandler implements ResponseHandlerInterface
 
         $serviceException = match (true) {
             $statusCode >= 500 => new ServiceUnavailableException(\sprintf('Service unavailable with status code %d', $statusCode), $statusCode),
-            408 === $statusCode => new TimeoutException(\sprintf('%d Request Timeout', $statusCode), $statusCode),
-            418 === $statusCode => new BlockedRequestException(\sprintf('%d Request was blocked', $statusCode), $statusCode),
+            self::REQUEST_TIMEOUT === $statusCode => new TimeoutException(\sprintf('%d Request Timeout', $statusCode), $statusCode),
+            self::BLOCKED_REQUEST === $statusCode => new BlockedRequestException(\sprintf('%d Request was blocked', $statusCode), $statusCode),
             default => null
         };
 
@@ -77,9 +83,9 @@ final class ResponseHandler implements ResponseHandlerInterface
             }
 
             throw match ($statusCode) {
-                400 => new EntityErrorException($error, $statusCode),
-                401 => new ApiKeyException($error, $statusCode),
-                403 => new SignException($error, $statusCode),
+                self::BAD_REQUEST => new EntityErrorException($error, $statusCode),
+                self::UNAUTHORIZED => new ApiKeyException($error, $statusCode),
+                self::FORBIDDEN => new SignException($error, $statusCode),
                 default => new ApiMerchantErrorException($error, $statusCode),
             };
         }
