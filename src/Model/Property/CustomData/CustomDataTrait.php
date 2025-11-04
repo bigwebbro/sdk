@@ -9,5 +9,5 @@ trait CustomDataTrait
     /**
      * @var array<string, mixed>
      */
-    private array $customData;
+    private ?array $customData = null;
 }

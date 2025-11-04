@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Tiyn\MerchantApiSdk\Model\Property\CustomData;
 
 /**
- * @property array<string, mixed> $customData
+ * @property array<null|string, mixed> $customData
  */
 trait CustomDataGetterTrait
 {
     /**
-     * @return array<string, mixed>
+     * @return null|array<string, mixed>
      */
-    public function getCustomData(): array
+    public function getCustomData(): ?array
     {
         return $this->customData;
     }
