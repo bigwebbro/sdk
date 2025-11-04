@@ -69,7 +69,7 @@ final class DeliveryMethodDenormalizer
                     $context[self::CONTEXT_FLAG] = true;
 
                     if (isset($data['deliveryMethod'])) {
-                        $data['deliveryMethod'] = DeliveryMethodEnum::tryFrom($data['deliveryMethod']);
+                        $data['deliveryMethod'] = DeliveryMethodEnum::from($data['deliveryMethod']);
                     }
                     return $this->denormalizer->denormalize($data, $type, $format, $context);
                 }
