@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Service\Handler\Exception\Service;
 
-class ServiceUnavailableException extends \RuntimeException
+class ServiceUnavailableException extends ServiceException
 {
 }

@@ -23,6 +23,7 @@ use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiKeyException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\EntityErrorException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\SignException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\BlockedRequestException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceUnavailableException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\TimeoutException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
@@ -296,6 +297,10 @@ class InvoiceServiceTest extends TestCase
             [
                 BlockedRequestException::class,
                 new MockHandler([new Response(418, [], '')])
+            ],
+            [
+                ServiceException::class,
+                new MockHandler([new Response(419, [], '')])
             ],
             [
                 ConnectionException::class,

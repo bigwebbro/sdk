@@ -14,6 +14,7 @@ use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiMerchantErrorException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\EntityErrorException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\SignException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\BlockedRequestException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceUnavailableException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\TimeoutException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\EmptyDataException;
@@ -22,6 +23,14 @@ use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\WrongDataException;
 
 final class ResponseHandler implements ResponseHandlerInterface
 {
+    const HANDLED_HTTP_4XX_CODES = [
+        400,
+        401,
+        403,
+        408,
+        418,
+    ];
+
     public function __construct(
         private readonly DecoderInterface      $decoder,
         private readonly DenormalizerInterface $denormalizer,
@@ -34,6 +43,13 @@ final class ResponseHandler implements ResponseHandlerInterface
     public function handleResponse(ResponseInterface $response): array
     {
         $statusCode = $response->getStatusCode();
+        if (
+            !\in_array($statusCode, self::HANDLED_HTTP_4XX_CODES, true)
+            && $statusCode < 500 && $statusCode >= 300
+        ) {
+            throw new ServiceException('Unhandled http code', $statusCode);
+        }
+
         $serviceException = match (true) {
             $statusCode >= 500 => new ServiceUnavailableException(\sprintf('Service unavailable with status code %d', $statusCode), $statusCode),
             408 === $statusCode => new TimeoutException(\sprintf('%d Request Timeout', $statusCode), $statusCode),
