@@ -18,7 +18,7 @@ final class DeliveryMethodNormalizer implements NormalizerInterface, NormalizerA
      */
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
-        $context[__CLASS__] = true;
+        $context[self::class] = true;
 
         $array = $this->normalizer->normalize($object, $format, $context);
 
@@ -34,7 +34,7 @@ final class DeliveryMethodNormalizer implements NormalizerInterface, NormalizerA
      */
     public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
-        if (!empty($context[__CLASS__])) {
+        if (!empty($context[self::class])) {
             return false;
         }
 

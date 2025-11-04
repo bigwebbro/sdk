@@ -12,14 +12,12 @@ final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInte
 {
     use NormalizerAwareTrait;
 
-    private const CONTEXT_FLAG = '__amount_normalizer_running';
-
     /**
      * @inheritDoc
      */
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
-        $context[self::CONTEXT_FLAG] = true;
+        $context[self::class] = true;
 
         $array = $this->normalizer->normalize($object, $format, $context);
 
@@ -39,7 +37,7 @@ final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInte
      */
     public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
-        if (!empty($context[self::CONTEXT_FLAG])) {
+        if (!empty($context[self::class])) {
             return false;
         }
 
