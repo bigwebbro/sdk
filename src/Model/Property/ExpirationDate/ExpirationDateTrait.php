@@ -9,5 +9,5 @@ use Tiyn\MerchantApiSdk\Configuration\Validation\ExpirationDateConstraint as Ass
 trait ExpirationDateTrait
 {
     #[AssertExpirationDate]
-    private \DateTimeImmutable $expirationDate;
+    private ?\DateTimeImmutable $expirationDate = null;
 }

@@ -15,7 +15,7 @@ final class ExpirationDateConstraintValidator extends ConstraintValidator
             return;
         }
 
-        if ($value <= new \DateTimeImmutable()) {
+        if (null !== $value && $value <= new \DateTimeImmutable()) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
         }
