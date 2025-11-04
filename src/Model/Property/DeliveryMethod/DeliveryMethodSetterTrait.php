@@ -7,11 +7,11 @@ namespace Tiyn\MerchantApiSdk\Model\Property\DeliveryMethod;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
 
 /**
- * @property DeliveryMethodEnum $deliveryMethod
+ * @property null|DeliveryMethodEnum $deliveryMethod
  */
 trait DeliveryMethodSetterTrait
 {
-    public function setDeliveryMethod(DeliveryMethodEnum $deliveryMethod): static
+    public function setDeliveryMethod(?DeliveryMethodEnum $deliveryMethod): static
     {
         $this->deliveryMethod = $deliveryMethod;
 
