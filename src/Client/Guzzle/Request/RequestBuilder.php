@@ -57,7 +57,7 @@ final class RequestBuilder
 
         if (null !== $this->body) {
             $request->withAddedHeader('X-Sign', Sign::hash($this->body, $secretPhrase));
-            $request->withAddedHeader('Content-Length', strlen($this->body));
+            $request->withAddedHeader('Content-Length', \strlen($this->body));
         }
 
         return $request;
