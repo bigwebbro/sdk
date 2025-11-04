@@ -11,9 +11,9 @@ trait AmountTrait
     #[Assert\NotBlank]
     #[Assert\Regex(
         pattern: '/^\d{1,15}(\.\d{1,2})?$/',
-        message: 'Сумма должна быть числом с не более чем 15 цифрами до точки и 1–2 после.'
+        message: 'The amount must be a number with no more than 15 digits before the decimal point and 1–2 digits after it.'
     )]
-    #[Assert\GreaterThanOrEqual(value: 0.01, message: 'Минимальная сумма — 0.01')]
-    #[Assert\LessThanOrEqual(value: 999999999999999.99, message: 'Максимальная сумма — 999 999 999 999 999.99')]
+    #[Assert\GreaterThanOrEqual(value: 0.01, message: 'Min amount — 0.01')]
+    #[Assert\LessThanOrEqual(value: 999999999999999.99, message: 'Max amount — 999 999 999 999 999.99')]
     private string $amount;
 }
