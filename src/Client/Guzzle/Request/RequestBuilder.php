@@ -56,8 +56,10 @@ final class RequestBuilder
         $request = new Request($this->method, $this->endpoint, $this->headers, $this->body);
 
         if (null !== $this->body) {
-            $request->withAddedHeader('X-Sign', Sign::hash($this->body, $secretPhrase));
-            $request->withAddedHeader('Content-Length', (string) \strlen($this->body));
+            $request = $request
+                ->withAddedHeader('X-Sign', Sign::hash($this->body, $secretPhrase))
+//                ->withAddedHeader('Content-Length', (string) \strlen($this->body))
+            ;
         }
 
         return $request;
