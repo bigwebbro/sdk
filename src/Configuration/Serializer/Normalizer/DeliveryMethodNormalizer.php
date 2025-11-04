@@ -7,28 +7,23 @@ namespace Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
 
-final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInterface
+final class DeliveryMethodNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
-
-    private const CONTEXT_FLAG = '__amount_normalizer_running';
 
     /**
      * @inheritDoc
      */
     public function normalize(mixed $object, string $format = null, array $context = []): array
     {
-        $context[self::CONTEXT_FLAG] = true;
+        $context[__CLASS__] = true;
 
         $array = $this->normalizer->normalize($object, $format, $context);
 
-        if (isset($array['amount'])) {
-            $array['amount'] = $this->stringToFloat($array['amount']);
-        }
-
-        if (isset($array['finalAmount'])) {
-            $array['finalAmount'] = $this->stringToFloat($array['finalAmount']);
+        if (isset($array['deliveryMethod'])) {
+            $array['deliveryMethod'] = $array['deliveryMethod'][array_key_last($array['deliveryMethod'])];
         }
 
         return $array;
@@ -39,11 +34,11 @@ final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInte
      */
     public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
-        if (!empty($context[self::CONTEXT_FLAG])) {
+        if (!empty($context[__CLASS__])) {
             return false;
         }
 
-        return $data instanceof AmountNormalizationAwareInterface;
+        return $data instanceof DeliveryMethodNormalizationAwareInterface;
     }
 
     /**
@@ -52,12 +47,7 @@ final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInte
     public function getSupportedTypes(?string $format): array
     {
         return [
-            AmountNormalizationAwareInterface::class => false,
+            DeliveryMethodNormalizationAwareInterface::class => false,
         ];
-    }
-
-    private function stringToFloat(string $stringFloat): float
-    {
-        return round((float) $stringFloat, 2);
     }
 }

@@ -20,16 +20,9 @@ final class DeliveryMethodConstraintValidator extends ConstraintValidator
             return;
         }
 
-        if (!\is_string($value)) {
+        if (!$value instanceof DeliveryMethodEnum) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $this->formatValue($value))
-                ->addViolation();
-            return;
-        }
-
-        if (!\in_array($value, DeliveryMethodEnum::valuesAsArray(), true)) {
-            $this->context->buildViolation($constraint->message)
-                ->setParameter('{{ value }}', $value)
                 ->addViolation();
         }
     }

@@ -7,6 +7,6 @@ namespace Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer;
 /**
  * Marking interface
  */
-interface AmountNormalizerAwareInterface
+interface AmountNormalizationAwareInterface
 {
 }

@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class DeliveryMethodConstraint extends Constraint
 {
-    public string $message = 'Invalid delivery method "{{ value }}". Allowed: EMAIL, SMS, URL.';
+    public string $message = 'Invalid delivery method "{{ value }}", must be DeliveryMethodEnum';
 
     public function getTargets(): string
     {

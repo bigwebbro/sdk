@@ -66,7 +66,7 @@ class InvoiceServiceTest extends TestCase
             ->setAmount('104.55')
             ->setCurrency(CurrencyEnum::KZT->value)
             ->setDescription('test')
-            ->setDeliveryMethod(DeliveryMethodEnum::URL->value)
+            ->setDeliveryMethod(DeliveryMethodEnum::URL)
             ->setExpirationDate((new \DateTimeImmutable())->add(new \DateInterval('P1D')));
         $invoicesData = $sdk->invoice()->createInvoice($invoiceRequest);
 

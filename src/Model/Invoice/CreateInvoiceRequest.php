@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
 use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\DateTimeAwareDenormalizationInterface;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\AmountNormalizerAwareInterface;
+use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\AmountNormalizationAwareInterface;
 use Tiyn\MerchantApiSdk\Model\Property\{Amount\AmountSetterTrait,
     Amount\AmountTrait,
     Currency\CurrencySetterTrait,
@@ -35,7 +35,7 @@ use Tiyn\MerchantApiSdk\Model\RequestModelInterface;
 
 final class CreateInvoiceRequest implements
     RequestModelInterface,
-    AmountNormalizerAwareInterface,
+    AmountNormalizationAwareInterface,
     DateTimeAwareDenormalizationInterface
 {
     use ExternalIdTrait;

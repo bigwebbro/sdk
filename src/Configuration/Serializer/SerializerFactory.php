@@ -17,10 +17,12 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\AmountDenormalizer;
 use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\DateTimeDenormalizer;
+use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\DeliveryMethodDenormalizer;
 use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\DetailsDenormalizer;
 use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\PaymentsDenormalizer;
 use Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer\StatusDenormalizer;
 use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\AmountNormalizer;
+use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\DeliveryMethodNormalizer;
 
 final class SerializerFactory
 {
@@ -42,9 +44,11 @@ final class SerializerFactory
                 PaymentsDenormalizer::create(),
                 StatusDenormalizer::create(),
                 DateTimeDenormalizer::create(),
+                DeliveryMethodDenormalizer::create(),
                 new DateTimeNormalizer([DateTimeNormalizer::FORMAT_KEY => self::DATE_TIME_FORMAT]),
                 AmountDenormalizer::create(),
                 new AmountNormalizer(),
+                new DeliveryMethodNormalizer(),
                 new PropertyNormalizer(),
                 new ArrayDenormalizer(),
                 $objectNormalizer,

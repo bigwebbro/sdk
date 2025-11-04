@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Model\Property\DeliveryMethod;
 
+use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
+
 /**
- * @property string $deliveryMethod
+ * @property DeliveryMethodEnum $deliveryMethod
  */
 trait DeliveryMethodSetterTrait
 {
-    public function setDeliveryMethod(string $deliveryMethod): static
+    public function setDeliveryMethod(DeliveryMethodEnum $deliveryMethod): static
     {
         $this->deliveryMethod = $deliveryMethod;
 
