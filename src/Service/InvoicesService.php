@@ -18,20 +18,21 @@ use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\WrongDataException;
 use Tiyn\MerchantApiSdk\Service\Handler\RequestHandlerInterface;
 use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandlerInterface;
 
-final class InvoicesService implements InvoicesServiceInterface
+final class InvoicesService extends AbstractRequestService implements InvoicesServiceInterface
 {
-    public const INVOICE_ENDPOINT = '/invoices';
-
-    public const INVOICE_REFUND_ENDPOINT = self::INVOICE_ENDPOINT.'/%s/refund';
+    public const INVOICE_ENDPOINT = 'invoices';
+    public const INVOICE_GET_ENDPOINT = self::INVOICE_ENDPOINT . '/%s';
+    public const INVOICE_REFUND_ENDPOINT = self::INVOICE_ENDPOINT . '/%s/refund';
 
     public function __construct(
-        private readonly ClientInterface $client,
-        private readonly DenormalizerInterface $denormalizer,
-        private readonly RequestHandlerInterface $requestHandler,
+        private readonly ClientInterface          $client,
+        private readonly DenormalizerInterface    $denormalizer,
+        private readonly RequestHandlerInterface  $requestHandler,
         private readonly ResponseHandlerInterface $responseHandler,
-        private readonly string $secretPhrase,
-        private readonly string $apiKey,
+        string                                    $secretPhrase,
+        string                                    $apiKey,
     ) {
+        parent::__construct($secretPhrase, $apiKey);
     }
 
     public function createInvoice(CreateInvoiceRequest $command): CreateInvoiceResponse
@@ -42,8 +43,7 @@ final class InvoicesService implements InvoicesServiceInterface
             ->withBody($json)
             ->withEndpoint(self::INVOICE_ENDPOINT)
             ->withApiKey($this->apiKey)
-            ->buildWithSign($this->secretPhrase)
-        ;
+            ->buildWithSign($this->secretPhrase);
 
         $response = $this->client->sendRequest($request);
         $result = $this->responseHandler->handleResponse($response);
@@ -62,9 +62,8 @@ final class InvoicesService implements InvoicesServiceInterface
         $request = (new RequestBuilder())
             ->withMethod('GET')
             ->withApiKey($this->apiKey)
-            ->withEndpoint(\sprintf('%s/%s', self::INVOICE_ENDPOINT, $command->getUuid()))
-            ->build()
-        ;
+            ->withEndpoint($this->getEndpoint(self::INVOICE_GET_ENDPOINT, $command->getUuid()))
+            ->build();
 
         $response = $this->client->sendRequest($request);
         $result = $this->responseHandler->handleResponse($response);
@@ -85,10 +84,9 @@ final class InvoicesService implements InvoicesServiceInterface
         $request = (new RequestBuilder())
             ->withMethod('PUT')
             ->withBody($json)
-            ->withEndpoint(\sprintf(self::INVOICE_REFUND_ENDPOINT, $invoiceUuid))
+            ->withEndpoint($this->getEndpoint(self::INVOICE_REFUND_ENDPOINT, $invoiceUuid))
             ->withApiKey($this->apiKey)
-            ->buildWithSign($this->secretPhrase)
-        ;
+            ->buildWithSign($this->secretPhrase);
 
         $response = $this->client->sendRequest($request);
         $result = $this->responseHandler->handleResponse($response);
