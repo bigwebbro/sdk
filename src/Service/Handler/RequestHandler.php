@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Service\Handler;
 
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Tiyn\MerchantApiSdk\Model\RequestModelInterface;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\ValidationException;
 
 final class RequestHandler implements RequestHandlerInterface
@@ -32,8 +34,14 @@ final class RequestHandler implements RequestHandlerInterface
             throw new ValidationException(implode(', ', $messages));
         }
 
-        return $this->serializer->serialize($command, 'json', [
-            AbstractObjectNormalizer::SKIP_NULL_VALUES => true
-        ]);
+        try {
+            $result = $this->serializer->serialize($command, 'json', [
+                AbstractObjectNormalizer::SKIP_NULL_VALUES => true
+            ]);
+        } catch (ExceptionInterface $e) {
+            throw new JsonProcessingException($e->getMessage(), $e->getCode(), $e);
+        }
+
+        return $result;
     }
 }
