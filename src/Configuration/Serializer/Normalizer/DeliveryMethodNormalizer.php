@@ -38,7 +38,7 @@ final class DeliveryMethodNormalizer implements NormalizerInterface, NormalizerA
             return false;
         }
 
-        return $data instanceof DeliveryMethodNormalizationAwareInterface;
+        return $data instanceof DeliveryMethodAwareNormalizationInterface;
     }
 
     /**
@@ -47,7 +47,7 @@ final class DeliveryMethodNormalizer implements NormalizerInterface, NormalizerA
     public function getSupportedTypes(?string $format): array
     {
         return [
-            DeliveryMethodNormalizationAwareInterface::class => false,
+            DeliveryMethodAwareNormalizationInterface::class => false,
         ];
     }
 }

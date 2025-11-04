@@ -9,6 +9,8 @@ use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Tiyn\MerchantApiSdk\Configuration\Serializer\SerializerFactory;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
+use Tiyn\MerchantApiSdk\Model\Invoice\Enum\CurrencyEnum;
+use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
 use Tiyn\MerchantApiSdk\Model\Refund\CreateRefundRequest;
 use Tiyn\MerchantApiSdk\Model\Refund\CreateRefundResponse;
 
@@ -139,5 +141,26 @@ class SerializerFactoryTest extends TestCase
             \DateTimeImmutable::createFromFormat(SerializerFactory::DATE_TIME_FORMAT, $dateTimeStr),
             $property->getValue($result)
         );
+    }
+
+    /**
+     * @test
+     */
+    public function SerializationDeserializationCreateInvoiceRequest(): void
+    {
+        $invoiceRequest = (new CreateInvoiceRequest())
+            ->setExternalId('1')
+            ->setAmount('104.55')
+            ->setCurrency(CurrencyEnum::KZT->value)
+            ->setDescription('test')
+            ->setDeliveryMethod(DeliveryMethodEnum::URL)
+            ->setExpirationDate((new \DateTimeImmutable())->add(new \DateInterval('P1D')));
+
+        $json = $this->serializer->serialize(
+            $invoiceRequest,
+            'json'
+        );
+        $deserializedInvoiceRequest = $this->serializer->deserialize($json, CreateInvoiceRequest::class, 'json');
+        self::assertJsonStringEqualsJsonString($json, $this->serializer->serialize($deserializedInvoiceRequest, 'json'));
     }
 }

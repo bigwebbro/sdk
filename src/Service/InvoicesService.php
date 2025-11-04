@@ -37,7 +37,6 @@ final class InvoicesService implements InvoicesServiceInterface
     public function createInvoice(CreateInvoiceRequest $command): CreateInvoiceResponse
     {
         $json = $this->requestHandler->handleRequest($command);
-
         $request = (new RequestBuilder())
             ->withMethod('POST')
             ->withBody($json)

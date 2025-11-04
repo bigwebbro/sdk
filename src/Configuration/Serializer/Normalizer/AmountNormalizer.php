@@ -41,7 +41,7 @@ final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInte
             return false;
         }
 
-        return $data instanceof AmountNormalizationAwareInterface;
+        return $data instanceof AmountAwareNormalizationInterface;
     }
 
     /**
@@ -50,7 +50,7 @@ final class AmountNormalizer implements NormalizerInterface, NormalizerAwareInte
     public function getSupportedTypes(?string $format): array
     {
         return [
-            AmountNormalizationAwareInterface::class => false,
+            AmountAwareNormalizationInterface::class => false,
         ];
     }
 

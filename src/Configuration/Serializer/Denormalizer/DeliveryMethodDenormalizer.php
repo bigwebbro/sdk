@@ -7,7 +7,7 @@ namespace Tiyn\MerchantApiSdk\Configuration\Serializer\Denormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\DeliveryMethodNormalizationAwareInterface;
+use Tiyn\MerchantApiSdk\Configuration\Serializer\Normalizer\DeliveryMethodAwareNormalizationInterface;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
 
 final class DeliveryMethodDenormalizer
@@ -51,7 +51,7 @@ final class DeliveryMethodDenormalizer
                 public function getSupportedTypes(?string $format): array
                 {
                     return [
-                        DeliveryMethodNormalizationAwareInterface::class => false,
+                        DeliveryMethodAwareNormalizationInterface::class => false,
                     ];
                 }
             };
