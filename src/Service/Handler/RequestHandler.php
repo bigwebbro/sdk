@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Service\Handler;
 
+use Symfony\Component\Serializer\Encoder\JsonDecode;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -36,7 +37,8 @@ final class RequestHandler implements RequestHandlerInterface
 
         try {
             $result = $this->serializer->serialize($command, 'json', [
-                AbstractObjectNormalizer::SKIP_NULL_VALUES => true
+                AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
+                JsonDecode::OPTIONS => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
             ]);
         } catch (ExceptionInterface $e) {
             throw new JsonProcessingException($e->getMessage(), $e->getCode(), $e);
