@@ -13,7 +13,9 @@ use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiKeyException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiMerchantErrorException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\EntityErrorException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\SignException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\BlockedRequestException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceUnavailableException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\TimeoutException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\EmptyDataException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\WrongDataException;
@@ -32,11 +34,18 @@ final class ResponseHandler implements ResponseHandlerInterface
     public function handleResponse(ResponseInterface $response): array
     {
         $statusCode = $response->getStatusCode();
-        $body = (string)$response->getBody();
+        $serviceException = match (true) {
+            $statusCode >= 500 => new ServiceUnavailableException(\sprintf('Service unavailable with status code %d', $statusCode), $statusCode),
+            408 === $statusCode => new TimeoutException(\sprintf('%d Request Timeout', $statusCode), $statusCode),
+            418 === $statusCode => new BlockedRequestException(\sprintf('%d Request was blocked', $statusCode), $statusCode),
+            default => null
+        };
 
-        if ($statusCode >= 500) {
-            throw new ServiceUnavailableException(\sprintf('Service unavailable with status code %d', $statusCode), $statusCode);
+        if (null !== $serviceException) {
+            throw $serviceException;
         }
+
+        $body = (string)$response->getBody();
 
         try {
             $array = $this->decoder->decode($body, 'json', ['json_decode_associative' => true]);

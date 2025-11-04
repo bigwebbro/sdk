@@ -22,7 +22,9 @@ use Tiyn\MerchantApiSdk\Model\Refund\CreateRefundRequest;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiKeyException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\EntityErrorException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\SignException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\BlockedRequestException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceUnavailableException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\TimeoutException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
 
 class InvoiceServiceTest extends TestCase
@@ -283,10 +285,17 @@ class InvoiceServiceTest extends TestCase
                     }
                 }', self::ERROR_CODE, self::ERROR_FORBIDDEN_MESSAGE, self::ERROR_CORRELATION_ID))])
             ],
-            // 500 & string body
             [
                 ServiceUnavailableException::class,
                 new MockHandler([new Response(503, [], '503 Service Unavailable')])
+            ],
+            [
+                TimeoutException::class,
+                new MockHandler([new Response(408, [], '')])
+            ],
+            [
+                BlockedRequestException::class,
+                new MockHandler([new Response(418, [], '')])
             ],
             [
                 ConnectionException::class,
