@@ -19,8 +19,6 @@ final class ClientBuilder implements ClientBuilderInterface
 
     private int $timeout = 5;
 
-    private string $apiKey;
-
     private int $maxAttempts;
 
     private float $multiplier;
@@ -47,13 +45,6 @@ final class ClientBuilder implements ClientBuilderInterface
     public function setTimeout(int $timeout): ClientBuilderInterface
     {
         $this->timeout = $timeout;
-
-        return $this;
-    }
-
-    public function setApiKey(string $apiKey): ClientBuilderInterface
-    {
-        $this->apiKey = $apiKey;
 
         return $this;
     }
@@ -117,10 +108,6 @@ final class ClientBuilder implements ClientBuilderInterface
             'base_uri' => $this->baseUri,
             'timeout' => $this->timeout,
             'http_errors' => false,
-            'headers' => [
-                'X-Api-Key' => $this->apiKey,
-                'Content-Type' => 'application/json',
-            ],
             ...$this->options,
         ];
 

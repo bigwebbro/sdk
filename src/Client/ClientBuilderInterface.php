@@ -13,8 +13,6 @@ interface ClientBuilderInterface
 
     public function setTimeout(int $timeout): self;
 
-    public function setApiKey(string $apiKey): self;
-
     /**
      * @param array<string,mixed> $options
      */

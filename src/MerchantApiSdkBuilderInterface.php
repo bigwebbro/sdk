@@ -10,13 +10,15 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 interface MerchantApiSdkBuilderInterface
 {
-    public function setClient(ClientInterface $client): \Tiyn\MerchantApiSdk\MerchantApiSdkBuilder;
+    public function setClient(ClientInterface $client): self;
 
-    public function setSecretPhrase(string $secretPhrase): \Tiyn\MerchantApiSdk\MerchantApiSdkBuilder;
+    public function setSecretPhrase(string $secretPhrase): self;
 
-    public function setSerializer(SerializerInterface $serializer): MerchantApiSdkBuilder;
+    public function setApiKey(string $apiKey): self;
 
-    public function setValidator(ValidatorInterface $validator): MerchantApiSdkBuilder;
+    public function setSerializer(SerializerInterface $serializer): self;
+
+    public function setValidator(ValidatorInterface $validator): self;
 
     public function build(): MerchantApiSdkInterface;
 }

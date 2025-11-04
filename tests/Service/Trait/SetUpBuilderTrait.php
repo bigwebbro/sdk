@@ -26,11 +26,11 @@ trait SetUpBuilderTrait
         $this->client = (new ClientBuilder())
             ->setBaseUri('https://test')
             ->setTimeout(5)
-            ->setApiKey('test-api-key')
             ->addDecorator(new ClientLoggingDecorator($logger, new Clock()))
         ;
 
         $this->sdkBuilder = (new MerchantApiSdkBuilder())
+            ->setApiKey('test-api-key')
             ->setSecretPhrase('test-secret-phrase')
         ;
     }

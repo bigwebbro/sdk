@@ -55,6 +55,7 @@ class InvoiceServiceTest extends TestCase
                 ->setOptions(['handler' => HandlerStack::create($mock)])
                 ->build()
             )
+            ->setApiKey('test-api-key')
             ->build();
 
         if (null !== $exception) {

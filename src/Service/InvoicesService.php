@@ -30,6 +30,7 @@ final class InvoicesService implements InvoicesServiceInterface
         private readonly RequestHandlerInterface $requestHandler,
         private readonly ResponseHandlerInterface $responseHandler,
         private readonly string $secretPhrase,
+        private readonly string $apiKey,
     ) {
     }
 
@@ -41,6 +42,7 @@ final class InvoicesService implements InvoicesServiceInterface
             ->withMethod('POST')
             ->withBody($json)
             ->withEndpoint(self::INVOICE_ENDPOINT)
+            ->withApiKey($this->apiKey)
             ->buildWithSign($this->secretPhrase)
         ;
 
@@ -60,6 +62,7 @@ final class InvoicesService implements InvoicesServiceInterface
     {
         $request = (new RequestBuilder())
             ->withMethod('GET')
+            ->withApiKey($this->apiKey)
             ->withEndpoint(\sprintf('%s/%s', self::INVOICE_ENDPOINT, $command->getUuid()))
             ->build()
         ;
@@ -84,6 +87,7 @@ final class InvoicesService implements InvoicesServiceInterface
             ->withMethod('PUT')
             ->withBody($json)
             ->withEndpoint(\sprintf(self::INVOICE_REFUND_ENDPOINT, $invoiceUuid))
+            ->withApiKey($this->apiKey)
             ->buildWithSign($this->secretPhrase)
         ;
 

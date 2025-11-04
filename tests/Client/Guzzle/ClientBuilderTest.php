@@ -30,7 +30,6 @@ class ClientBuilderTest extends TestCase
         $this->clientBuilder  = (new ClientBuilder())
             ->setBaseUri('https://test')
             ->setTimeout(5)
-            ->setApiKey('test-api-key')
             ->addDecorator(new ClientLoggingDecorator($logger, new Clock()))
         ;
     }

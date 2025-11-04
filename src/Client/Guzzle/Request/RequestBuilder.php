@@ -19,6 +19,8 @@ final class RequestBuilder
     private array $headers = [];
     private ?string $body = null;
 
+    private string $apiKey;
+
     public function withMethod(string $method): self
     {
         $this->method = $method;
@@ -51,22 +53,26 @@ final class RequestBuilder
         return $this;
     }
 
+    public function withApiKey(string $apiKey): self
+    {
+        $this->apiKey = $apiKey;
+
+        return $this;
+    }
+
     public function buildWithSign(string $secretPhrase): PsrRequestInterface
     {
-        $request = new Request($this->method, $this->endpoint, $this->headers, $this->body);
-
-        if (null !== $this->body) {
-            $request = $request
-                ->withAddedHeader('X-Sign', Sign::hash($this->body, $secretPhrase))
-//                ->withAddedHeader('Content-Length', (string) \strlen($this->body))
-            ;
-        }
-
-        return $request;
+        return (new Request($this->method, $this->endpoint, $this->headers, $this->body))
+            ->withAddedHeader('Content-Type', 'application/json')
+            ->withAddedHeader('X-Sign', Sign::hash($this->body, $secretPhrase))
+            ->withAddedHeader('X-Api-Key', $this->apiKey)
+        ;
     }
 
     public function build(): PsrRequestInterface
     {
-        return new Request($this->method, $this->endpoint, $this->headers, $this->body);
+        return (new Request($this->method, $this->endpoint, $this->headers, $this->body))
+            ->withAddedHeader('X-Api-Key', $this->apiKey)
+        ;
     }
 }

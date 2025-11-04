@@ -24,13 +24,13 @@ trait SetUpSdkTrait
         $client = (new ClientBuilder())
             ->setBaseUri('https://test')
             ->setTimeout(5)
-            ->setApiKey('test-api-key')
             ->addDecorator(new ClientLoggingDecorator($logger, new Clock()))
             ->build()
         ;
 
         $this->sdk = (new MerchantApiSdkBuilder())
             ->setSecretPhrase('test-secret-phrase')
+            ->setApiKey('test-api-key')
             ->setClient($client)
             ->build()
         ;

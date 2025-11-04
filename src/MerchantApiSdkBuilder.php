@@ -24,9 +24,11 @@ final class MerchantApiSdkBuilder implements MerchantApiSdkBuilderInterface
 
     private DenormalizerInterface $denormalizer;
 
+    private ClientInterface $client;
+
     private string $secretPhrase;
 
-    private ClientInterface $client;
+    private string $apiKey;
 
     public function setClient(ClientInterface $client): self
     {
@@ -38,6 +40,13 @@ final class MerchantApiSdkBuilder implements MerchantApiSdkBuilderInterface
     public function setSecretPhrase(string $secretPhrase): self
     {
         $this->secretPhrase = $secretPhrase;
+
+        return $this;
+    }
+
+    public function setApiKey(string $apiKey): self
+    {
+        $this->apiKey = $apiKey;
 
         return $this;
     }
@@ -73,6 +82,7 @@ final class MerchantApiSdkBuilder implements MerchantApiSdkBuilderInterface
             new RequestHandler($this->validator, $this->serializer),
             new ResponseHandler(new JsonDecode(), $this->denormalizer),
             $this->secretPhrase,
+            $this->apiKey,
         );
 
         $callbackService = new CallbackService($this->serializer);
