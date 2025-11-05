@@ -11,7 +11,7 @@ final class Status
     /**
      * @phpstan-ignore-next-line
      */
-    private PaymentStatusEnum $name;
+    private readonly PaymentStatusEnum $name;
 
     public function getName(): PaymentStatusEnum
     {
