@@ -175,7 +175,7 @@ class InvoiceServiceTest extends TestCase
         $invoice = $sdk->invoice()->getInvoice($invoiceRequest);
         self::assertEquals($invoice->getUuid(), self::INVOICE_UUID);
         self::assertEquals($invoice->getExternalId(), self::INVOICE_EXTERNAL_ID);
-        self::assertGreaterThanOrEqual(1, count($invoice->getPayments()));
+        self::assertGreaterThanOrEqual(1, \count($invoice->getPayments()));
         foreach ($invoice->getPayments() as $payment) {
             self::assertInstanceOf(Payment::class, $payment);
         }
