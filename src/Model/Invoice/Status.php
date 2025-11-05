@@ -19,7 +19,7 @@ final class Status
     use TimeGetterTrait;
 
     /**
-     * @phpstan-ignore-next-line property.onlyRead property.uninitializedReadonly
+     * @phpstan-ignore-next-line
      */
     private InvoiceStatusEnum $name;
 

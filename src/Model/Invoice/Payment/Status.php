@@ -9,7 +9,7 @@ use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Enum\PaymentStatusEnum;
 final class Status
 {
     /**
-     * @phpstan-ignore-next-line property.onlyRead property.uninitializedReadonly
+     * @phpstan-ignore-next-line
      */
     private PaymentStatusEnum $name;
 
