@@ -56,7 +56,7 @@ class CallbackServiceTest extends TestCase
 }
 JSON;
         $callbackInvoice = $this->sdk->callback()->handleInvoiceCallback($json);
-        $serializer = SerializerFactory::init();
+        $serializer = SerializerFactory::create();
         self::assertJsonStringEqualsJsonString($json, $serializer->serialize($callbackInvoice, 'json'));
     }
 }

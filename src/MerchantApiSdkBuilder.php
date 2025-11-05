@@ -66,7 +66,7 @@ final class MerchantApiSdkBuilder implements MerchantApiSdkBuilderInterface
     public function build(): MerchantApiSdkInterface
     {
         if (!isset($this->serializer)) {
-            $this->serializer = SerializerFactory::init();
+            $this->serializer = SerializerFactory::create();
             $this->denormalizer = $this->serializer;
         }
 

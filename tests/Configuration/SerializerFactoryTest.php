@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Configuration;
+namespace Tests\Configuration;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
@@ -20,7 +20,7 @@ class SerializerFactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer = SerializerFactory::init();
+        $this->serializer = SerializerFactory::create();
     }
 
     /**

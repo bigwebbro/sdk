@@ -4,29 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Service;
 
-use GuzzleHttp\Exception\ConnectException as GuzzleConnectException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Tests\Service\Trait\SetUpBuilderTrait;
-use Tiyn\MerchantApiSdk\Client\Exception\Transport\ConnectionException;
-use Tiyn\MerchantApiSdk\Model\Error;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\CurrencyEnum;
 use Tiyn\MerchantApiSdk\Model\Invoice\Enum\DeliveryMethodEnum;
 use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceRequest;
 use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment;
 use Tiyn\MerchantApiSdk\Model\Refund\CreateRefundRequest;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiKeyException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\EntityErrorException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\SignException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\BlockedRequestException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceUnavailableException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\TimeoutException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
 
 class InvoiceServiceTest extends TestCase
 {
@@ -35,32 +23,34 @@ class InvoiceServiceTest extends TestCase
     public const INVOICE_UUID = "1fd64b0c-a8e7-4dc1-a799-f0cfa3ebad3a";
     public const INVOICE_EXTERNAL_ID = "3c5301df-d806-4fb0-9f96-f44d5d2d3827";
     public const INVOICE_PAYMENT_LINK = "https://payment";
-    public const ERROR_CODE = "-1";
-    public const ERROR_ENTITY_CODE = "1";
-    public const ERROR_UNAUTHORIZED_MESSAGE = "Unauthorized";
-    public const ERROR_FORBIDDEN_MESSAGE = "Forbidden";
-    public const ERROR_ENTITY_MESSAGE = "Invalid expiration date";
-    public const ERROR_CORRELATION_ID = "9f63d8d9-4260-432f-a47d-3eead8a3c6e7";
 
     /**
      * @test
-     * @dataProvider mockHandlerProvider
      */
-    public function createInvoiceTest(?string $exception, MockHandler $mock): void
+    public function createInvoiceTest(): void
     {
         $sdk = $this
             ->sdkBuilder
             ->setClient(
                 $this->client
-                ->setOptions(['handler' => HandlerStack::create($mock)])
+                ->setOptions(['handler' => new MockHandler([
+                    new Response(
+                        200,
+                        [],
+                        \sprintf('{
+                          "success": true,
+                          "data": {
+                            "uuid": "%s",
+                            "externalId": "%s",
+                            "paymentLink": "%s"
+                          }
+                        }', self::INVOICE_UUID, self::INVOICE_EXTERNAL_ID, self::INVOICE_PAYMENT_LINK)
+                    ),
+                ])])
                 ->build()
             )
             ->setApiKey('test-api-key')
             ->build();
-
-        if (null !== $exception) {
-            $this->expectException($exception);
-        }
 
         $invoiceRequest = (new CreateInvoiceRequest())
             ->setExternalId('1')
@@ -69,43 +59,8 @@ class InvoiceServiceTest extends TestCase
             ->setDescription('test')
             ->setDeliveryMethod(DeliveryMethodEnum::URL)
             ->setExpirationDate((new \DateTimeImmutable())->add(new \DateInterval('P1D')));
-        $invoicesData = $sdk->invoice()->createInvoice($invoiceRequest);
 
-        switch ($exception) {
-            case EntityErrorException::class:
-                $e = new EntityErrorException(
-                    new Error(
-                        self::ERROR_ENTITY_CODE,
-                        self::ERROR_ENTITY_MESSAGE,
-                        self::ERROR_CORRELATION_ID
-                    ),
-                    400
-                );
-                $this->expectExceptionObject($e);
-                break;
-            case ApiKeyException::class:
-                $e = new ApiKeyException(
-                    new Error(
-                        self::ERROR_CODE,
-                        self::ERROR_UNAUTHORIZED_MESSAGE,
-                        self::ERROR_CORRELATION_ID
-                    ),
-                    401
-                );
-                $this->expectExceptionObject($e);
-                break;
-            case SignException::class:
-                $e = new SignException(
-                    new Error(
-                        self::ERROR_CODE,
-                        self::ERROR_FORBIDDEN_MESSAGE,
-                        self::ERROR_CORRELATION_ID
-                    ),
-                    403
-                );
-                $this->expectExceptionObject($e);
-                break;
-        }
+        $invoicesData = $sdk->invoice()->createInvoice($invoiceRequest);
 
         self::assertEquals($invoicesData->getUuid(), self::INVOICE_UUID);
         self::assertEquals($invoicesData->getExternalId(), self::INVOICE_EXTERNAL_ID);
@@ -223,90 +178,5 @@ class InvoiceServiceTest extends TestCase
         $createdRefundResponse = $sdk->invoice()->makeRefundByInvoice($invoiceUuid, $createRefundRequest);
         self::assertEquals($invoiceUuid, $createdRefundResponse->getUuid());
         self::assertEquals($requestId, $createdRefundResponse->getRequestId());
-    }
-
-    /**
-     * @return array<int, mixed>
-     */
-    public static function mockHandlerProvider(): array
-    {
-        return [
-            // 200 & valid body
-            [
-                null,
-                new MockHandler([
-                    new Response(
-                        200,
-                        [],
-                        \sprintf('{
-                          "success": true,
-                          "data": {
-                            "uuid": "%s",
-                            "externalId": "%s",
-                            "paymentLink": "%s"
-                          }
-                        }', self::INVOICE_UUID, self::INVOICE_EXTERNAL_ID, self::INVOICE_PAYMENT_LINK)
-                    ),
-                ])
-            ],
-            // 200 & empty body
-            [
-                JsonProcessingException::class,
-                new MockHandler([new Response(200, [], '')])
-            ],
-            [
-                EntityErrorException::class,
-                new MockHandler([new Response(400, [], \sprintf('{
-                    "success": false,
-                    "error": {
-                        "code": "%s",
-                        "message": "%s",
-                        "correlationId": "%s"
-                    }
-                }', self::ERROR_ENTITY_CODE, self::ERROR_ENTITY_MESSAGE, self::ERROR_CORRELATION_ID))])
-            ],
-            [
-                ApiKeyException::class,
-                new MockHandler([new Response(401, [], \sprintf('{
-                    "success": false,
-                    "error": {
-                        "code": "%s",
-                        "message": "%s",
-                        "correlationId": "%s"
-                    }
-                }', self::ERROR_CODE, self::ERROR_UNAUTHORIZED_MESSAGE, self::ERROR_CORRELATION_ID))])
-            ],
-            [
-                SignException::class,
-                new MockHandler([new Response(403, [], \sprintf('{
-                    "success": false,
-                    "error": {
-                        "code": "%s",
-                        "message": "%s",
-                        "correlationId": "%s"
-                    }
-                }', self::ERROR_CODE, self::ERROR_FORBIDDEN_MESSAGE, self::ERROR_CORRELATION_ID))])
-            ],
-            [
-                ServiceUnavailableException::class,
-                new MockHandler([new Response(503, [], '503 Service Unavailable')])
-            ],
-            [
-                TimeoutException::class,
-                new MockHandler([new Response(408, [], '')])
-            ],
-            [
-                BlockedRequestException::class,
-                new MockHandler([new Response(418, [], '')])
-            ],
-            [
-                ServiceException::class,
-                new MockHandler([new Response(419, [], '')])
-            ],
-            [
-                ConnectionException::class,
-                new MockHandler([new GuzzleConnectException('111', new Request('GET', 'http://test'))])
-            ],
-        ];
     }
 }

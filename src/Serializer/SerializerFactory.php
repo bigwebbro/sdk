@@ -33,7 +33,7 @@ final class SerializerFactory
 {
     public const DATE_TIME_FORMAT = 'Y-m-d H:i:s.uP';
 
-    public static function init(): SerializerInterface|NormalizerInterface|DenormalizerInterface
+    public static function create(): SerializerInterface|NormalizerInterface|DenormalizerInterface
     {
         $reflectionExtractor = new ReflectionExtractor();
         $extractor = new PropertyInfoExtractor(typeExtractors: [
