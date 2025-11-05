@@ -7,8 +7,8 @@ namespace Tests\Service\Trait;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Tiyn\MerchantApiSdk\Client\Decorator\ClientLoggingDecorator;
+use Tiyn\MerchantApiSdk\Client\Decorator\Clock\Clock;
 use Tiyn\MerchantApiSdk\Client\Guzzle\ClientBuilder;
-use Tiyn\MerchantApiSdk\Client\Util\Clock\Clock;
 use Tiyn\MerchantApiSdk\MerchantApiSdkBuilder;
 use Tiyn\MerchantApiSdk\MerchantApiSdkInterface;
 
@@ -34,5 +34,9 @@ trait SetUpSdkTrait
             ->setClient($client)
             ->build()
         ;
+    }
+
+    public function setSecretPhrase(string $newSecretPhrase): void
+    {
     }
 }

@@ -14,9 +14,9 @@ use Symfony\Component\Serializer\Encoder\JsonDecode;
 use Tiyn\MerchantApiSdk\Client\Exception\Transport\ConnectionException;
 use Tiyn\MerchantApiSdk\Model\Error;
 use Tiyn\MerchantApiSdk\Serializer\SerializerFactory;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiKeyException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\UnauthorizedException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\EntityErrorException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\SignException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ForbiddenException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\BlockedRequestException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceUnavailableException;
@@ -61,8 +61,8 @@ class ResponseHandlerTest extends TestCase
                 );
                 $this->expectExceptionObject($e);
                 break;
-            case ApiKeyException::class:
-                $e = new ApiKeyException(
+            case UnauthorizedException::class:
+                $e = new UnauthorizedException(
                     new Error(
                         self::ERROR_CODE,
                         self::ERROR_UNAUTHORIZED_MESSAGE,
@@ -72,8 +72,8 @@ class ResponseHandlerTest extends TestCase
                 );
                 $this->expectExceptionObject($e);
                 break;
-            case SignException::class:
-                $e = new SignException(
+            case ForbiddenException::class:
+                $e = new ForbiddenException(
                     new Error(
                         self::ERROR_CODE,
                         self::ERROR_FORBIDDEN_MESSAGE,
@@ -131,7 +131,7 @@ class ResponseHandlerTest extends TestCase
                 }', self::ERROR_ENTITY_CODE, self::ERROR_ENTITY_MESSAGE, self::ERROR_CORRELATION_ID))
             ],
             [
-                ApiKeyException::class,
+                UnauthorizedException::class,
                 new Response(401, [], \sprintf('{
                     "success": false,
                     "error": {
@@ -142,7 +142,7 @@ class ResponseHandlerTest extends TestCase
                 }', self::ERROR_CODE, self::ERROR_UNAUTHORIZED_MESSAGE, self::ERROR_CORRELATION_ID))
             ],
             [
-                SignException::class,
+                ForbiddenException::class,
                 new Response(403, [], \sprintf('{
                     "success": false,
                     "error": {

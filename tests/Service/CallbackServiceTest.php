@@ -7,17 +7,15 @@ namespace Tests\Service;
 use PHPUnit\Framework\TestCase;
 use Tests\Service\Trait\SetUpSdkTrait;
 use Tiyn\MerchantApiSdk\Serializer\SerializerFactory;
+use Tiyn\MerchantApiSdk\Sign\Sign;
+use Tiyn\MerchantApiSdk\Sign\SignException;
 
 class CallbackServiceTest extends TestCase
 {
     use SetUpSdkTrait;
 
-    /**
-     * @test
-     */
-    public function callbackHandlerSuccessDenormalizeTest(): void
-    {
-        $json = <<<JSON
+    public const SECRET_PHRASE = 'test';
+    public const CALLBACK_BODY = <<<JSON
 {
   "externalId": "3c5301df-d806-4fb0-9f96-f44d5d2d3827",
   "uuid": "1fd64b0c-a8e7-4dc1-a799-f0cfa3ebad3a",
@@ -55,8 +53,46 @@ class CallbackServiceTest extends TestCase
   ]
 }
 JSON;
-        $callbackInvoice = $this->sdk->callback()->handleInvoiceCallback($json);
+
+    /**
+     * @test
+     */
+    public function callbackSuccessHandleJsonTest(): void
+    {
+        $this->setSecretPhrase();
+
+        $callbackInvoice = $this->sdk->callback()->handleInvoiceCallback(
+            Sign::hash(self::CALLBACK_BODY, self::SECRET_PHRASE),
+            self::CALLBACK_BODY
+        );
         $serializer = SerializerFactory::create();
-        self::assertJsonStringEqualsJsonString($json, $serializer->serialize($callbackInvoice, 'json'));
+        self::assertJsonStringEqualsJsonString(self::CALLBACK_BODY, $serializer->serialize($callbackInvoice, 'json'));
+    }
+
+    /**
+     * @test
+     */
+    public function callbackBrokenXSignTest(): void
+    {
+        $this->setSecretPhrase();
+        $sign = Sign::hash(self::CALLBACK_BODY, self::SECRET_PHRASE);
+        $this->expectException(SignException::class);
+        $callbackInvoice = $this->sdk->callback()->handleInvoiceCallback(
+            $sign . ' ',
+            self::CALLBACK_BODY
+        );
+        $serializer = SerializerFactory::create();
+        self::assertJsonStringEqualsJsonString(self::CALLBACK_BODY, $serializer->serialize($callbackInvoice, 'json'));
+    }
+
+    private function setSecretPhrase(): void
+    {
+        $ref = (new \ReflectionObject($this->sdk));
+        $invoiceProp = $ref->getProperty('callbackService');
+        $invoiceService = $invoiceProp->getValue($this->sdk);
+        $refService = new \ReflectionObject($invoiceService);
+        $secretProp = $refService->getProperty('secretPhrase');
+        $secretProp->setValue($invoiceService, self::SECRET_PHRASE);
+
     }
 }

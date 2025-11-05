@@ -9,8 +9,8 @@ use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceResponse;
 interface CallbackServiceInterface
 {
     /**
-     * @param string $invoice callback json body
+     * @param string $body callback json body
      * @return GetInvoiceResponse
      */
-    public function handleInvoiceCallback(string $invoice): GetInvoiceResponse;
+    public function handleInvoiceCallback(string $xSign, string $body): GetInvoiceResponse;
 }

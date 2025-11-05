@@ -9,7 +9,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
-use Tiyn\MerchantApiSdk\Client\Util\Clock\ClockInterface;
+use Tiyn\MerchantApiSdk\Client\Decorator\Clock\ClockInterface;
 
 final class ClientLoggingDecorator implements ClientInterface, ClientDecoratorAwareInterface
 {

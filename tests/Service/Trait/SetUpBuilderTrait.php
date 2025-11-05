@@ -8,8 +8,8 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Tiyn\MerchantApiSdk\Client\ClientBuilderInterface;
 use Tiyn\MerchantApiSdk\Client\Decorator\ClientLoggingDecorator;
+use Tiyn\MerchantApiSdk\Client\Decorator\Clock\Clock;
 use Tiyn\MerchantApiSdk\Client\Guzzle\ClientBuilder;
-use Tiyn\MerchantApiSdk\Client\Util\Clock\Clock;
 use Tiyn\MerchantApiSdk\MerchantApiSdkBuilder;
 
 trait SetUpBuilderTrait

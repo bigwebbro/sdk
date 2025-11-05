@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Service\Handler\Exception\Api;
 
-class SignException extends ApiMerchantErrorException
+class ForbiddenException extends ApiMerchantErrorException
 {
 }

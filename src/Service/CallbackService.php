@@ -8,17 +8,26 @@ use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceResponse;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
+use Tiyn\MerchantApiSdk\Sign\Sign;
+use Tiyn\MerchantApiSdk\Sign\SignException;
 
-final class CallbackService implements CallbackServiceInterface
+final class CallbackService extends AbstractService implements CallbackServiceInterface
 {
-    public function __construct(private readonly SerializerInterface $serializer)
-    {
+    public function __construct(
+        private readonly SerializerInterface $serializer,
+        string                               $secretPhrase,
+    ) {
+        parent::__construct($secretPhrase);
     }
 
-    public function handleInvoiceCallback(string $invoice): GetInvoiceResponse
+    public function handleInvoiceCallback(string $xSign, string $body): GetInvoiceResponse
     {
+        if (!hash_equals(Sign::hash($body, $this->secretPhrase), $xSign)) {
+            throw new SignException('Callback has broken sign');
+        }
+
         try {
-            $result = $this->serializer->deserialize($invoice, GetInvoiceResponse::class, 'json');
+            $result = $this->serializer->deserialize($body, GetInvoiceResponse::class, 'json');
         } catch (ExceptionInterface $e) {
             throw new JsonProcessingException($e->getMessage(), $e->getCode(), $e);
         }

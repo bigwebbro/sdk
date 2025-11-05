@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Client\Util\Sign;
+namespace Tiyn\MerchantApiSdk\Sign;
 
 final class Sign
 {

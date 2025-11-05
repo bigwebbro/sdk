@@ -14,10 +14,10 @@ use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Tiyn\MerchantApiSdk\Client\ClientBuilderInterface;
 use Tiyn\MerchantApiSdk\Client\Decorator\ClientLoggingDecorator;
+use Tiyn\MerchantApiSdk\Client\Decorator\Clock\Clock;
 use Tiyn\MerchantApiSdk\Client\Exception\Client\ClientConfigurationException;
 use Tiyn\MerchantApiSdk\Client\Exception\Transport\ConnectionException;
 use Tiyn\MerchantApiSdk\Client\Guzzle\ClientBuilder;
-use Tiyn\MerchantApiSdk\Client\Util\Clock\Clock;
 
 class ClientBuilderTest extends TestCase
 {

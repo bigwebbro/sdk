@@ -85,7 +85,7 @@ final class MerchantApiSdkBuilder implements MerchantApiSdkBuilderInterface
             $this->apiKey,
         );
 
-        $callbackService = new CallbackService($this->serializer);
+        $callbackService = new CallbackService($this->serializer, $this->secretPhrase);
 
         return new MerchantApiSdk($invoiceService, $callbackService);
     }

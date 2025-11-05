@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Client\Util\Clock;
+namespace Tiyn\MerchantApiSdk\Client\Decorator\Clock;
 
 final class Clock implements ClockInterface
 {

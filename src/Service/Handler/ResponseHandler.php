@@ -9,10 +9,10 @@ use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Tiyn\MerchantApiSdk\Model\Error;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiKeyException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\UnauthorizedException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiMerchantErrorException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\EntityErrorException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\SignException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ForbiddenException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\BlockedRequestException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceUnavailableException;
@@ -84,8 +84,8 @@ final class ResponseHandler implements ResponseHandlerInterface
 
             throw match ($statusCode) {
                 self::BAD_REQUEST => new EntityErrorException($error, $statusCode),
-                self::UNAUTHORIZED => new ApiKeyException($error, $statusCode),
-                self::FORBIDDEN => new SignException($error, $statusCode),
+                self::UNAUTHORIZED => new UnauthorizedException($error, $statusCode),
+                self::FORBIDDEN => new ForbiddenException($error, $statusCode),
                 default => new ApiMerchantErrorException($error, $statusCode),
             };
         }
