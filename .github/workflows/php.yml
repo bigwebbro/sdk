@@ -34,7 +34,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-dev
+      run: composer install --prefer-dist --no-progress
 
     - name: Composer audit
       run: make audit
@@ -78,7 +78,7 @@ jobs:
             ${{ runner.os }}-php-
 
       - name: Install dependencies
-        run: composer update --prefer-lowest --prefer-dist --no-dev
+        run: composer update --prefer-lowest --prefer-dist
 
       - name: Composer audit
         run: make audit
