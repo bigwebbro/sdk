@@ -10,9 +10,8 @@ use Tiyn\MerchantApiSdk\Model\Property\{Message\MessageGetterTrait,
     Name\NameTrait,
     Time\TimeGetterTrait,
     Time\TimeTrait};
-use Tiyn\MerchantApiSdk\Serializer\Denormalizer\DateTimeAwareDenormalizationInterface;
 
-final class Status implements DateTimeAwareDenormalizationInterface
+final class Status
 {
     use NameTrait;
     use NameGetterTrait;

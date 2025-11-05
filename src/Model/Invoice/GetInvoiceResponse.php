@@ -33,21 +33,11 @@ use Tiyn\MerchantApiSdk\Model\Property\{Amount\AmountGetterTrait,
     Uuid\UuidGetterTrait,
     Uuid\UuidTrait};
 use Tiyn\MerchantApiSdk\Serializer\Denormalizer\AmountDenormalizerAwareInterface;
-use Tiyn\MerchantApiSdk\Serializer\Denormalizer\DateTimeAwareDenormalizationInterface;
-use Tiyn\MerchantApiSdk\Serializer\Denormalizer\DeliveryMethodAwareDenormalizationInterface;
-use Tiyn\MerchantApiSdk\Serializer\Denormalizer\PaymentAwareDenormalizationInterface;
-use Tiyn\MerchantApiSdk\Serializer\Denormalizer\StatusAwareDenormalizationInterface;
 use Tiyn\MerchantApiSdk\Serializer\Normalizer\AmountAwareNormalizationInterface;
-use Tiyn\MerchantApiSdk\Serializer\Normalizer\DeliveryMethodAwareNormalizationInterface;
 
 final class GetInvoiceResponse implements
     AmountDenormalizerAwareInterface,
-    AmountAwareNormalizationInterface,
-    DateTimeAwareDenormalizationInterface,
-    StatusAwareDenormalizationInterface,
-    PaymentAwareDenormalizationInterface,
-    DeliveryMethodAwareNormalizationInterface,
-    DeliveryMethodAwareDenormalizationInterface
+    AmountAwareNormalizationInterface
 {
     use UuidTrait;
     use UuidGetterTrait;

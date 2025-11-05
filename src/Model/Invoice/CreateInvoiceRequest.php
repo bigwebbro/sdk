@@ -31,18 +31,12 @@ use Tiyn\MerchantApiSdk\Model\Property\{Amount\AmountSetterTrait,
     SuccessUrl\SuccessUrlTrait};
 use Tiyn\MerchantApiSdk\Model\RequestModelInterface;
 use Tiyn\MerchantApiSdk\Serializer\Denormalizer\AmountDenormalizerAwareInterface;
-use Tiyn\MerchantApiSdk\Serializer\Denormalizer\DateTimeAwareDenormalizationInterface;
-use Tiyn\MerchantApiSdk\Serializer\Denormalizer\DeliveryMethodAwareDenormalizationInterface;
 use Tiyn\MerchantApiSdk\Serializer\Normalizer\AmountAwareNormalizationInterface;
-use Tiyn\MerchantApiSdk\Serializer\Normalizer\DeliveryMethodAwareNormalizationInterface;
 
 final class CreateInvoiceRequest implements
     RequestModelInterface,
     AmountAwareNormalizationInterface,
-    AmountDenormalizerAwareInterface,
-    DateTimeAwareDenormalizationInterface,
-    DeliveryMethodAwareNormalizationInterface,
-    DeliveryMethodAwareDenormalizationInterface
+    AmountDenormalizerAwareInterface
 {
     use ExternalIdTrait;
     use ExternalIdSetterTrait;
