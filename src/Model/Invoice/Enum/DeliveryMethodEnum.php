@@ -14,12 +14,4 @@ enum DeliveryMethodEnum: string
     {
         return self::URL;
     }
-
-    /**
-     * @return string[]
-     */
-    public static function valuesAsArray(): array
-    {
-        return array_column(self::cases(), 'value');
-    }
 }

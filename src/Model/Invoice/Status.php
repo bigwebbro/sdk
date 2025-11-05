@@ -6,19 +6,25 @@ namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
 use Tiyn\MerchantApiSdk\Model\Property\{Message\MessageGetterTrait,
     Message\MessageTrait,
-    Name\NameGetterTrait,
-    Name\NameTrait,
     Time\TimeGetterTrait,
     Time\TimeTrait};
+use Tiyn\MerchantApiSdk\Model\Invoice\Enum\InvoiceStatusEnum;
 
 final class Status
 {
-    use NameTrait;
-    use NameGetterTrait;
-
     use MessageTrait;
     use MessageGetterTrait;
 
     use TimeTrait;
     use TimeGetterTrait;
+
+    /**
+     * @phpstan-ignore-next-line property.onlyRead property.uninitializedReadonly
+     */
+    private InvoiceStatusEnum $name;
+
+    public function getStatus(): InvoiceStatusEnum
+    {
+        return $this->name;
+    }
 }

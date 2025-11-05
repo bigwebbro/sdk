@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice\Payment;
 
-use Tiyn\MerchantApiSdk\Model\Invoice\Status;
 use Tiyn\MerchantApiSdk\Model\Property\PaymentMethod\PaymentMethodGetterTrait;
 use Tiyn\MerchantApiSdk\Model\Property\PaymentMethod\PaymentMethodTrait;
 
