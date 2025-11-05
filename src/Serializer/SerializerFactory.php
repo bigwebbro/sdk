@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Serializer;
 
+use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -11,6 +12,7 @@ use Symfony\Component\Serializer\Mapping\ClassDiscriminatorFromClassMetadata;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
+use Symfony\Component\Serializer\Normalizer\CustomNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -35,6 +37,7 @@ final class SerializerFactory
     {
         $reflectionExtractor = new ReflectionExtractor();
         $extractor = new PropertyInfoExtractor(typeExtractors: [
+            new PhpDocExtractor(),
             $reflectionExtractor,
         ]);
 
@@ -49,7 +52,7 @@ final class SerializerFactory
             [
                 new BackedEnumNormalizer(),
 //                DetailsDenormalizer::create(),
-                PaymentsDenormalizer::create(),
+//                PaymentsDenormalizer::create(),
 //                StatusDenormalizer::create(),
 //                DateTimeDenormalizer::create(),
 //                DeliveryMethodDenormalizer::create(),
@@ -57,8 +60,8 @@ final class SerializerFactory
                 AmountDenormalizer::create(),
                 new AmountNormalizer(),
 //                new DeliveryMethodNormalizer(),
-                $propertyNormalizer,
                 new ArrayDenormalizer(),
+                $propertyNormalizer,
                 $objectNormalizer,
             ],
             [

@@ -26,13 +26,15 @@
         "symfony/serializer": ">=v6.2.0",
         "symfony/property-access": ">=v6.1.0",
         "symfony/property-info": ">=v6.1.0",
-        "caseyamcl/guzzle_retry_middleware": "^2.13"
+        "caseyamcl/guzzle_retry_middleware": "^2.13",
+        "phpdocumentor/reflection-docblock": "^5.6"
     },
     "require-dev": {
         "phpstan/phpstan": "2.1.31",
         "rector/rector": "2.2.5",
         "friendsofphp/php-cs-fixer": "3.89.1",
         "phpunit/phpunit": "10.5.58",
-        "monolog/monolog": "^3.9"
+        "monolog/monolog": "^3.9",
+        "phpstan/phpdoc-parser": "^2.3"
     }
 }

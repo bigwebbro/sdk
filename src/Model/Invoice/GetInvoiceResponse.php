@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
-use Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment;
 use Tiyn\MerchantApiSdk\Model\Property\{Amount\AmountGetterTrait,
     Amount\AmountTrait,
     Currency\CurrencyGetterTrait,
@@ -93,7 +92,7 @@ final class GetInvoiceResponse implements
     use OfdDataGetterTrait;
 
     /**
-     * @var Payment[]
+     * @var list<\Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment>
      */
     private array $payments = [];
 
@@ -104,7 +103,7 @@ final class GetInvoiceResponse implements
     private Status $status;
 
     /**
-     * @return Payment[]
+     * @return list<\Tiyn\MerchantApiSdk\Model\Invoice\Payment\Payment>
      */
     public function getPayments(): array
     {

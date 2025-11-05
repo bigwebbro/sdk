@@ -154,7 +154,9 @@ class SerializerFactoryTest extends TestCase
             ->setCurrency(CurrencyEnum::KZT->value)
             ->setDescription('test')
             ->setDeliveryMethod(DeliveryMethodEnum::URL)
-            ->setExpirationDate((new \DateTimeImmutable())->add(new \DateInterval('P1D')));
+            ->setExpirationDate((new \DateTimeImmutable())->add(new \DateInterval('P1D')))
+            ->setCustomData(null)
+        ;
 
         $json = $this->serializer->serialize(
             $invoiceRequest,

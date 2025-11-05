@@ -7,7 +7,7 @@ namespace Tiyn\MerchantApiSdk\Model\Property\CustomData;
 trait CustomDataTrait
 {
     /**
-     * @var array<string, mixed>
+     * @var null|array<string, mixed>
      */
     private ?array $customData = null;
 }
