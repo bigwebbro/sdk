@@ -7,7 +7,10 @@ namespace Tiyn\MerchantApiSdk\Serializer;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Mapping\ClassDiscriminatorFromClassMetadata;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
+use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -28,28 +31,33 @@ final class SerializerFactory
 {
     public const DATE_TIME_FORMAT = 'Y-m-d H:i:s.uP';
 
-    public static function init(): SerializerInterface | NormalizerInterface |DenormalizerInterface
+    public static function init(): SerializerInterface|NormalizerInterface|DenormalizerInterface
     {
+        $reflectionExtractor = new ReflectionExtractor();
         $extractor = new PropertyInfoExtractor(typeExtractors: [
-            new ReflectionExtractor(),
+            $reflectionExtractor,
         ]);
 
         $objectNormalizer = new ObjectNormalizer(
             propertyTypeExtractor: $extractor,
         );
+        $propertyNormalizer = new PropertyNormalizer(
+            propertyTypeExtractor: $extractor,
+        );
 
         return new Serializer(
             [
-                DetailsDenormalizer::create(),
+                new BackedEnumNormalizer(),
+//                DetailsDenormalizer::create(),
                 PaymentsDenormalizer::create(),
-                StatusDenormalizer::create(),
-                DateTimeDenormalizer::create(),
-                DeliveryMethodDenormalizer::create(),
+//                StatusDenormalizer::create(),
+//                DateTimeDenormalizer::create(),
+//                DeliveryMethodDenormalizer::create(),
                 new DateTimeNormalizer([DateTimeNormalizer::FORMAT_KEY => self::DATE_TIME_FORMAT]),
                 AmountDenormalizer::create(),
                 new AmountNormalizer(),
-                new DeliveryMethodNormalizer(),
-                new PropertyNormalizer(),
+//                new DeliveryMethodNormalizer(),
+                $propertyNormalizer,
                 new ArrayDenormalizer(),
                 $objectNormalizer,
             ],

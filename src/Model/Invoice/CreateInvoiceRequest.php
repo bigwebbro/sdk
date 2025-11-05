@@ -30,6 +30,7 @@ use Tiyn\MerchantApiSdk\Model\Property\{Amount\AmountSetterTrait,
     SuccessUrl\SuccessUrlSetterTrait,
     SuccessUrl\SuccessUrlTrait};
 use Tiyn\MerchantApiSdk\Model\RequestModelInterface;
+use Tiyn\MerchantApiSdk\Serializer\Denormalizer\AmountDenormalizerAwareInterface;
 use Tiyn\MerchantApiSdk\Serializer\Denormalizer\DateTimeAwareDenormalizationInterface;
 use Tiyn\MerchantApiSdk\Serializer\Denormalizer\DeliveryMethodAwareDenormalizationInterface;
 use Tiyn\MerchantApiSdk\Serializer\Normalizer\AmountAwareNormalizationInterface;
@@ -38,6 +39,7 @@ use Tiyn\MerchantApiSdk\Serializer\Normalizer\DeliveryMethodAwareNormalizationIn
 final class CreateInvoiceRequest implements
     RequestModelInterface,
     AmountAwareNormalizationInterface,
+    AmountDenormalizerAwareInterface,
     DateTimeAwareDenormalizationInterface,
     DeliveryMethodAwareNormalizationInterface,
     DeliveryMethodAwareDenormalizationInterface
