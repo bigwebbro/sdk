@@ -1,0 +1,53 @@
+name: Release workflow
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v5
+    - name: Build
+      run: echo ${{ github.sha }} > Release.txt
+    - name: Test
+      run: cat Release.txt
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: github.ref_type == 'tag'
+      with:
+        files: Release.txt
+    - name: Validate composer.json and composer.lock
+      run: composer validate
+
+    - name: Set up PHP 8.1
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-dev
+
+    - name: Zip sdk
+      uses: montudor/action-zip@v1
+      with:
+        args: zip -qq -r Sdk.zip .
+
+    - name: Create release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: Release ${{ github.ref_name }}
+        body_path: CHANGELOG.md
+        files: Sdk.zip
