@@ -1,6 +1,10 @@
 name: Release workflow
 
 on:
+  workflow_run:
+    workflows: [Quality Checks]
+    types:
+      - completed
   push:
     tags:
       - "v*.*.*"
@@ -51,3 +55,4 @@ jobs:
         name: Release ${{ github.ref_name }}
         body_path: CHANGELOG.md
         files: Sdk.zip
+        token: ${{ github.token }}

@@ -1,4 +1,4 @@
-name: PHP Library Quality Checks
+name: Quality Checks
 
 on:
   push:
