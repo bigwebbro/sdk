@@ -60,4 +60,3 @@ jobs:
         files: Sdk.zip
         token: ${{ github.token }}
         tag_name: ${{ github.ref_name }}
-        draft: false
