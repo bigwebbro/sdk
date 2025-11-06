@@ -1,10 +1,6 @@
 name: Release workflow
 
 on:
-  workflow_run:
-    workflows: [Quality Checks]
-    types:
-      - completed
   push:
     tags:
       - "v*.*.*"
@@ -18,15 +14,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
-    - name: Build
-      run: echo ${{ github.sha }} > Release.txt
-    - name: Test
-      run: cat Release.txt
-    - name: Release
-      uses: softprops/action-gh-release@v2
-      if: github.ref_type == 'tag'
-      with:
-        files: Release.txt
+
     - name: Validate composer.json and composer.lock
       run: composer validate
 
