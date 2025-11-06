@@ -59,3 +59,4 @@ jobs:
         body_path: CHANGELOG.md
         files: Sdk.zip
         token: ${{ github.token }}
+        tag_name: ${{ github.ref_name }}
