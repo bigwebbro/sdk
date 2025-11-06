@@ -9,9 +9,7 @@ use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\UnauthorizedException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiMerchantErrorException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\EntityErrorException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ForbiddenException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\EmptyDataException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\WrongDataException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\DataTransformationException;
 
 interface ResponseHandlerInterface
 {
@@ -23,9 +21,7 @@ interface ResponseHandlerInterface
      * @throws UnauthorizedException
      * @throws ForbiddenException
      * @throws ApiMerchantErrorException
-     * @throws JsonProcessingException
-     * @throws EmptyDataException
-     * @throws WrongDataException
+     * @throws DataTransformationException
      */
     public function handleResponse(ResponseInterface $response): array;
 }

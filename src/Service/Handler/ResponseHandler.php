@@ -17,9 +17,8 @@ use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\BlockedRequestExceptio
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceUnavailableException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\TimeoutException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\EmptyDataException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\WrongDataException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\EmptyResponseException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\DataTransformationException;
 
 final class ResponseHandler implements ResponseHandlerInterface
 {
@@ -72,14 +71,14 @@ final class ResponseHandler implements ResponseHandlerInterface
         try {
             $array = $this->decoder->decode($body, 'json', ['json_decode_associative' => true]);
         } catch (ExceptionInterface $e) {
-            throw new JsonProcessingException($e->getMessage(), $e->getCode(), $e);
+            throw new DataTransformationException($e->getMessage(), $e->getCode(), $e);
         }
 
         if (isset($array['error'])) {
             try {
                 $error = $this->denormalizer->denormalize($array['error'], Error::class, 'json');
             } catch (ExceptionInterface $e) {
-                throw new WrongDataException($e->getMessage(), $e->getCode(), $e);
+                throw new DataTransformationException($e->getMessage(), $e->getCode(), $e);
             }
 
             throw match ($statusCode) {
@@ -90,14 +89,6 @@ final class ResponseHandler implements ResponseHandlerInterface
             };
         }
 
-        if (isset($array['data'])) {
-            return $array['data'];
-        }
-
-        if (!empty($array)) {
-            return $array;
-        }
-
-        throw new EmptyDataException("Unexpected error", $response->getStatusCode());
+        return $array['data'] ?? $array;
     }
 }

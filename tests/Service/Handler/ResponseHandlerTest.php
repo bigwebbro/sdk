@@ -21,7 +21,7 @@ use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\BlockedRequestExceptio
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceUnavailableException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\TimeoutException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\DataTransformationException;
 use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandler;
 
 class ResponseHandlerTest extends TestCase
@@ -116,7 +116,7 @@ class ResponseHandlerTest extends TestCase
     {
         return [
             [
-                JsonProcessingException::class,
+                DataTransformationException::class,
                 new Response(200, [], ''),
             ],
             [

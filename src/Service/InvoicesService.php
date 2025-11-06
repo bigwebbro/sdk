@@ -14,7 +14,7 @@ use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceRequest;
 use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceResponse;
 use Tiyn\MerchantApiSdk\Model\Refund\CreateRefundRequest;
 use Tiyn\MerchantApiSdk\Model\Refund\CreateRefundResponse;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\WrongDataException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\DataTransformationException;
 use Tiyn\MerchantApiSdk\Service\Handler\RequestHandlerInterface;
 use Tiyn\MerchantApiSdk\Service\Handler\ResponseHandlerInterface;
 
@@ -51,7 +51,7 @@ final class InvoicesService extends AbstractRequestService implements InvoicesSe
         try {
             $invoiceData = $this->denormalizer->denormalize($result, CreateInvoiceResponse::class);
         } catch (ExceptionInterface $e) {
-            throw new WrongDataException($e->getMessage(), $e->getCode(), $e);
+            throw new DataTransformationException($e->getMessage(), $e->getCode(), $e);
         }
 
         return $invoiceData;
@@ -71,7 +71,7 @@ final class InvoicesService extends AbstractRequestService implements InvoicesSe
         try {
             $invoice = $this->denormalizer->denormalize($result, GetInvoiceResponse::class);
         } catch (ExceptionInterface $e) {
-            throw new WrongDataException($e->getMessage(), $e->getCode(), $e);
+            throw new DataTransformationException($e->getMessage(), $e->getCode(), $e);
         }
 
         return $invoice;
@@ -94,7 +94,7 @@ final class InvoicesService extends AbstractRequestService implements InvoicesSe
         try {
             $refundData = $this->denormalizer->denormalize($result, CreateRefundResponse::class);
         } catch (ExceptionInterface $e) {
-            throw new WrongDataException($e->getMessage(), $e->getCode(), $e);
+            throw new DataTransformationException($e->getMessage(), $e->getCode(), $e);
         }
 
         return $refundData;

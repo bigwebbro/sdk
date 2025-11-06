@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Tiyn\MerchantApiSdk\Model\RequestModelInterface;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\DataTransformationException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\ValidationException;
 
 final class RequestHandler implements RequestHandlerInterface
@@ -39,7 +39,7 @@ final class RequestHandler implements RequestHandlerInterface
                 AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
             ]);
         } catch (ExceptionInterface $e) {
-            throw new JsonProcessingException($e->getMessage(), $e->getCode(), $e);
+            throw new DataTransformationException($e->getMessage(), $e->getCode(), $e);
         }
 
         return $result;
