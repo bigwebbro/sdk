@@ -8,20 +8,35 @@ SDK обеспечивает:
 
 * **Типизированные модели (DTO)**: сущности API представлены как строго типизированные PHP-классы.
 
+* **Сериализация и десериализацию**: SDK преобразует модели данных в json для API, и обратно, позволяя работать с запросами и ответами в удобной форме PHP объектов.
+
 * **Валидация данных на уровне моделей**: все модели, используемые для запросов в API проходят валидацию на соответствия требованиям 
 (проверка формата суммы, обязательных полей и типов данных). Для полей со списочными значениями используются enum.
 
-* **Работа с ЭЦП**: SDK проверяет подпись входящих webhook-событий, 
+* **Подпись запросов и проверка подписи**: SDK проверяет подпись входящих webhook-событий, 
 а также позволяет формировать корректно подписанные запросы к API.
 
 * **Обработку ошибок**: SDK оборачивает ошибки валидации, API, транспортного уровня, позволяя работать с детерминированным списком исключений.
 
-* **Сериализация и десериализацию**: SDK преобразует модели данных в json для API, и обратно, позволяя работать с этими моделями в удобной форме.
+* **Повторы запросов**: в случае ответа API ошибкой в ряде случаев http клиент SDK автоматически повторит запросы. 
 
 Использование SDK позволяет минимизировать ошибки при интеграции, ускорить разработку и обеспечить корректное взаимодействие с Tyin Merchant API.
 
-# Installation
+# Требования 
+
+* PHP 8.1+
+
+Php-extensions:
+* ext-json
+* ext-iconv
+* ext-filter
+
+# Подключение
+
+## Для проектов использующих composer
+
 В корне composer.json указать:
+
 ```json
 "repositories": [
     {
@@ -30,13 +45,41 @@ SDK обеспечивает:
     }
 ],
 ```
-и
+
+и, т.к. пакет находится в alpha стадии, указать:
+
 ```json
 "minimum-stability": "dev",
 ```
 Выполнить команду `composer require bigwebbro/sdk:dev-main`
 
-*после публикации пакета в packagist установка зависимости будет выполнятся в одну команду.
+## Для проектов не использующих composer
+Перейти на [станицу последнего релиза](https://github.com/bigwebbro/sdk/releases/latest), скачать sdk.zip.
+Распаковать архив и подключать в ваш проект через `require_once()` конфигурации автозагрузчика классов, расположенной в `vendor/autoload.php`:
+
+```php
+require_once(__DIR__ ."/../sdk/vendor/autoload.php");
+
+use Tiyn\MerchantApiSdk\MerchantApiSdkBuilder;
+use Tiyn\MerchantApiSdk\Client\Guzzle\ClientBuilder;
+
+...
+
+$client = (new ClientBuilder())
+    ->setBaseUri('https://merchant-api.example/api/v2/')
+    ...
+    ->build()
+;
+
+$sdk = (new MerchantApiSdkBuilder())
+    ->setClient($client)
+    ...
+    ->build()
+;
+
+...
+```
+После чего классы SDK можно будет использовать в вашем проекте.
 
 # Структура
 ```
@@ -86,18 +129,21 @@ src
 # Инициализация
 
 ```php
-use Tiyn\MerchantApiSdk\Client\Decorator\ClientLoggingDecorator;use Tiyn\MerchantApiSdk\Client\Decorator\Clock\Clock;use Tiyn\MerchantApiSdk\Client\Guzzle\ClientBuilder;use Tiyn\MerchantApiSdk\MerchantApiSdkBuilder;
+use Tiyn\MerchantApiSdk\Client\Decorator\ClientLoggingDecorator;
+use Tiyn\MerchantApiSdk\Client\Decorator\Clock\Clock;
+use Tiyn\MerchantApiSdk\Client\Guzzle\ClientBuilder;
+use Tiyn\MerchantApiSdk\MerchantApiSdkBuilder;
 
-$client = (new ClientBuilder())
-    ->setBaseUri($this->url)
-    ->setTimeout($this->timeout)
-    ->enableRetry($this->maxAttempts)
-    ->addDecorator(new ClientLoggingDecorator($this->logger, new Clock()))
+$psrClient = (new ClientBuilder())
+    ->setBaseUri('https://merchant-api.example/api/v2/')
+    ->setTimeout($timeout)
+    ->enableRetry($maxAttempts)
+    ->addDecorator(new ClientLoggingDecorator($psrLogger, new Clock()))
     ->build()
 ;
 
-return (new MerchantApiSdkBuilder())
-    ->setClient($client)
+$sdk = (new MerchantApiSdkBuilder())
+    ->setClient($psrClient)
     ->setApiKey($this->apiKey)
     ->setSecretPhrase($this->secretPhrase)
     ->build()
@@ -160,7 +206,7 @@ return (new MerchantApiSdkBuilder())
 [2025-11-05T22:01:10.760928+03:00] app.INFO: Request to Merchant API {"method":"POST","endpoint":"invoices"} []
 [2025-11-05T22:01:16.435213+03:00] app.INFO: Response from Merchant API {"http_code":200,"time":"5674 ms"} []
 ```
-# Merchant API SDK
+# Использование
 ## Создание счета
 ```php
 use Tiyn\MerchantApiSdk\Client\Exception\Transport\ConnectionException;
@@ -262,7 +308,7 @@ try {
 ## Обработка callback
 
 ```php
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\JsonProcessingException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\DataTransformationException;
 use Tiyn\MerchantApiSdk\Sign\SignException;
 
 ...
@@ -273,7 +319,7 @@ try {
     $response = $merchantApiSdk->callback()->handleInvoiceCallback($request->headers->get('x-sign', ''), $content);
 } catch (SignException $exception) {
     // Ошибка проверки подписи запроса
-} catch (JsonProcessingException $exception) {
+} catch (DataTransformationException $exception) {
     // Ошибка десериализации тела запроса
 }
 ```
