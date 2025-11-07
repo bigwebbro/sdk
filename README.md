@@ -45,13 +45,10 @@ Php-extensions:
     }
 ],
 ```
-
-и, т.к. пакет находится в alpha стадии, указать:
-
-```json
-"minimum-stability": "dev",
+И выполнить команду:
 ```
-Выполнить команду `composer require bigwebbro/sdk:dev-main`
+composer require bigwebbro/sdk:dev-main
+```
 
 ## Для проектов не использующих composer
 Перейти на [станицу последнего релиза](https://github.com/bigwebbro/sdk/releases/latest), скачать sdk.zip.
