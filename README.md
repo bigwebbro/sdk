@@ -82,7 +82,7 @@ $sdk = (new MerchantApiSdkBuilder())
 ```
 src
   ├─ Client                        // PSR-18 клиент с декораторами и исключениями
-  ├─ Model                         // DTO/модели данных SDK
+  ├─ Model                         // DTO сущностей API
   ├─ Serializer                    // Конфигурация и фабрика сериализаторов
   │   ├─ Denormalizer              // Кастомные денормалайзеры для моделей
   │   ├─ Normalizer                // Кастомные нормалайзеры для моделей
@@ -93,6 +93,7 @@ src
   │   │   │   ├─ Api               // Ошибки, связанные с API-ответами, содержат описание ошибки
   │   │   │   │   ├─ ApiMerchantErrorException.php
   │   │   │   │   ├─ EntityErrorException.php
+  │   │   │   │   ├─ Error.php     // DTO ошибки
   │   │   │   │   ├─ ForbiddenException.php
   │   │   │   │   └─ UnauthorizedException.php
   │   │   │   ├─ Service           // Ответы API без дополнительного описания ошибки
@@ -102,7 +103,7 @@ src
   │   │   │   │   └─ TimeoutException.php
   │   │   │   └─ Validation        // Ошибки валидации данных и де/сериализации
   │   │   │       ├─ DataTransformationException.php
-  │   │   │       ├─ ValidationException.php
+  │   │   │       └─ ValidationException.php
   │   │   ├─ RequestHandler.php                // Обработчик исходящих HTTP-запросов
   │   │   ├─ RequestHandlerInterface.php       // Интерфейс обработчика запросов
   │   │   ├─ ResponseHandler.php               // Обработчик входящих HTTP-ответов

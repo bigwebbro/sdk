@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tiyn\MerchantApiSdk\Model;
+namespace Tiyn\MerchantApiSdk\Service\Handler\Exception\Api;
 
 final class Error
 {

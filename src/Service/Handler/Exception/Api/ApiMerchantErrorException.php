@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Service\Handler\Exception\Api;
 
-use Tiyn\MerchantApiSdk\Model\Error;
-
 class ApiMerchantErrorException extends \RuntimeException
 {
     public function __construct(private readonly Error $error, int $code, ?\Throwable $previous = null)

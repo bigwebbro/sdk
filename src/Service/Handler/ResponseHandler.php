@@ -8,17 +8,17 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Tiyn\MerchantApiSdk\Model\Error;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\UnauthorizedException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiMerchantErrorException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\EntityErrorException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\Error;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ForbiddenException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\UnauthorizedException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\BlockedRequestException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceUnavailableException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\TimeoutException;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\EmptyResponseException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\DataTransformationException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\EmptyResponseException;
 
 final class ResponseHandler implements ResponseHandlerInterface
 {

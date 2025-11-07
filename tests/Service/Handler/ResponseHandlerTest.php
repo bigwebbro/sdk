@@ -4,19 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Service\Handler;
 
-use GuzzleHttp\Exception\ConnectException as GuzzleConnectException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Serializer\Encoder\JsonDecode;
-use Tiyn\MerchantApiSdk\Client\Exception\Transport\ConnectionException;
-use Tiyn\MerchantApiSdk\Model\Error;
 use Tiyn\MerchantApiSdk\Serializer\SerializerFactory;
-use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\UnauthorizedException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\EntityErrorException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\Error;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ForbiddenException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\UnauthorizedException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\BlockedRequestException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceException;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceUnavailableException;
