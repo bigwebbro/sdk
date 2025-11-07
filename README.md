@@ -85,7 +85,7 @@ $sdk = (new MerchantApiSdkBuilder())
 ```
 src
   ├─ Client                        // PSR-18 клиент с декораторами и исключениями
-  ├─ Model                         // DTO и модели данных SDK
+  ├─ Model                         // DTO/модели данных SDK
   ├─ Serializer                    // Конфигурация и фабрика сериализаторов
   │   ├─ Denormalizer              // Кастомные денормалайзеры для моделей
   │   ├─ Normalizer                // Кастомные нормалайзеры для моделей
