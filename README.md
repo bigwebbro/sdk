@@ -93,21 +93,19 @@ src
   ├─ Service                       // Бизнес-логика и взаимодействие с API
   │   ├─ Handler                   // Обработчики запросов и ответов
   │   │   ├─ Exception             // Исключения, связанные с обработчиками
-  │   │   │   ├─ Api               // Ошибки, связанные с API-ответами
+  │   │   │   ├─ Api               // Ошибки, связанные с API-ответами, содержат описание ошибки
   │   │   │   │   ├─ ApiMerchantErrorException.php
   │   │   │   │   ├─ EntityErrorException.php
   │   │   │   │   ├─ ForbiddenException.php
   │   │   │   │   └─ UnauthorizedException.php
-  │   │   │   ├─ Service           // Ошибки сервисов и соединения
+  │   │   │   ├─ Service           // Ответы API без дополнительного описания ошибки
   │   │   │   │   ├─ BlockedRequestException.php
   │   │   │   │   ├─ ServiceException.php
   │   │   │   │   ├─ ServiceUnavailableException.php
   │   │   │   │   └─ TimeoutException.php
-  │   │   │   └─ Validation        // Ошибки валидации данных
-  │   │   │       ├─ EmptyDataException.php
-  │   │   │       ├─ JsonProcessingException.php
+  │   │   │   └─ Validation        // Ошибки валидации данных и де/сериализации
+  │   │   │       ├─ DataTransformationException.php
   │   │   │       ├─ ValidationException.php
-  │   │   │       └─ WrongDataException.php
   │   │   ├─ RequestHandler.php                // Обработчик исходящих HTTP-запросов
   │   │   ├─ RequestHandlerInterface.php       // Интерфейс обработчика запросов
   │   │   ├─ ResponseHandler.php               // Обработчик входящих HTTP-ответов
@@ -151,41 +149,41 @@ $sdk = (new MerchantApiSdkBuilder())
 ```
 Для использования SDK нужно сконфигурировать клиент с помощью `ClientBuilder` и `MerchantApiSdkBuilder`.  
 
-### ClientBuilder reference
+### Tiyn\MerchantApiSdk\Client\Guzzle\ClientBuilder reference
 
 Создает и декорирует PSR-18 http клиент на базе guzzle.
 
-`setBaseUri(string $baseUrl): self` принимает uri, относительного которого будет выстраивать url запросов. Uri **должно** заканчиваться на `/`.
+* `setBaseUri(string $baseUrl): self` принимает uri, относительного которого будет выстраивать url запросов. Uri **должно** заканчиваться на `/`.
 Логику работы с uri см. [здесь](https://docs.guzzlephp.org/en/stable/quickstart.html#creating-a-client) в разделе base_uri.
 
-`setTimeout(int $timeout): self` таймаут соединения в секундах.
+* `setTimeout(int $timeout): self` таймаут соединения в секундах.
 
-`enableRetry(int $maxAttempts, float $multiplier): self` повтор запроса в случае 408, 429, 500, 502, 503 http кодов ответа. 
+* `enableRetry(int $maxAttempts, float $multiplier): self` повтор запроса в случае 408, 429, 500, 502, 503 http кодов ответа. 
 \$maxAttempts - количество повторных попыток (не больше 5), \$multiplier - умножитель времени между попытками.
 
-`setOptions(array $options): self` массив опций для конфигурирования guzzle.
+* `setOptions(array $options): self` массив опций для конфигурирования guzzle.
 
-`addDecorator(ClientInterface $decorator): self` добавляет декораторы клиента.
+* `addDecorator(ClientInterface $decorator): self` добавляет декораторы клиента.
 
-### MerchantApiSdkBuilder
+### Tiyn\MerchantApiSdk\MerchantApiSdkBuilder reference
 
 Создает объект SDK.  
 
-`setClient(ClientInterface $client): self`
+* `setClient(ClientInterface $client): self`
 Позволяет передать готовый PSR-18 HTTP клиент для использования в SDK.
 
-`setSecretPhrase(string $secretPhrase): self`
+* `setSecretPhrase(string $secretPhrase): self`
 Задает секретную фразу, используемую для генерации подписи (X-Sign) при отправке запросов и получении webhooks.
 
-`setApiKey(string $apiKey): self`
+* `setApiKey(string $apiKey): self`
 Устанавливает API-ключ, который будет добавляться в заголовок (X-Api-Key) каждого запроса.
 
-`setSerializer(SerializerInterface $serializer): self` 
+* `setSerializer(SerializerInterface $serializer): self` 
 Передает сериализатор (Symfony\Component\Serializer\SerializerInterface), который отвечает за преобразование моделей SDK в JSON и обратно.
 Метод необходим для конфигурации SDK в рамках symfony framework, если SDK используется в другой среде, то конфигурировать сериализатор **нет необходимости**, в момент
 вызова `build()` MerchantApiSdkBuilder сконфигурирует сериализатор самостоятельно.
 
-`setValidator(ValidatorInterface $validator): self`
+* `setValidator(ValidatorInterface $validator): self`
 Передает валидатор (например, Symfony\Component\Validator\Validator\ValidatorInterface), применяемый для проверки корректности данных перед отправкой запроса.
 Метод необходим для конфигурации SDK в рамках symfony framework, если SDK используется в другой среде, то конфигурировать валидатор **нет необходимости**, в момент
 вызова `build()` MerchantApiSdkBuilder создаст валидатор самостоятельно.
@@ -199,7 +197,12 @@ $sdk = (new MerchantApiSdkBuilder())
 ### Логирование
 
 "Из коробки" доступен логирующий декоратор, который логирует факт запроса и ответа от Merchant API.
-В конструктор логирующего декоратора необходимо передавать логер реализующий PSR-3.  
+В конструктор логирующего декоратора необходимо передавать логер реализующий PSR-3 и `Tiyn\MerchantApiSdk\Client\Decorator\Clock\Clock`:
+```php
+...
+    ->addDecorator(new ClientLoggingDecorator($psrLogger, new Clock()))
+...
+```
 
 Пример логов декоратора:
 ```
