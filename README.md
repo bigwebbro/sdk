@@ -47,7 +47,7 @@ Php-extensions:
 ```
 И выполнить команду:
 ```
-composer require bigwebbro/sdk:dev-main
+composer require bigwebbro/sdk
 ```
 
 ## Для проектов не использующих composer
