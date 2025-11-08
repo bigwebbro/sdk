@@ -51,7 +51,7 @@ composer require bigwebbro/sdk
 ```
 
 ## Для проектов не использующих composer
-Перейти на [станицу последнего релиза](https://github.com/bigwebbro/sdk/releases/latest), скачать sdk.zip.
+Перейти на [станицу последнего релиза](https://github.com/bigwebbro/sdk/releases/latest), скачать Sdk.zip.
 Распаковать архив и подключать в ваш проект через `require_once()` конфигурации автозагрузчика классов, расположенной в `vendor/autoload.php`:
 
 ```php
@@ -145,7 +145,7 @@ $sdk = (new MerchantApiSdkBuilder())
     ->build()
 ;
 ```
-Для использования SDK нужно сконфигурировать клиент с помощью `ClientBuilder` и `MerchantApiSdkBuilder`.  
+Для использования SDK нужно сконфигурировать клиент с помощью `ClientBuilder` и `MerchantApiSdkBuilder`.
 
 ### Tiyn\MerchantApiSdk\Client\Guzzle\ClientBuilder reference
 
@@ -207,8 +207,20 @@ $sdk = (new MerchantApiSdkBuilder())
 [2025-11-05T22:01:10.760928+03:00] app.INFO: Request to Merchant API {"method":"POST","endpoint":"invoices"} []
 [2025-11-05T22:01:16.435213+03:00] app.INFO: Response from Merchant API {"http_code":200,"time":"5674 ms"} []
 ```
+
 # Использование
-## Создание счета
+`Tiyn\MerchantApiSdk\MerchantApiSdk` прокси класс, передающий вызовы конкретным сервисам для работы с Merchant API. 
+
+## Tiyn\MerchantApiSdk\Service\InvoicesService
+
+### Создание счета
+* `Tiyn\MerchantApiSdk\Service\InvoicesService::createInvoice` реализует создание счета из [документации](https://business.tiyn.io/documentation/#c24c154824).
+На вход требуется передать DTO `Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest` заполненную данными по создаваему счету.  
+Данные в DTO будут провалидированы на соответствие требованиям метода API. 
+
+* [Пример в demo](https://github.com/bigwebbro/sdk-demo/blob/main/src/Controller/InvoiceController.php#L26) 
+
+Пример:
 ```php
 use Tiyn\MerchantApiSdk\Client\Exception\Transport\ConnectionException;
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest;
@@ -230,6 +242,9 @@ $createInvoiceRequest = (new CreateInvoiceRequest())
     ->setExpirationDate((new \DateTimeImmutable('now'))->add(new \DateInterval('P1D')))
 
 try {
+    /**
+     * @var \Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceResponse $createInvoiceResponse 
+     */
     $createInvoiceResponse = $merchantApiSdk->invoice()->createInvoice($invoiceRequest);
 } catch (ValidationException $exception) {
     // Ошибки валидации данных - пустые обязательные поля, некорректная сумма и т.п 
@@ -239,9 +254,8 @@ try {
     // Ошибки API c моделью Error
     // Содержат код ошибки из документации и другие поля 
     // Выбрасываются при 4хх, если сервис отдал json описание ошибки
-     if ($exception->getError()->getCode()) {
-        ...
-     }
+    ...
+
 } catch (ServiceException $exception) {
     // Обработка 5xx и 418 статуса ответа
     ...
@@ -250,11 +264,19 @@ try {
     ...
 }
 
-$uuid = $createInvoiceRequest->getUuid();
+$uuid = $createInvoiceResponse->getUuid();
+$paymentLink = $createInvoiceResponse->getPaymentLink();
 ...
 ```
 
-## Получение данных счета
+### Получение данных счета
+
+* `Tiyn\MerchantApiSdk\Service\InvoicesService::getInvoice` реализует получение данных счета по его уникальному идентификатору ([документация](https://business.tiyn.io/documentation/#a1a755e371)).
+На вход требует DTO в которую кладут uuid счета.
+
+* [Пример в demo](https://github.com/bigwebbro/sdk-demo/blob/main/src/Controller/InvoiceController.php#L69)
+
+Пример:
 ```php
 use Tiyn\MerchantApiSdk\Client\Exception\Transport\ConnectionException;
 use Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceRequest;
@@ -266,6 +288,9 @@ use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceException;
 $getInvoiceRequest = new GetInvoiceRequest($uuid);
 
 try {
+    /**
+     * @var \Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceResponse $getInvoiceResponse
+     */
     $getInvoiceResponse = $merchantApiSdk->invoice()->getInvoice($getInvoiceRequest);
 } catch (ApiMerchantErrorException $exception) {
     ...
@@ -278,7 +303,14 @@ try {
 ...
 ```
 
-## Возврат
+### Возврат
+
+* `Tiyn\MerchantApiSdk\Service\InvoicesService::makeRefundByInvoice` реализует запрос на возврат денежных средств ([документация](https://business.tiyn.io/documentation/#8708c325a8)).  
+На вход принимает уникальный индентификатор счета (полученный при его создании) и DTO с данными для возврата.  
+
+* [Пример в demo](https://github.com/bigwebbro/sdk-demo/blob/main/src/Controller/RefundController.php#L14)
+
+Пример:
 ```php
 use Tiyn\MerchantApiSdk\Model\Invoice\CreateRefundRequest;
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiMerchantErrorException;
@@ -293,6 +325,9 @@ $createRefundRequest = (new CreateRefundRequest())
 ;
 
 try {
+    /**
+     * @var \Tiyn\MerchantApiSdk\Model\Refund\CreateRefundResponse $createRefundResponse
+     */
     $createRefundResponse = $merchantApiSdk->invoice()->makeRefundByInvoice($uuid, $createRefundRequest);
 } catch (ValidationException $exception) {
     ...
@@ -306,8 +341,20 @@ try {
 
 ...
 ```
-## Обработка callback
 
+## Tiyn\MerchantApiSdk\Service\CallbackService
+
+Сервис для работы с callback запросами от Merchant API. В общем случае проверяет подпись запроса и возвращает DTO для дальнейшей работы с ней. 
+
+### Callback изменение статуса счета
+
+* `Tiyn\MerchantApiSdk\Service\CallbackService::handleInvoiceCallback` обрабатывает callback-запросы от Merchant API о событиях связанных со счетом (оплата, отмена и т.п.). [Раздел в документации](https://business.tiyn.io/documentation/#11f8e1d37f). 
+В метод передается заголовок `X-Sign`, пришедший вместе с callback запросом и тело запроса (json строка) as is.
+Возвращает DTO счета для дальнейшей обработки. 
+
+* [Пример в demo](https://github.com/bigwebbro/sdk-demo/blob/main/src/Controller/CallbackController.php#L25)
+
+Пример:
 ```php
 use Tiyn\MerchantApiSdk\Service\Handler\Exception\Validation\DataTransformationException;
 use Tiyn\MerchantApiSdk\Sign\SignException;
@@ -315,9 +362,13 @@ use Tiyn\MerchantApiSdk\Sign\SignException;
 ...
 
 try {
-    // обработка запроса от сервиса об изменении счета
-    // метод требует предать на вход заголовок подписи X-Sign и тело запроса as is
-    $response = $merchantApiSdk->callback()->handleInvoiceCallback($request->headers->get('x-sign', ''), $content);
+    /**
+     * @var \Tiyn\MerchantApiSdk\Model\Invoice\GetInvoiceResponse $invoice
+     * 
+     * обработка запроса от сервиса об изменении счета
+     * метод требует предать на вход заголовок подписи X-Sign и тело запроса as is
+     */
+    $invoice = $merchantApiSdk->callback()->handleInvoiceCallback($request->headers->get('x-sign', ''), $content);
 } catch (SignException $exception) {
     // Ошибка проверки подписи запроса
 } catch (DataTransformationException $exception) {
@@ -325,3 +376,37 @@ try {
 }
 ```
 
+## Обработка ошибок
+
+В примерах выше показан ряд исключений, которые оборачивают ошибки API, ошибки низкого уровня (сеть и т.п.) и используемых в SDK библиотек. 
+Хотелось бы заострить внимание на типе исключений и его наследниках, возникающих в случае если API отдало описание ошибки в ответе - `Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiMerchantErrorException`.
+Такое исключение содержит DTO `\Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\Error`, которое, 
+в свою очередь, содержит сообщение (для удобства это сообщение передается в `ApiMerchantErrorException` и `$exception->getMessage()` вернет его), [код ошибки из документации](https://business.tiyn.io/documentation/#tiyn-business-10) 
+и correlationId запроса, который можно использовать при обращении к тех. поддержке Merchant API.  
+
+Исключения типа `Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceException` возникают в случае если API не отдало описание ошибки и 5хх кодов.
+
+Пример:
+
+```php
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\ApiMerchantErrorException;
+use Tiyn\MerchantApiSdk\Service\Handler\Exception\Service\ServiceException;
+
+try {
+    ...
+} catch (ApiMerchantErrorException $exception) {
+    /**
+     * @var \Tiyn\MerchantApiSdk\Service\Handler\Exception\Api\Error 
+     */
+    $error = $exception->getError();
+    $errorCode = $error->getCode() // код ошибки из документации 
+    $message = $exception->getMessage(); // сообщение ошибки, аналогично $error->getMessage() 
+    $httpStatus = $exception->getCode(); // http статус ответа
+    ...
+} catch (ServiceException $exception) {
+    $httpStatus = $exception->getCode(); // http статус ответа
+    ...   
+} catch(...)
+     
+
+```
