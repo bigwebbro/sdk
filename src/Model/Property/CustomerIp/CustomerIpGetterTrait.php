@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tiyn\MerchantApiSdk\Model\Property\CustomerIp;
 
 /**
- * @property string $customerIp
+ * @property null|string $customerIp
  */
 trait CustomerIpGetterTrait
 {

@@ -16,7 +16,7 @@ final class Payment
      * @var Details
      * @phpstan-ignore-next-line
      */
-    private Details $details;
+    private ?Details $details = null;
 
     /**
      * @var Status
@@ -24,7 +24,7 @@ final class Payment
      */
     private Status $status;
 
-    public function getDetails(): Details
+    public function getDetails(): ?Details
     {
         return $this->details;
     }

@@ -6,5 +6,5 @@ namespace Tiyn\MerchantApiSdk\Model\Property\Account;
 
 trait AccountTrait
 {
-    private string $account;
+    private ?string $account = null;
 }

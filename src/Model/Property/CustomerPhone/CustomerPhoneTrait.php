@@ -10,7 +10,7 @@ trait CustomerPhoneTrait
 {
     #[Assert\Regex(
         pattern: '/^\+7\d{10}$/',
-        message: 'Номер телефона должен быть в формате +7xxxxxxxxxx (10 цифр после +7).'
+        message: 'The phone number must be in the format +7xxxxxxxxxx (10 digits after +7).'
     )]
-    private string $customerPhone;
+    private ?string $customerPhone = null;
 }

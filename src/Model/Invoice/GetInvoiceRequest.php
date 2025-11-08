@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace Tiyn\MerchantApiSdk\Model\Invoice;
 
+use Tiyn\MerchantApiSdk\Model\Property\Uuid\UuidConstructorTrait;
+use Tiyn\MerchantApiSdk\Model\Property\Uuid\UuidGetterTrait;
+
 final class GetInvoiceRequest
 {
-    public function __construct(
-        private readonly string $uuid,
-    ) {
-    }
-
-    public function getUuid(): string
-    {
-        return $this->uuid;
-    }
+    use UuidConstructorTrait;
+    use UuidGetterTrait;
 }

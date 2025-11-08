@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tiyn\MerchantApiSdk\Model\Property\Account;
 
 /**
- * @property string $account
+ * @property null|string $account
  */
 trait AccountGetterTrait
 {
-    public function getAccount(): string
+    public function getAccount(): ?string
     {
         return $this->account;
     }

@@ -13,6 +13,7 @@ final class Details
 {
     use AccountTrait;
     use AccountGetterTrait;
+
     use PaymentTokenTrait;
     use PaymentTokenGetterTrait;
 }
