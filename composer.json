@@ -1,5 +1,5 @@
 {
-    "name": "bigwebbro/sdk",
+    "name": "apisoft-org/tyin-merchant-api-sdk",
     "description": "SDK for integration with payment system",
     "type": "library",
     "autoload": {
