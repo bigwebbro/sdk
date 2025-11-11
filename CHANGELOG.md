@@ -6,4 +6,4 @@
 ## 0.0.1
 
 Релиз SDK.
-[v0.0.2]: https://github.com/bigwebbro/sdk/compare/v0.0.1...v0.0.2
+[v0.0.2]: https://github.com/apisoft-org/tyin-merchant-api-sdk/compare/v0.0.1...v0.0.2

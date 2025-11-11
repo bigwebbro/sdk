@@ -41,17 +41,17 @@ Php-extensions:
 "repositories": [
     {
         "type": "vcs",
-        "url": "https://github.com/bigwebbro/sdk.git"
+        "url": "https://github.com/apisoft-org/tyin-merchant-api-sdk.git"
     }
 ],
 ```
 И выполнить команду:
 ```
-composer require bigwebbro/sdk
+composer require apisoft-org/tyin-merchant-api-sdk
 ```
 
 ## Для проектов не использующих composer
-Перейти на [станицу последнего релиза](https://github.com/bigwebbro/sdk/releases/latest), скачать Sdk.zip.
+Перейти на [станицу последнего релиза](https://github.com/apisoft-org/tyin-merchant-api-sdk/releases/latest), скачать Sdk.zip.
 Распаковать архив и подключать в ваш проект через `require_once()` конфигурации автозагрузчика классов, расположенной в `vendor/autoload.php`:
 
 ```php
@@ -146,6 +146,7 @@ $sdk = (new MerchantApiSdkBuilder())
 ;
 ```
 Для использования SDK нужно сконфигурировать клиент с помощью `ClientBuilder` и `MerchantApiSdkBuilder`.
+[Пример в demo](https://github.com/apisoft-org/tyin-merchant-api-sdk-demo/blob/main/src/Factory/SdkFactory.php#L24).
 
 ### Tiyn\MerchantApiSdk\Client\Guzzle\ClientBuilder reference
 
@@ -218,7 +219,7 @@ $sdk = (new MerchantApiSdkBuilder())
 На вход требуется передать DTO `Tiyn\MerchantApiSdk\Model\Invoice\CreateInvoiceRequest` заполненную данными по создаваему счету.  
 Данные в DTO будут провалидированы на соответствие требованиям метода API. 
 
-* [Пример в demo](https://github.com/bigwebbro/sdk-demo/blob/main/src/Controller/InvoiceController.php#L26) 
+* [Пример в demo](https://github.com/apisoft-org/tyin-merchant-api-sdk-demo/blob/main/src/Controller/InvoiceController.php#L26) 
 
 Пример:
 ```php
@@ -274,7 +275,7 @@ $paymentLink = $createInvoiceResponse->getPaymentLink();
 * `Tiyn\MerchantApiSdk\Service\InvoicesService::getInvoice` реализует получение данных счета по его уникальному идентификатору ([документация](https://business.tiyn.io/documentation/#a1a755e371)).
 На вход требует DTO в которую кладут uuid счета.
 
-* [Пример в demo](https://github.com/bigwebbro/sdk-demo/blob/main/src/Controller/InvoiceController.php#L69)
+* [Пример в demo](https://github.com/apisoft-org/tyin-merchant-api-sdk-demo/blob/main/src/Controller/InvoiceController.php#L69)
 
 Пример:
 ```php
@@ -308,7 +309,7 @@ try {
 * `Tiyn\MerchantApiSdk\Service\InvoicesService::makeRefundByInvoice` реализует запрос на возврат денежных средств ([документация](https://business.tiyn.io/documentation/#8708c325a8)).  
 На вход принимает уникальный индентификатор счета (полученный при его создании) и DTO с данными для возврата.  
 
-* [Пример в demo](https://github.com/bigwebbro/sdk-demo/blob/main/src/Controller/RefundController.php#L14)
+* [Пример в demo](https://github.com/apisoft-org/tyin-merchant-api-sdk-demo/blob/main/src/Controller/RefundController.php#L14)
 
 Пример:
 ```php
@@ -352,7 +353,7 @@ try {
 В метод передается заголовок `X-Sign`, пришедший вместе с callback запросом и тело запроса (json строка) as is.
 Возвращает DTO счета для дальнейшей обработки. 
 
-* [Пример в demo](https://github.com/bigwebbro/sdk-demo/blob/main/src/Controller/CallbackController.php#L25)
+* [Пример в demo](https://github.com/apisoft-org/tyin-merchant-api-sdk-demo/blob/main/src/Controller/CallbackController.php#L25)
 
 Пример:
 ```php
